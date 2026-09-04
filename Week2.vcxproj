@@ -112,6 +112,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <PreprocessToFile>false</PreprocessToFile>
+      <AdditionalIncludeDirectories>.;ImGui;Core;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -141,6 +142,7 @@
     </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Core\UObject.cpp" />
     <ClCompile Include="FConstants.h" />
     <ClCompile Include="FMemory.cpp" />
     <ClCompile Include="ImGuiManager.cpp" />
@@ -167,6 +169,12 @@
     <ClInclude Include="Cube.h" />
     <ClInclude Include="FMatrix.h" />
     <ClInclude Include="FMemory.h" />
+    <ClInclude Include="Core\FObjectFactory.h" />
+    <ClInclude Include="Core\TSubclassOf.h" />
+    <ClInclude Include="Core\UClass.h" />
+    <ClInclude Include="Core\UEngineStatics.h" />
+    <ClInclude Include="Core\UObject.h" />
+    <ClInclude Include="Core\USceneComponent.h" />
     <ClInclude Include="FVector3.h" />
     <ClInclude Include="FVertexSimple.h" />
     <ClInclude Include="ImGuiManager.h" />
