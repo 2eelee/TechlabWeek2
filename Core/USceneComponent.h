@@ -5,6 +5,7 @@
 
 class USceneComponent : public UObject
 {
+	TYPE_DECLARATIONS(USceneComponent, UObject);
 public:
 	FVector3 RelativeLocation;
 	FVector3 RelativeRotation;
@@ -13,16 +14,20 @@ public:
 
 class UPrimitiveComponent : public USceneComponent
 {
+	TYPE_DECLARATIONS(UPrimitiveComponent, USceneComponent);
 };
 
 class UCubeComp : public UPrimitiveComponent
 {
+	TYPE_DECLARATIONS(UCubeComp, UPrimitiveComponent);
 };
 
 class USphereComp : public UPrimitiveComponent
 {
+	TYPE_DECLARATIONS(USphereComp, UPrimitiveComponent);
 };
 
 class UPlaneComp : public UPrimitiveComponent
 {
+	TYPE_DECLARATIONS(UPlaneComp, UPrimitiveComponent);
 };
