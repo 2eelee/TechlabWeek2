@@ -22,3 +22,7 @@ class UCubeComp : public UPrimitiveComponent
 class USphereComp : public UPrimitiveComponent
 {
 };
+
+class UPlaneComp : public UPrimitiveComponent
+{
+};
