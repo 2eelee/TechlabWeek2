@@ -16,6 +16,7 @@
 #include "ImGui/imgui.h"
 
 #include "Sphere.h"
+#include "Cube.h"
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
@@ -40,9 +41,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	imguiManager.Create(hWnd, renderer.Device, renderer.DeviceContext);
 
 	UINT numVerticesSphere = sizeof(sphere_vertices) / sizeof(FVertexSimple);
+	UINT numVerticesCube = sizeof(cube_vertices) / sizeof(FVertexSimple);
 
 	ID3D11Buffer* vertexBufferSphere =
 		renderer.CreateVertexBuffer(sphere_vertices, sizeof(sphere_vertices));
+	ID3D11Buffer* vertexBufferCube =
+		renderer.CreateVertexBuffer(cube_vertices, sizeof(cube_vertices));
 
 	// 제어용 변수
 	bool bIsExit = false;
@@ -86,6 +90,27 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		renderer.Prepare();
 		renderer.PrepareShader();
 
+		// 테스트용 MVP 코드
+		FMatrix Model = FMatrix::CreateTranslation(0.0f, 0.0f, 0.0f);
+		
+		FMatrix View = FMatrix::CreateView(
+			FVector3(0.0f, 0.0f, -3.0f), // 위치 (Eye)
+			FVector3(1.0f, 0.0f, 0.0f),  // Right (X축)
+			FVector3(0.0f, 1.0f, 0.0f),  // Up (Y축)
+			FVector3(0.0f, 0.0f, 1.0f)   // Forward (Z축)
+		);
+		
+		float width = renderer.ViewportInfo.Width;
+		float height = (renderer.ViewportInfo.Height > 0.0f) ? renderer.ViewportInfo.Height : 1.0f; // 0나누기 방어!
+		float aspect = width / height;
+		
+		FMatrix Proj = FMatrix::CreateProjection(1000.0f, 0.1f, 3.14159265f / 3.0f, aspect);
+		
+		FMatrix MVP = Model * View * Proj;
+
+		// M * V * P 행렬 입력 
+		renderer.UpdateConstant(MVP);
+		renderer.RenderPrimitive(vertexBufferCube, numVerticesCube);
 		imguiManager.BeginFrame();
 
 		// 이후 ImGui UI 컨트롤 추가는 ImGui::NewFrame()과 ImGui::Render() 사이인 여기에 위치합니다. 

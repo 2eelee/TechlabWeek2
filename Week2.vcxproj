@@ -162,6 +162,8 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Cube.h" />
+    <ClInclude Include="FMatrix.h" />
     <ClInclude Include="FVector3.h" />
     <ClInclude Include="FVertexSimple.h" />
     <ClInclude Include="ImGuiManager.h" />
