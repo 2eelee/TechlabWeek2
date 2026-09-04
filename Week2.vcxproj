@@ -168,6 +168,8 @@
     <ClInclude Include="Cube.h" />
     <ClInclude Include="FMatrix.h" />
     <ClInclude Include="FMemory.h" />
+    <ClInclude Include="Core\UEngineStatics.h" />
+    <ClInclude Include="Core\UObject.h" />
     <ClInclude Include="FVector3.h" />
     <ClInclude Include="FVertexSimple.h" />
     <ClInclude Include="ImGuiManager.h" />
