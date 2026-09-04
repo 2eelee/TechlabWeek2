@@ -34,5 +34,5 @@ private:
 	}
 };
 
-TArray<UObject*> GUObjectArray;
-TArray<uint32> GUObjectFreeIndices;
+extern TArray<UObject*> GUObjectArray;
+extern TArray<uint32> GUObjectFreeIndices;
