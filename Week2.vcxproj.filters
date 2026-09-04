@@ -1,29 +1,35 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="소스 파일">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
-    <Filter Include="헤더 파일">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
-    </Filter>
-    <Filter Include="리소스 파일">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
     <Filter Include="Shaders">
       <UniqueIdentifier>{a803b290-f403-4d88-8092-70083640cd18}</UniqueIdentifier>
     </Filter>
     <Filter Include="ImGui">
       <UniqueIdentifier>{ffaf7326-d28d-4524-a319-a55ba64e1977}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Core">
+      <UniqueIdentifier>{dfb1ac27-71ea-433b-beff-ae965ad643ab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Math">
+      <UniqueIdentifier>{73c2eaa1-9877-4765-b5a4-40af09543dd6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Rendering">
+      <UniqueIdentifier>{ec17c55e-4cdf-4f84-a0a4-ff3308ff6906}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Object">
+      <UniqueIdentifier>{b171db33-d2b0-4d79-b514-d016456edff4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Editor">
+      <UniqueIdentifier>{cf2e415c-0734-46e3-be93-ca12be4462dd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Platform">
+      <UniqueIdentifier>{d59d7788-18d2-4893-8dfd-1d9b6b8317cd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Memory">
+      <UniqueIdentifier>{c74dfacd-6611-4605-9a25-160ef22a684f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="ImGui\imgui.cpp">
       <Filter>ImGui</Filter>
     </ClCompile>
@@ -45,14 +51,18 @@
     <ClCompile Include="ImGui\imgui_impl_win32.cpp">
       <Filter>ImGui</Filter>
     </ClCompile>
-    <ClCompile Include="FConstants.h">
-      <Filter>헤더 파일</Filter>
-    </ClCompile>
     <ClCompile Include="Window.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>Platform</Filter>
     </ClCompile>
+    <ClCompile Include="main.cpp" />
     <ClCompile Include="ImGuiManager.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="FConstants.h">
+      <Filter>Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="FMemory.cpp">
+      <Filter>Core\Memory</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -85,23 +95,32 @@
     <ClInclude Include="ImGui\imgui_impl_win32.h">
       <Filter>ImGui</Filter>
     </ClInclude>
-    <ClInclude Include="Sphere.h">
-      <Filter>헤더 파일</Filter>
+    <ClInclude Include="Containers.h">
+      <Filter>Core</Filter>
     </ClInclude>
-    <ClInclude Include="URenderer.h">
-      <Filter>헤더 파일</Filter>
+    <ClInclude Include="Types.h">
+      <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="FVector3.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="URenderer.h">
+      <Filter>Rendering</Filter>
     </ClInclude>
     <ClInclude Include="FVertexSimple.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>Rendering</Filter>
     </ClInclude>
-    <ClInclude Include="Window.h">
-      <Filter>헤더 파일</Filter>
+    <ClInclude Include="Sphere.h">
+      <Filter>Object</Filter>
     </ClInclude>
     <ClInclude Include="ImGuiManager.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="Window.h">
+      <Filter>Platform</Filter>
+    </ClInclude>
+    <ClInclude Include="FMemory.h">
+      <Filter>Core\Memory</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
