@@ -14,6 +14,7 @@
 #include "Window.h"
 #include "ImGuiManager.h"
 #include "ImGui/imgui.h"
+#include "FMemory.h"
 
 #include "Sphere.h"
 #include "Cube.h"
@@ -61,6 +62,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	LARGE_INTEGER startTime, endTime;
 	double elapsedTime = 0.0;
+
+	std::size_t BeforeMemory = FMemory::GetCurrentMemoryUsage();
+	uint64 BeforeCount = FMemory::GetAllocationCount();
+
 
 	// Quit Message가 들어오기 전까지 아래 Loop를 무한히 실행하게 됨
 	while (bIsExit == false)
@@ -115,9 +120,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 		// 이후 ImGui UI 컨트롤 추가는 ImGui::NewFrame()과 ImGui::Render() 사이인 여기에 위치합니다. 
 
-		ImGui::Begin("Jungle Property Window");
+		ImGui::Begin("Stat");
 
-		ImGui::Text("Hello Jungle World!");
+		ImGui::Text("Memory Usage: %zu bytes", FMemory::GetCurrentMemoryUsage());
+		ImGui::Text("Allocation Count: %llu", static_cast<unsigned long long>(FMemory::GetAllocationCount()));
 
 		ImGui::End();
 
