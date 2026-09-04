@@ -62,15 +62,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	std::size_t BeforeMemory = FMemory::GetCurrentMemoryUsage();
 	uint64 BeforeCount = FMemory::GetAllocationCount();
 
-	int* Test = new int(42);
-
-	std::size_t AllocatedMemory = FMemory::GetCurrentMemoryUsage();
-	uint64 AllocatedCount = FMemory::GetAllocationCount();
-
-	delete Test;
-
-	std::size_t AfterMemory = FMemory::GetCurrentMemoryUsage();
-	uint64 AfterCount = FMemory::GetAllocationCount();
 
 	// Quit Message가 들어오기 전까지 아래 Loop를 무한히 실행하게 됨
 	while (bIsExit == false)
