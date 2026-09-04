@@ -251,6 +251,7 @@ public:
 
 		DeviceContext->OMSetRenderTargets(1, &FrameBufferRTV, nullptr);
 		DeviceContext->OMSetBlendState(nullptr, nullptr, 0xFFFFFFFF);
+
 	}
 
 	void PrepareShader()

@@ -68,6 +68,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	LARGE_INTEGER startTime, endTime;
 	double elapsedTime = 0.0;
 
+
+
+	// 콘솔 창의 크기를 화면 비율로 설정
+	float consoleWidthRatio = 0.5f;
+	float consoleHeightRatio = 0.3f;
+
 	// Quit Message가 들어오기 전까지 아래 Loop를 무한히 실행하게 됨
 	while (bIsExit == false)
 	{
@@ -98,11 +104,65 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 		imguiManager.BeginFrame();
 
+		ImGuiIO& io = ImGui::GetIO();
+
+		// 호스트 창 자체가 Resize 됐다면
+        // 저장된 비율로 Console 조정
+  
+
+		if (GWindowSizeChanged)
+		{
+		
+
+			float newWidth =
+				io.DisplaySize.x * consoleWidthRatio;
+
+			float newHeight =
+				io.DisplaySize.y * consoleHeightRatio;
+
+			/*ImGui::SetNextWindowPos(
+				ImVec2(newX, newY),
+				ImGuiCond_Always
+			);*/
+
+			ImGui::SetNextWindowSize(
+				ImVec2(newWidth, newHeight),
+				ImGuiCond_Always
+			);
+		}
+
 		// 이후 ImGui UI 컨트롤 추가는 ImGui::NewFrame()과 ImGui::Render() 사이인 여기에 위치합니다. 
 
 		ImGui::Begin("Jungle Property Window");
 
 		ImGui::Text("Hello Jungle World!");
+
+		// 현재 위치
+		ImVec2 consolePos =
+			ImGui::GetWindowPos();
+
+		// 현재 크기
+		ImVec2 consoleSize =
+			ImGui::GetWindowSize();
+
+
+		// 호스트 자체 Resize 중이 아니라면
+		// 사용자가 직접 만든 위치/크기를 비율로 저장
+		if (!GWindowSizeChanged)
+		{
+			if (io.DisplaySize.x > 0 &&
+				io.DisplaySize.y > 0)
+			{
+			
+
+				consoleWidthRatio =
+					consoleSize.x / io.DisplaySize.x;
+
+				consoleHeightRatio =
+					consoleSize.y / io.DisplaySize.y;
+			}
+		}
+
 
 		ImGui::End();
 
