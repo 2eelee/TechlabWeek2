@@ -30,6 +30,7 @@ struct FMatrix
 				result.m[i][j] = 0;
 			}
 		}
+		return result;
 	}
 
 	FMatrix operator*(FMatrix other) const 
@@ -94,7 +95,7 @@ struct FMatrix
 		return output;
 	}
 
-	static FMatrix CreateView(FVector3 Location, FVector3 Right, FVector3 Up, FVector3 Forward) 
+	static FMatrix CreateView(FVector3 Location, FVector3 Right, FVector3 Up, FVector3 Forward) // Location : 카메라 위치 Right : 카메라 기준 Right 벡터 Up: 카메라 기준 Up 벡터 Forward: 카메라 기준 앞벡터
 	{
 		FMatrix output;
 		output.m[0][0] = Right.x;
