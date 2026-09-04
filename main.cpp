@@ -22,11 +22,21 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	FWindow window;
 	HWND hWnd = window.Create(hInstance);
 
+	extern URenderer* GRenderer;
+
 	// Renderer Class를 생성합니다.
 	URenderer renderer;
 
+	// 초기화
+	//renderer.Initialize( );
+
+
 	// D3D11 생성하는 함수를 호출합니다. 
 	renderer.Create(hWnd);
+
+	// 같은 Renderer 연결
+	GRenderer = &renderer;
+
 
 	// 렌더러 생성 직후에 쉐이더를 생성하는 함수를 호출합니다.
 	renderer.CreateShader();

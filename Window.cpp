@@ -1,7 +1,12 @@
 #include "Window.h"
+#include "URenderer.h"
 
 #include "ImGui/imgui.h"
 #include "ImGui/imgui_impl_win32.h"
+
+URenderer* GRenderer = nullptr;
+
+bool GIsResizing = false;
 
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
@@ -15,6 +20,34 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 	switch (message)
 	{
+	case WM_ENTERSIZEMOVE:
+	{
+		GIsResizing = true;
+		break;
+	}
+	case WM_EXITSIZEMOVE:
+	{
+		GIsResizing = false;
+		break;
+	}
+	case WM_SIZE:
+	{
+		if (wParam != SIZE_MINIMIZED)
+		{
+			UINT width = LOWORD(lParam);
+			UINT height = HIWORD(lParam);
+
+			if (GRenderer != nullptr)
+			{
+				GRenderer->Resize(width, height);
+			}
+
+
+		}
+		break;
+			
+	}
+
 	case WM_DESTROY:
 		// Signal that the app should quit
 		PostQuitMessage(0);
