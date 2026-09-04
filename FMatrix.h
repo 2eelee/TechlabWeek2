@@ -94,14 +94,45 @@ struct FMatrix
 		return output;
 	}
 
-	static FMatrix CreateView(float sX, float sY, float sZ)
+	static FMatrix CreateView(FVector3 Location, FVector3 Right, FVector3 Up, FVector3 Forward)
 	{
-
+		FMatrix output;
+		output.m[0][0] = Right.x;
+		output.m[1][0] = Right.y;
+		output.m[2][0] = Right.z;
+		output.m[0][1] = Up.x;
+		output.m[1][1] = Up.y;
+		output.m[2][1] = Up.z;
+		output.m[0][2] = Forward.x;
+		output.m[1][2] = Forward.y;
+		output.m[2][2] = Forward.z;
+		output.m[3][0] = -(Location.Dot(Right));
+		output.m[3][1] = -(Location.Dot(Up));
+		output.m[3][2] = -(Location.Dot(Forward));
+		output.m[3][3] = 1;
+		return output;
 	}
 
-	static FMatrix CreateProjection(float sX, float sY, float sZ)
+	static FMatrix CreateProjection(float farZ, float nearZ, float fovrad, float aspectratio)
 	{
-
+		FMatrix output;
+		output.m[0][0] = 1 / tanf(fovrad*0.5)/aspectratio;
+		output.m[0][1] = 0;
+		output.m[0][2] = 0;
+		output.m[0][3] = 0;
+		output.m[1][0] = 0;
+		output.m[1][1] = 1 / tanf(fovrad * 0.5);
+		output.m[1][2] = 0;
+		output.m[1][3] = 0;
+		output.m[2][0] = 0;
+		output.m[2][1] = 0;
+		output.m[2][2] = farZ / (farZ - nearZ);
+		output.m[2][3] = 1;
+		output.m[3][0] = 0;
+		output.m[3][1] = 0;
+		output.m[3][2] = -(nearZ * farZ) / (farZ - nearZ);
+		output.m[3][3] = 0;
+		return output;
 	}
 };
 
