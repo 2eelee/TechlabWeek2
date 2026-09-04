@@ -2,8 +2,7 @@
 
 cbuffer constants : register(b0)
 {
-    float3 Offset;
-    float Radius;
+    row_major float4x4 MVP;
 }
 
 struct VS_INPUT
@@ -22,8 +21,7 @@ PS_INPUT mainVS(VS_INPUT input)
 {
     PS_INPUT output;
     
-    output.position.xyz = input.position.xyz * Radius + Offset;
-    output.position.w = input.position.w;
+    output.position = mul(input.position, MVP);
     
     // Pass the color to the pixel shader
     output.color = input.color;

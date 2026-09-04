@@ -5,6 +5,7 @@
 #include "FVector3.h"
 #include "FVertexSimple.h"
 #include "FConstants.h"
+#include "FMatrix.h"
 
 #pragma comment(lib, "user32")
 #pragma comment(lib, "d3d11")
@@ -291,7 +292,7 @@ public:
 		}
 	}
 
-	void UpdateConstant(FVector3 Offset, float Radius)
+	void UpdateConstant(const FMatrix& MVP)
 	{
 		if (ConstantBuffer)
 		{
@@ -300,8 +301,7 @@ public:
 			DeviceContext->Map(ConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &constantbufferMSR); // update constant
 			FConstants* constants = (FConstants*)constantbufferMSR.pData;
 			{
-				constants->Offset = Offset;
-				constants->Radius = Radius;
+				constants->MVP = MVP;
 			}
 			DeviceContext->Unmap(ConstantBuffer, 0);
 		}

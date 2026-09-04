@@ -122,5 +122,11 @@
     <ClInclude Include="FMemory.h">
       <Filter>Core\Memory</Filter>
     </ClInclude>
+    <ClInclude Include="FMatrix.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Cube.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
