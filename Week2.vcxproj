@@ -142,9 +142,8 @@
     </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="FConsoleWindow.cpp" />
     <ClCompile Include="Core\UObject.cpp" />
-    <ClCompile Include="FConstants.h" />
-    <ClCompile Include="FIntPoint.h" />
     <ClCompile Include="FMemory.cpp" />
     <ClCompile Include="ImGuiManager.cpp" />
     <ClCompile Include="ImGui\imgui.cpp" />
@@ -159,8 +158,8 @@
       <PreprocessToFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</PreprocessToFile>
       <PreprocessToFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</PreprocessToFile>
     </ClCompile>
-    <ClCompile Include="UCamera.cpp" />
     <ClCompile Include="URenderer.cpp" />
+    <ClCompile Include="UCamera.cpp" />
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -169,6 +168,9 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="FConstants.h" />
+    <ClInclude Include="FIntPoint.h" />
+    <ClInclude Include="FConsoleWindow.h" />
     <ClInclude Include="Containers.h" />
     <ClInclude Include="Core\USceneComponent.h" />
     <ClInclude Include="FEditor.h" />

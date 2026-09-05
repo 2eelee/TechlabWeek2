@@ -1,11 +1,13 @@
 #pragma once
 
+#include <d3dcompiler.h>
 #include <Windows.h>
 #include <d3d11.h>
 #include "FVector3.h"
 #include "FVertexSimple.h"
 #include "FConstants.h"
 #include "FMatrix.h"
+
 
 
 #pragma comment(lib, "user32")
@@ -142,6 +144,31 @@ public:
 		Device->CreateRasterizerState(&rasterizerDesc, &RasterizerState);
 	}
 
+	void Resize(UINT width, UINT height)
+	{
+		if (width == 0 || height == 0)
+		{
+			return;
+		}
+
+		ReleaseFrameBuffer();
+
+		SwapChain->ResizeBuffers(
+			0,
+			width,
+			height,
+			DXGI_FORMAT_UNKNOWN,
+			0
+		);
+
+		CreateFrameBuffer();
+
+		ViewportInfo.Width = static_cast<float>(width);
+		ViewportInfo.Height = static_cast<float>(height);
+
+		DeviceContext->RSSetViewports( 1, &ViewportInfo );
+	}
+
 	// 래스터라이저 상태를 해제하는 함수
 	void ReleaseRasterizerState()
 	{
@@ -234,6 +261,7 @@ public:
 
 		DeviceContext->OMSetRenderTargets(1, &FrameBufferRTV, nullptr);
 		DeviceContext->OMSetBlendState(nullptr, nullptr, 0xFFFFFFFF);
+
 	}
 
 	void PrepareShader()
@@ -317,4 +345,6 @@ public:
 			DeviceContext->Unmap(ConstantBuffer, 0);
 		}
 	}
+
+	
 };
