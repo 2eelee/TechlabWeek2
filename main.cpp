@@ -14,7 +14,13 @@
 #include "Window.h"
 #include "ImGuiManager.h"
 #include "ImGui/imgui.h"
+
 #include "FMemory.h"
+
+#include "FRenderer.h"
+
+#include "FObjectFactory.h"
+#include "USceneComponent.h"
 
 #include "Sphere.h"
 #include "Cube.h"
@@ -26,6 +32,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	// Renderer Class를 생성합니다.
 	URenderer renderer;
+	FRenderer FRenderer(renderer);
 
 	// D3D11 생성하는 함수를 호출합니다. 
 	renderer.Create(hWnd);
@@ -67,6 +74,27 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	uint64 BeforeCount = FMemory::GetAllocationCount();
 
 
+	UCamera camera;
+	camera.Location = FVector3(0.0f, 0.0f, -5.0f);
+	camera.Rotation = FVector3(0.0f, 0.0f, 0.0f);
+	camera.FOV = 3.14159265f / 3.0f;
+
+	TSubclassOf<UObject> cubeClass = UCubeComp::StaticClass();
+	UObject* cubeObject = FObjectFactory::ConstructObject(cubeClass);
+	UCubeComp* cube = UObject::Cast<UCubeComp>(cubeObject);
+
+	TSubclassOf<UObject> sphereClass = USphereComp::StaticClass();
+	UObject* sphereObject = FObjectFactory::ConstructObject(sphereClass);
+	USphereComp* sphere = UObject::Cast<USphereComp>(sphereObject);
+
+	cube->RelativeLocation = FVector3(0.5f, 0.2f, 0.0f);
+	cube->RelativeRotation = FVector3(0.3f, 0.7f, 0.2f); // rad
+	cube->RelativeScale3D = FVector3(1.5f, 0.8f, 1.2f);
+
+	sphere->RelativeLocation = FVector3(-0.8f, -0.25f, 0.4f);
+	sphere->RelativeRotation = FVector3(0.2f, -0.5f, 0.35f);
+	sphere->RelativeScale3D = FVector3(0.7f, 1.1f, 0.7f);
+
 	// Quit Message가 들어오기 전까지 아래 Loop를 무한히 실행하게 됨
 	while (bIsExit == false)
 	{
@@ -91,31 +119,24 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		////////////////////////////////////////////
 		// 매번 실행되는 코드를 여기에 추가합니다.
 
-		// 준비 작업
+		// 렌더링 준비 작업
 		renderer.Prepare();
 		renderer.PrepareShader();
 
-		// 테스트용 MVP 코드
-		FMatrix Model = FMatrix::CreateTranslation(0.0f, 0.0f, 0.0f);
-		
-		FMatrix View = FMatrix::CreateView(
-			FVector3(0.0f, 0.0f, -3.0f), // 위치 (Eye)
-			FVector3(1.0f, 0.0f, 0.0f),  // Right (X축)
-			FVector3(0.0f, 1.0f, 0.0f),  // Up (Y축)
-			FVector3(0.0f, 0.0f, 1.0f)   // Forward (Z축)
+		FRenderer.Render(
+			camera,
+			*cube,
+			vertexBufferCube,
+			numVerticesCube
 		);
-		
-		float width = renderer.ViewportInfo.Width;
-		float height = (renderer.ViewportInfo.Height > 0.0f) ? renderer.ViewportInfo.Height : 1.0f; // 0나누기 방어!
-		float aspect = width / height;
-		
-		FMatrix Proj = FMatrix::CreateProjection(1000.0f, 0.1f, 3.14159265f / 3.0f, aspect);
-		
-		FMatrix MVP = Model * View * Proj;
 
-		// M * V * P 행렬 입력 
-		renderer.UpdateConstant(MVP);
-		renderer.RenderPrimitive(vertexBufferCube, numVerticesCube);
+		FRenderer.Render(
+			camera,
+			*sphere,
+			vertexBufferSphere,
+			numVerticesSphere
+		);
+
 		imguiManager.BeginFrame();
 
 		// 이후 ImGui UI 컨트롤 추가는 ImGui::NewFrame()과 ImGui::Render() 사이인 여기에 위치합니다. 
