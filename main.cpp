@@ -34,7 +34,7 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstanc ,LPSTR lpCmdLine,i
 	// 1. 카메라 생성
 	UCamera* camera = new UCamera();
 	camera->SetRelativeLocation(FVector3(0.0f, 5.0f, -10.0f));
-	camera->FovAngle = 60.0f;
+	camera->FovAngle = 80.0f;
 	camera->AddPitch(20.0f);
 
 	FEditor EditorUI;

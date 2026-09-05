@@ -4,11 +4,16 @@
 #include "ImGuiManager.h"
 #include "ImGui/imgui.h"
 #include "FMemory.h"
+#include "UCamera.h"
 
 const char* items[] = { "Sphere", "Cube", "Plane" };
-
+static char name_buffer[32] = "HelloScene";
 static int currentItem = 0;
 static int spawnCount = 0;
+bool othogonalEnable = false;
+
+UCamera* Cam;
+
 
 class FEditor
 {
@@ -55,6 +60,8 @@ public:
 		ImGui::End();
 	}
 
+
+
 	void DrawControlUI()
 	{
 		ImGui::Begin("Jungle Control Panel");
@@ -82,7 +89,7 @@ public:
 			{
 				UObject* PlaneObj = FObjectFactory::ConstructObject(UPlaneComp::StaticClass());
 				UPrimitiveComponent* primitive = PlaneObj->Cast<UPlaneComp>(PlaneObj);
-				primitive->SetRelativeLocation(FVector3(0.0f, 0.0f, 0.0f));
+				primitive->SetRelativeLocation(FVector3(0.0f, 5.0f, 0.0f));
 				break;
 			}
 			}
@@ -90,6 +97,27 @@ public:
 		ImGui::SameLine();
 		ImGui::SetNextItemWidth(-120.0f);
 		ImGui::InputInt("Number of spawn", &spawnCount, 0, 0, ImGuiInputTextFlags_ReadOnly);
+		ImGui::Separator();
+		ImGui::InputText("SceneName", name_buffer, sizeof(name_buffer), ImGuiInputTextFlags_ReadOnly);
+		ImGui::Button("New Scene");
+		ImGui::Button("Save Scene");
+		ImGui::Button("Load Scene");
+		ImGui::Separator();
+		for (UObject* object : GUObjectArray)
+		{
+			UCamera* Camera = object->Cast<UCamera>(object);
+			if (Camera)
+			{
+				Cam = Camera;
+				break;
+			}
+		}
+		ImGui::Checkbox("Orthogonal", &Cam->othogonalEnable);
+		ImGui::InputFloat("FOV", &Cam->FovAngle, 0, 0, " % .1f", ImGuiInputTextFlags_ReadOnly);
+		FVector3 CamLoc = Cam->GetRelativeLocation();
+		FVector3 CamRot = Cam->GetRelativeRotation();
+		ImGui::InputFloat3("Camera Location", &CamLoc.x);
+		ImGui::InputFloat3("Camera Rotation", &CamRot.x);
 		ImGui::End();
 	}
 };
