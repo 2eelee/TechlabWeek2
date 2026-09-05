@@ -141,6 +141,7 @@
     </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="FConsoleWindow.cpp" />
     <ClCompile Include="FConstants.h" />
     <ClCompile Include="ImGuiManager.cpp" />
     <ClCompile Include="ImGui\imgui.cpp" />
@@ -163,6 +164,7 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="FConsoleWindow.h" />
     <ClInclude Include="FVector3.h" />
     <ClInclude Include="FVertexSimple.h" />
     <ClInclude Include="ImGuiManager.h" />
