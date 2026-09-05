@@ -321,29 +321,14 @@ public:
 		}
 	}
 
-	FMatrix CreateModel(UPrimitiveComponent* UPrimitive)
+	FMatrix CreateMVP(UPrimitiveComponent* Primitive, UCamera* Camera)
 	{
-		FMatrix scaleM = FMatrix::CreateScale(UPrimitive->RelativeScale3D.x, UPrimitive->RelativeScale3D.y, UPrimitive->RelativeScale3D.z);
-		FMatrix RotationM = FMatrix::CreateRotationX(UPrimitive->RelativeRotation.x) * FMatrix::CreateRotationY(UPrimitive->RelativeRotation.y) * FMatrix::CreateRotationZ(UPrimitive->RelativeRotation.z);
-		FMatrix TranslationM = FMatrix::CreateTranslation(UPrimitive->RelativeLocation.x, UPrimitive->RelativeLocation.y, UPrimitive->RelativeLocation.z);
-		return scaleM * RotationM * TranslationM;
-	}
-
-	FMatrix CreateView(UCamera* cam, FMatrix model)
-	{
-		return FMatrix::CreateView(cam->RelativeLocation, cam->GetRightVector(), cam->GetUPVector(), cam->GetForwardVector());
-	}
-
-	FMatrix CreateProjection(UCamera* cam, FMatrix View)
-	{
-		return FMatrix::CreateProjection(cam->FarZ, cam->nearZ, DegreesToRadians(cam->fovangle), cam->aspectratio);
-	}
-
-	FMatrix DrawPrimitive(UPrimitiveComponent* Primitive, UCamera* Camera)
-	{
-			FMatrix Model = CreateModel(Primitive);
-			FMatrix View = CreateView(Camera, Model);
-			FMatrix Proj = CreateProjection(Camera, View);
-			return Model * View * Proj;
+		FMatrix scaleM = FMatrix::CreateScale(Primitive->RelativeScale3D.x, Primitive->RelativeScale3D.y, Primitive->RelativeScale3D.z);
+		FMatrix RotationM = FMatrix::CreateRotationX(Primitive->RelativeRotation.x) * FMatrix::CreateRotationY(Primitive->RelativeRotation.y) * FMatrix::CreateRotationZ(Primitive->RelativeRotation.z);
+		FMatrix TranslationM = FMatrix::CreateTranslation(Primitive->RelativeLocation.x, Primitive->RelativeLocation.y, Primitive->RelativeLocation.z);
+		FMatrix Model = scaleM * RotationM * TranslationM;
+		FMatrix View = FMatrix::CreateView(Camera->RelativeLocation, Camera->GetRightVector(), Camera->GetUPVector(), Camera->GetForwardVector());
+		FMatrix Proj = FMatrix::CreateProjection(Camera->FarZ, Camera->nearZ, DegreesToRadians(Camera->fovangle), Camera->aspectratio);
+		return Model * View * Proj;
 	}
 };

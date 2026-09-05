@@ -103,7 +103,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 		// M * V * P 행렬 처리 및 출력
 		for (auto* primitive : primitiveList) {
-			FMatrix MVP = renderer.DrawPrimitive(primitive, camera);
+			FMatrix MVP = renderer.CreateMVP(primitive, camera);
 			renderer.UpdateConstant(MVP);
 			if (primitive->IsA(UCube::StaticClass()))
 			{
