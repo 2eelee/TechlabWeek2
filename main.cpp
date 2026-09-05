@@ -24,7 +24,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	// 1. 카메라 생성
 	UCamera* camera = new UCamera();
-	camera->fovangle = 60.0f;
+	camera->FovAngle = 60.0f;
 
 	// 2. 프리미티브 목록 생성
 	TArray<UPrimitiveComponent*> primitiveList;
@@ -46,7 +46,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	// 여기에서 ImGui를 생성합니다.
 	imguiManager.Create(hWnd, renderer.Device, renderer.DeviceContext);
 
-	camera->aspectratio = (float)renderer.ViewportInfo.Width / renderer.ViewportInfo.Height;
+	camera->AspectRatio = (float)renderer.ViewportInfo.Width / renderer.ViewportInfo.Height;
 	// 제어용 변수
 	bool bIsExit = false;
 

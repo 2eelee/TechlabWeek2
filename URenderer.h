@@ -328,7 +328,7 @@ public:
 		FMatrix TranslationM = FMatrix::CreateTranslation(Primitive->RelativeLocation.x, Primitive->RelativeLocation.y, Primitive->RelativeLocation.z);
 		FMatrix Model = scaleM * RotationM * TranslationM;
 		FMatrix View = FMatrix::CreateView(Camera->RelativeLocation, Camera->GetRightVector(), Camera->GetUPVector(), Camera->GetForwardVector());
-		FMatrix Proj = FMatrix::CreateProjection(Camera->FarZ, Camera->nearZ, DegreesToRadians(Camera->fovangle), Camera->aspectratio);
+		FMatrix Proj = FMatrix::CreateProjection(Camera->FarZ, Camera->NearZ, DegreesToRadians(Camera->FovAngle), Camera->AspectRatio);
 		return Model * View * Proj;
 	}
 };
