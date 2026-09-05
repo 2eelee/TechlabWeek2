@@ -3,10 +3,14 @@
 
 struct UCamera: public USceneComponent
 {
+	TYPE_DECLARATIONS(UCamera, USceneComponent);
+	
 	float FarZ;
 	float NearZ;
 	float FovAngle;
 	float AspectRatio;
+
+	bool othogonalEnable = false;
 
 	UCamera()
 	{

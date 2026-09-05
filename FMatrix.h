@@ -135,6 +135,28 @@ struct FMatrix
 		output.m[3][2] = -(nearZ * farZ) / (farZ - nearZ);
 		output.m[3][3] = 0;
 		return output;
+	} // XMMatrixPerspectiveFovLH
+
+	static FMatrix CreateOrthogonalProjection(float farZ, float nearZ, float width, float height)  // farZ : 최소 렌더링 시작 거리, nearZ : 최대 렌더링 거리, fovrad: 카메라의 시야각 aspectratio : 종횡비(가로/세로)
+	{
+		FMatrix output;
+		output.m[0][0] = 2 / width;
+		output.m[0][1] = 0;
+		output.m[0][2] = 0;
+		output.m[0][3] = 0;
+		output.m[1][0] = 0;
+		output.m[1][1] = 2 / height;
+		output.m[1][2] = 0;
+		output.m[1][3] = 0;
+		output.m[2][0] = 0;
+		output.m[2][1] = 0;
+		output.m[2][2] = 1 / (farZ - nearZ);
+		output.m[2][3] = 0;
+		output.m[3][0] = 0;
+		output.m[3][1] = 0;
+		output.m[3][2] = -(nearZ) / (farZ - nearZ);
+		output.m[3][3] = 1;
+		return output;
 	}
 };
 
