@@ -7,12 +7,21 @@
 #include "FConstants.h"
 #include "FMatrix.h"
 
+
 #pragma comment(lib, "user32")
 #pragma comment(lib, "d3d11")
+
+#include <d3dcompiler.h>
+#pragma comment(lib, "d3dcompiler")
+
+class UPrimitiveComponent;
+class UCamera;
 
 class URenderer
 {
 public:
+
+	FMatrix CreateMVP(UPrimitiveComponent* Primitive, UCamera* Camera);
 	// Direct3D 11 장치와 장치 컨텍스트 및 스왑 체인을 관리하기 위한 포인터들
 	ID3D11Device* Device = nullptr; // GPU와 통신하기 위한 Direct3D 장치
 	ID3D11DeviceContext* DeviceContext = nullptr; // GPU 명령 실행을 담당하는 컨텍스트
@@ -233,7 +242,6 @@ public:
 		DeviceContext->PSSetShader(SimplePixelShader, nullptr, 0);
 		DeviceContext->IASetInputLayout(SimpleInputLayout);
 
-		// 버텍스 쉐이더에 상수 버퍼를 설정합니다. 
 		if (ConstantBuffer)
 		{
 			DeviceContext->VSSetConstantBuffers(0, 1, &ConstantBuffer);
@@ -265,9 +273,12 @@ public:
 		return vertexBuffer;
 	}
 
-	void ReleaseVertexBuffer(ID3D11Buffer* vertexBuffer)
+	void ReleaseVertexBuffer(ID3D11Buffer* pBuffer)
 	{
-		vertexBuffer->Release();
+		if (pBuffer)
+		{
+			pBuffer->Release();
+		}
 	}
 
 	ID3D11Buffer* ConstantBuffer = nullptr;

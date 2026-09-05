@@ -7,16 +7,15 @@
 #include <d3d11.h>
 #include <d3dcompiler.h>
 
-#include "FVector3.h"
-#include "FVertexSimple.h"
 #include "URenderer.h"
+#include "UCamera.h"
 
 #include "Window.h"
 #include "ImGuiManager.h"
 #include "ImGui/imgui.h"
 #include "FMemory.h"
+
 #include "MeshManager.h"
-#include "Vertices.h"
 #include "UObject.h"
 #include "USceneComponent.h"
 #include "FObjectFactory.h"
@@ -25,6 +24,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 {
 	FWindow window;
 	HWND hWnd = window.Create(hInstance);
+
+	// 1. 카메라 생성
+	UCamera* camera = new UCamera();
+	camera->SetRelativeLocation(FVector3(0.0f, 1.0f, -5.0f));
+	camera->FovAngle = 60.0f;
+
+	// 2. 프리미티브 목록 생성
+	TArray<UPrimitiveComponent*> primitiveList;
 
 	// Renderer Class를 생성합니다.
 	URenderer renderer;
@@ -43,6 +50,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	// 여기에서 ImGui를 생성합니다.
 	imguiManager.Create(hWnd, renderer.Device, renderer.DeviceContext);
+	camera->AspectRatio = (float)renderer.ViewportInfo.Width / renderer.ViewportInfo.Height;
 
 	// 제어용 변수
 	bool bIsExit = false;
@@ -59,8 +67,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	double elapsedTime = 0.0;
 
 	std::size_t BeforeMemory = FMemory::GetCurrentMemoryUsage();
+
 	uint64 BeforeCount = FMemory::GetAllocationCount();
 
+	float orbitAngle = 0.0f;
+
+	FObjectFactory::ConstructObject(UCubeComp::StaticClass());
 
 	// Quit Message가 들어오기 전까지 아래 Loop를 무한히 실행하게 됨
 	while (bIsExit == false)
@@ -82,39 +94,21 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				break;
 			}
 		}
-
 		////////////////////////////////////////////
 		// 매번 실행되는 코드를 여기에 추가합니다.
-
+	
 		// 준비 작업
 		renderer.Prepare();
 		renderer.PrepareShader();
 
-		// 테스트용 MVP 코드
-		FMatrix Model = FMatrix::CreateTranslation(0.0f, 0.0f, 0.0f);
-		
-		FMatrix View = FMatrix::CreateView(
-			FVector3(0.0f, 0.0f, -3.0f), // 위치 (Eye)
-			FVector3(1.0f, 0.0f, 0.0f),  // Right (X축)
-			FVector3(0.0f, 1.0f, 0.0f),  // Up (Y축)
-			FVector3(0.0f, 0.0f, 1.0f)   // Forward (Z축)
-		);
-		
-		float width = renderer.ViewportInfo.Width;
-		float height = (renderer.ViewportInfo.Height > 0.0f) ? renderer.ViewportInfo.Height : 1.0f; // 0나누기 방어!
-		float aspect = width / height;
-		
-		FMatrix Proj = FMatrix::CreateProjection(1000.0f, 0.1f, 3.14159265f / 3.0f, aspect);
-		
-		FMatrix MVP = Model * View * Proj;
-
-		// M * V * P 행렬 입력 
-		renderer.UpdateConstant(MVP);
+		// M * V * P 행렬 입력
 		for (UObject* object : GUObjectArray)
 		{
 			UPrimitiveComponent* primitive = object->Cast<UPrimitiveComponent>(object);
 			if (primitive)
 			{
+				FMatrix MVP = renderer.CreateMVP(primitive, camera);
+				renderer.UpdateConstant(MVP);
 				primitive->Render(renderer);
 			}
 		}

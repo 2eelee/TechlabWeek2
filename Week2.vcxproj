@@ -159,6 +159,8 @@
       <PreprocessToFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</PreprocessToFile>
       <PreprocessToFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</PreprocessToFile>
     </ClCompile>
+    <ClCompile Include="UCamera.cpp" />
+    <ClCompile Include="URenderer.cpp" />
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -168,6 +170,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Containers.h" />
+    <ClInclude Include="Core\USceneComponent.h" />
     <ClInclude Include="FMatrix.h" />
     <ClInclude Include="FMemory.h" />
     <ClInclude Include="Core\FObjectFactory.h" />
@@ -175,7 +178,6 @@
     <ClInclude Include="Core\UClass.h" />
     <ClInclude Include="Core\UEngineStatics.h" />
     <ClInclude Include="Core\UObject.h" />
-    <ClInclude Include="Core\USceneComponent.h" />
     <ClInclude Include="FVector3.h" />
     <ClInclude Include="FVector4.h" />
     <ClInclude Include="FVertexSimple.h" />

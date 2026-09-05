@@ -2,13 +2,13 @@
 
 #include "FVertexSimple.h"
 
-FVertexSimple plane_vertices[] = {
+inline FVertexSimple plane_vertices[] = {
 	{  0.0f,  1.0f, 0.0f,  1.0f, 0.0f, 0.0f, 1.0f },
 	{  1.0f, -1.0f, 0.0f,  0.0f, 1.0f, 0.0f, 1.0f },
 	{ -1.0f, -1.0f, 0.0f,  0.0f, 0.0f, 1.0f, 1.0f }
 };
 
-FVertexSimple cube_vertices[] = {
+inline FVertexSimple cube_vertices[] = {
 	// 1. 앞면 (Front Face - 빨강 계열)
 	{ -0.5f,  0.5f, -0.5f,  1.0f, 0.0f, 0.0f, 1.0f },
 	{  0.5f,  0.5f, -0.5f,  1.0f, 0.0f, 0.0f, 1.0f },
@@ -58,7 +58,7 @@ FVertexSimple cube_vertices[] = {
 	{  0.5f, -0.5f, -0.5f,  0.0f, 1.0f, 1.0f, 1.0f },
 };
 
-FVertexSimple sphere_vertices[] = {
+inline FVertexSimple sphere_vertices[] = {
 	{ 0.000000f, 1.000000f, 0.000000f, 0.500000f, 1.000000f, 0.500000f, 1.000000f },
 	{ 0.156434f, 0.987688f, 0.000000f, 0.578217f, 0.993844f, 0.500000f, 1.000000f },
 	{ 0.148778f, 0.987688f, 0.048341f, 0.574389f, 0.993844f, 0.524170f, 1.000000f },
