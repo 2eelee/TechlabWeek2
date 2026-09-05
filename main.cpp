@@ -15,9 +15,11 @@
 #include "ImGuiManager.h"
 #include "ImGui/imgui.h"
 #include "FMemory.h"
-
-#include "Sphere.h"
-#include "Cube.h"
+#include "MeshManager.h"
+#include "Vertices.h"
+#include "UObject.h"
+#include "USceneComponent.h"
+#include "FObjectFactory.h"
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
@@ -33,21 +35,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	// 렌더러 생성 직후에 쉐이더를 생성하는 함수를 호출합니다.
 	renderer.CreateShader();
 
-	// 여기에 생성 함수를 추가합니다. 
+	// 여기에 생성 함수를 추가합니다.
+	MeshManager::Get().Initialize(renderer);
 	renderer.CreateConstantBuffer();
 
 	FImGuiManager imguiManager;
 
 	// 여기에서 ImGui를 생성합니다.
 	imguiManager.Create(hWnd, renderer.Device, renderer.DeviceContext);
-
-	UINT numVerticesSphere = sizeof(sphere_vertices) / sizeof(FVertexSimple);
-	UINT numVerticesCube = sizeof(cube_vertices) / sizeof(FVertexSimple);
-
-	ID3D11Buffer* vertexBufferSphere =
-		renderer.CreateVertexBuffer(sphere_vertices, sizeof(sphere_vertices));
-	ID3D11Buffer* vertexBufferCube =
-		renderer.CreateVertexBuffer(cube_vertices, sizeof(cube_vertices));
 
 	// 제어용 변수
 	bool bIsExit = false;
@@ -115,7 +110,15 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 		// M * V * P 행렬 입력 
 		renderer.UpdateConstant(MVP);
-		renderer.RenderPrimitive(vertexBufferCube, numVerticesCube);
+		for (UObject* object : GUObjectArray)
+		{
+			UPrimitiveComponent* primitive = object->Cast<UPrimitiveComponent>(object);
+			if (primitive)
+			{
+				primitive->Render(renderer);
+			}
+		}
+
 		imguiManager.BeginFrame();
 
 		// 이후 ImGui UI 컨트롤 추가는 ImGui::NewFrame()과 ImGui::Render() 사이인 여기에 위치합니다. 
@@ -153,7 +156,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	imguiManager.Release();
 
 	// 버텍스 버퍼 소멸은 Renderer 소멸 전에 처리합니다.
-	renderer.ReleaseVertexBuffer(vertexBufferSphere);
+	MeshManager::Get().Release(renderer);
 
 	// ReleaseShader() 직전에 소멸 함수를 추가합니다.
 	renderer.ReleaseConstantBuffer();

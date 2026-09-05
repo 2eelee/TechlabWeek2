@@ -8,7 +8,8 @@ template<
 	typename T,
 	typename = std::enable_if_t<std::is_base_of_v<UObject, T>>
 >
-class TSubclassOf {
+class TSubclassOf 
+{
 public:
 	TSubclassOf() = default;
 
