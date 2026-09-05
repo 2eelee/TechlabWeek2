@@ -157,6 +157,7 @@
       <PreprocessToFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</PreprocessToFile>
       <PreprocessToFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</PreprocessToFile>
     </ClCompile>
+    <ClCompile Include="UCamera.cpp" />
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -189,7 +190,11 @@
     <ClInclude Include="Sphere.h" />
     <ClInclude Include="Types.h" />
     <ClInclude Include="UCamera.h" />
+    <ClInclude Include="UCube.h" />
+    <ClInclude Include="UPrimitiveComponent.h" />
     <ClInclude Include="URenderer.h" />
+    <ClInclude Include="USceneComponent.h" />
+    <ClInclude Include="USphere.h" />
     <ClInclude Include="Window.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -6,6 +6,13 @@
 #include "FVertexSimple.h"
 #include "FConstants.h"
 #include "FMatrix.h"
+#include "UPrimitiveComponent.h"
+#include "UCamera.h"
+#include "UCube.h"
+#include "USphere.h"
+#include "Sphere.h"
+#include "Cube.h"
+#include "Plane.h"
 
 #pragma comment(lib, "user32")
 #pragma comment(lib, "d3d11")
@@ -13,6 +20,13 @@
 class URenderer
 {
 public:
+	ID3D11Buffer* vertexBufferCube = nullptr;
+	UINT numVerticesCube = 0;
+	ID3D11Buffer* vertexBufferSphere = nullptr;
+	UINT numVerticesSphere = 0;
+	ID3D11Buffer* vertexBufferPlane = nullptr;
+	UINT numVerticesPlane = 0;
+
 	// Direct3D 11 장치와 장치 컨텍스트 및 스왑 체인을 관리하기 위한 포인터들
 	ID3D11Device* Device = nullptr; // GPU와 통신하기 위한 Direct3D 장치
 	ID3D11DeviceContext* DeviceContext = nullptr; // GPU 명령 실행을 담당하는 컨텍스트
@@ -233,7 +247,6 @@ public:
 		DeviceContext->PSSetShader(SimplePixelShader, nullptr, 0);
 		DeviceContext->IASetInputLayout(SimpleInputLayout);
 
-		// 버텍스 쉐이더에 상수 버퍼를 설정합니다. 
 		if (ConstantBuffer)
 		{
 			DeviceContext->VSSetConstantBuffers(0, 1, &ConstantBuffer);
@@ -265,9 +278,10 @@ public:
 		return vertexBuffer;
 	}
 
-	void ReleaseVertexBuffer(ID3D11Buffer* vertexBuffer)
+	void ReleaseVertexBuffer()
 	{
-		vertexBuffer->Release();
+		vertexBufferCube->Release();
+		vertexBufferSphere->Release();
 	}
 
 	ID3D11Buffer* ConstantBuffer = nullptr;
@@ -305,5 +319,59 @@ public:
 			}
 			DeviceContext->Unmap(ConstantBuffer, 0);
 		}
+	}
+
+	FMatrix CreateModel(UPrimitiveComponent* UPrimitive)
+	{
+		FMatrix scaleM = FMatrix::CreateScale(UPrimitive->RelativeScale3D.x, UPrimitive->RelativeScale3D.y, UPrimitive->RelativeScale3D.z);
+		FMatrix RotationM = FMatrix::CreateRotationX(UPrimitive->RelativeRotation.x) * FMatrix::CreateRotationY(UPrimitive->RelativeRotation.y) * FMatrix::CreateRotationZ(UPrimitive->RelativeRotation.z);
+		FMatrix TranslationM = FMatrix::CreateTranslation(UPrimitive->RelativeLocation.x, UPrimitive->RelativeLocation.y, UPrimitive->RelativeLocation.z);
+		return scaleM * RotationM * TranslationM;
+	}
+
+	FMatrix CreateView(UCamera* cam, FMatrix model)
+	{
+		return FMatrix::CreateView(cam->RelativeLocation, cam->GetRightVector(), cam->GetUPVector(), cam->GetForwardVector());
+	}
+
+	FMatrix CreateProjection(UCamera* cam, FMatrix View)
+	{
+		return FMatrix::CreateProjection(cam->FarZ, cam->nearZ, DegreesToRadians(cam->fovangle), cam->aspectratio);
+	}
+
+	FMatrix CreateMVP(FMatrix Model, FMatrix View, FMatrix Projection)
+	{
+		return Model * View * Projection;
+	}
+
+	void DrawPrimitive(const TArray<UPrimitiveComponent*>& PrimitiveList, UCamera* Camera)
+	{
+		for (int i = 0;i < PrimitiveList.size(); i++) {
+			FMatrix Model = CreateModel(PrimitiveList[i]);
+			FMatrix View = CreateView(Camera, Model);
+			FMatrix Proj = CreateProjection(Camera, View);
+			FMatrix MVP = CreateMVP(Model, View, Proj);
+
+			UpdateConstant(MVP);
+
+			if (PrimitiveList[i]->IsA(UCube::StaticClass()))
+			{
+				RenderPrimitive(vertexBufferCube, numVerticesCube);
+			}
+			else if (PrimitiveList[i]->IsA(USphere::StaticClass()))
+			{
+				RenderPrimitive(vertexBufferSphere, numVerticesSphere);
+			}
+		}
+	}
+
+	void CreateMeshVertex()
+	{
+		vertexBufferCube = CreateVertexBuffer(cube_vertices, sizeof(cube_vertices));
+		numVerticesCube = sizeof(cube_vertices) / sizeof(FVertexSimple);
+		vertexBufferSphere = CreateVertexBuffer(sphere_vertices, sizeof(sphere_vertices));
+		numVerticesSphere = sizeof(sphere_vertices) / sizeof(FVertexSimple);
+		vertexBufferPlane = CreateVertexBuffer(plane_vertices, sizeof(plane_vertices));
+		numVerticesPlane = sizeof(plane_vertices) / sizeof(FVertexSimple);
 	}
 };

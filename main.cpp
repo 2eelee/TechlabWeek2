@@ -16,13 +16,18 @@
 #include "ImGui/imgui.h"
 #include "FMemory.h"
 
-#include "Sphere.h"
-#include "Cube.h"
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
 	FWindow window;
 	HWND hWnd = window.Create(hInstance);
+
+	// 1. 카메라 생성
+	UCamera* camera = new UCamera();
+	camera->fovangle = 60.0f;
+
+	// 2. 프리미티브 목록 생성
+	TArray<UPrimitiveComponent*> primitiveList;
 
 	// Renderer Class를 생성합니다.
 	URenderer renderer;
@@ -36,19 +41,15 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	// 여기에 생성 함수를 추가합니다. 
 	renderer.CreateConstantBuffer();
 
+	// 기본 Mesh의 VertexBuffer 생성
+	renderer.CreateMeshVertex();
+
 	FImGuiManager imguiManager;
 
 	// 여기에서 ImGui를 생성합니다.
 	imguiManager.Create(hWnd, renderer.Device, renderer.DeviceContext);
 
-	UINT numVerticesSphere = sizeof(sphere_vertices) / sizeof(FVertexSimple);
-	UINT numVerticesCube = sizeof(cube_vertices) / sizeof(FVertexSimple);
-
-	ID3D11Buffer* vertexBufferSphere =
-		renderer.CreateVertexBuffer(sphere_vertices, sizeof(sphere_vertices));
-	ID3D11Buffer* vertexBufferCube =
-		renderer.CreateVertexBuffer(cube_vertices, sizeof(cube_vertices));
-
+	camera->aspectratio = (float)renderer.ViewportInfo.Width / renderer.ViewportInfo.Height;
 	// 제어용 변수
 	bool bIsExit = false;
 
@@ -64,8 +65,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	double elapsedTime = 0.0;
 
 	std::size_t BeforeMemory = FMemory::GetCurrentMemoryUsage();
+
 	uint64 BeforeCount = FMemory::GetAllocationCount();
 
+	float orbitAngle = 0.0f;
 
 	// Quit Message가 들어오기 전까지 아래 Loop를 무한히 실행하게 됨
 	while (bIsExit == false)
@@ -87,35 +90,16 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				break;
 			}
 		}
-
 		////////////////////////////////////////////
 		// 매번 실행되는 코드를 여기에 추가합니다.
-
+	
 		// 준비 작업
 		renderer.Prepare();
 		renderer.PrepareShader();
 
-		// 테스트용 MVP 코드
-		FMatrix Model = FMatrix::CreateTranslation(0.0f, 0.0f, 0.0f);
-		
-		FMatrix View = FMatrix::CreateView(
-			FVector3(0.0f, 0.0f, -3.0f), // 위치 (Eye)
-			FVector3(1.0f, 0.0f, 0.0f),  // Right (X축)
-			FVector3(0.0f, 1.0f, 0.0f),  // Up (Y축)
-			FVector3(0.0f, 0.0f, 1.0f)   // Forward (Z축)
-		);
-		
-		float width = renderer.ViewportInfo.Width;
-		float height = (renderer.ViewportInfo.Height > 0.0f) ? renderer.ViewportInfo.Height : 1.0f; // 0나누기 방어!
-		float aspect = width / height;
-		
-		FMatrix Proj = FMatrix::CreateProjection(1000.0f, 0.1f, 3.14159265f / 3.0f, aspect);
-		
-		FMatrix MVP = Model * View * Proj;
+		// M * V * P 행렬 처리 및 출력
+		renderer.DrawPrimitive(primitiveList,camera);
 
-		// M * V * P 행렬 입력 
-		renderer.UpdateConstant(MVP);
-		renderer.RenderPrimitive(vertexBufferCube, numVerticesCube);
 		imguiManager.BeginFrame();
 
 		// 이후 ImGui UI 컨트롤 추가는 ImGui::NewFrame()과 ImGui::Render() 사이인 여기에 위치합니다. 
@@ -153,7 +137,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	imguiManager.Release();
 
 	// 버텍스 버퍼 소멸은 Renderer 소멸 전에 처리합니다.
-	renderer.ReleaseVertexBuffer(vertexBufferSphere);
+	renderer.ReleaseVertexBuffer();
 
 	// ReleaseShader() 직전에 소멸 함수를 추가합니다.
 	renderer.ReleaseConstantBuffer();
