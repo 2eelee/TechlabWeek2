@@ -135,6 +135,16 @@ struct FMatrix
 		output.m[3][3] = 0;
 		return output;
 	}
+
+	// 방향 벡터 (x, y, z, 0)를 변환 행렬의 회전/스케일 부분 m과 곱해 벡터를 회전시키는 함수
+	static FVector3 TransformDirection(const FVector3& v, const FMatrix& m)
+	{
+		FVector3 output;
+		output.x = v.x * m.m[0][0] + v.y * m.m[1][0] + v.z * m.m[2][0];
+		output.y = v.x * m.m[0][1] + v.y * m.m[1][1] + v.z * m.m[2][1];
+		output.z = v.x * m.m[0][2] + v.y * m.m[1][2] + v.z * m.m[2][2];
+		return output;
+	}
 };
 
 
