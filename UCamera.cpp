@@ -1,42 +1,45 @@
 #pragma once
 
 #include "UCamera.h"
-#include "FVector3.h"
 #include <algorithm>
 #include "FMatrix.h"
 
 FVector3 UCamera::GetForwardVector()
 {
-	float pitchrad = DegreesToRadians(RelativeRotation.x);
-	float yawrad = DegreesToRadians(RelativeRotation.y);
+	float pitchrad = DegreesToRadians(this->GetRelativeRotation().x);
+	float yawrad = DegreesToRadians(this->GetRelativeRotation().y);
 	FMatrix R = FMatrix::CreateRotationX(pitchrad) * FMatrix::CreateRotationY(yawrad);
 	return FVector3(R.m[2][0], R.m[2][1], R.m[2][2]);
 }
 
 FVector3 UCamera::GetRightVector()
 {
-	float pitchrad = DegreesToRadians(RelativeRotation.x);
-	float yawrad = DegreesToRadians(RelativeRotation.y);
+	float pitchrad = DegreesToRadians(this->GetRelativeRotation().x);
+	float yawrad = DegreesToRadians(this->GetRelativeRotation().y);
 	FMatrix R = FMatrix::CreateRotationX(pitchrad) * FMatrix::CreateRotationY(yawrad);
 	return FVector3(R.m[0][0], R.m[0][1], R.m[0][2]);
 }
 
 FVector3 UCamera::GetUPVector()
 {
-	float pitchrad = DegreesToRadians(RelativeRotation.x);
-	float yawrad = DegreesToRadians(RelativeRotation.y);
+	float pitchrad = DegreesToRadians(this->GetRelativeRotation().x);
+	float yawrad = DegreesToRadians(this->GetRelativeRotation().y);
 	FMatrix R = FMatrix::CreateRotationX(pitchrad) * FMatrix::CreateRotationY(yawrad);
 	return FVector3(R.m[1][0], R.m[1][1], R.m[1][2]);
 }
 
 void UCamera::AddPitch(float deltaAngle)
 {
-	RelativeRotation.x = std::clamp(RelativeRotation.x + deltaAngle, -89.9f, 89.9f);
+	FVector3 rot = GetRelativeRotation();
+	rot.x = std::clamp(rot.x + deltaAngle, -89.9f, 89.9f);
+	SetRelativeRotation(rot);
 }
 
 void UCamera::AddYaw(float deltaAngle)
 {
-	RelativeRotation.y += deltaAngle;
+	FVector3 rot = GetRelativeRotation();
+	rot.y += deltaAngle;
+	SetRelativeRotation(rot);
 }
 
 void UCamera::AddFov(float deltaAngle)

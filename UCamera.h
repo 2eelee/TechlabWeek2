@@ -1,5 +1,4 @@
 #pragma once
-#include "FVector3.h"
 #include "USceneComponent.h"
 
 struct UCamera: public USceneComponent

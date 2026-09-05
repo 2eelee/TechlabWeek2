@@ -6,27 +6,22 @@
 #include "FVertexSimple.h"
 #include "FConstants.h"
 #include "FMatrix.h"
-#include "UPrimitiveComponent.h"
-#include "UCamera.h"
-#include "UCube.h"
-#include "USphere.h"
-#include "Sphere.h"
-#include "Cube.h"
-#include "Plane.h"
+
 
 #pragma comment(lib, "user32")
 #pragma comment(lib, "d3d11")
 
+#include <d3dcompiler.h>
+#pragma comment(lib, "d3dcompiler")
+
+class UPrimitiveComponent;
+class UCamera;
+
 class URenderer
 {
 public:
-	ID3D11Buffer* vertexBufferCube = nullptr;
-	UINT numVerticesCube = 0;
-	ID3D11Buffer* vertexBufferSphere = nullptr;
-	UINT numVerticesSphere = 0;
-	ID3D11Buffer* vertexBufferPlane = nullptr;
-	UINT numVerticesPlane = 0;
 
+	FMatrix CreateMVP(UPrimitiveComponent* Primitive, UCamera* Camera);
 	// Direct3D 11 장치와 장치 컨텍스트 및 스왑 체인을 관리하기 위한 포인터들
 	ID3D11Device* Device = nullptr; // GPU와 통신하기 위한 Direct3D 장치
 	ID3D11DeviceContext* DeviceContext = nullptr; // GPU 명령 실행을 담당하는 컨텍스트
@@ -278,10 +273,12 @@ public:
 		return vertexBuffer;
 	}
 
-	void ReleaseVertexBuffer()
+	void ReleaseVertexBuffer(ID3D11Buffer* pBuffer)
 	{
-		vertexBufferCube->Release();
-		vertexBufferSphere->Release();
+		if (pBuffer)
+		{
+			pBuffer->Release();
+		}
 	}
 
 	ID3D11Buffer* ConstantBuffer = nullptr;
@@ -319,16 +316,5 @@ public:
 			}
 			DeviceContext->Unmap(ConstantBuffer, 0);
 		}
-	}
-
-	FMatrix CreateMVP(UPrimitiveComponent* Primitive, UCamera* Camera)
-	{
-		FMatrix scaleM = FMatrix::CreateScale(Primitive->RelativeScale3D.x, Primitive->RelativeScale3D.y, Primitive->RelativeScale3D.z);
-		FMatrix RotationM = FMatrix::CreateRotationX(Primitive->RelativeRotation.x) * FMatrix::CreateRotationY(Primitive->RelativeRotation.y) * FMatrix::CreateRotationZ(Primitive->RelativeRotation.z);
-		FMatrix TranslationM = FMatrix::CreateTranslation(Primitive->RelativeLocation.x, Primitive->RelativeLocation.y, Primitive->RelativeLocation.z);
-		FMatrix Model = scaleM * RotationM * TranslationM;
-		FMatrix View = FMatrix::CreateView(Camera->RelativeLocation, Camera->GetRightVector(), Camera->GetUPVector(), Camera->GetForwardVector());
-		FMatrix Proj = FMatrix::CreateProjection(Camera->FarZ, Camera->NearZ, DegreesToRadians(Camera->FovAngle), Camera->AspectRatio);
-		return Model * View * Proj;
 	}
 };

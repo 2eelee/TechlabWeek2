@@ -7,9 +7,8 @@
 #include <d3d11.h>
 #include <d3dcompiler.h>
 
-#include "FVector3.h"
-#include "FVertexSimple.h"
 #include "URenderer.h"
+#include "UCamera.h"
 
 #include "Window.h"
 #include "ImGuiManager.h"
@@ -17,7 +16,6 @@
 #include "FMemory.h"
 
 #include "MeshManager.h"
-#include "Vertices.h"
 #include "UObject.h"
 #include "USceneComponent.h"
 #include "FObjectFactory.h"
@@ -29,6 +27,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	// 1. 카메라 생성
 	UCamera* camera = new UCamera();
+	camera->SetRelativeLocation(FVector3(0.0f, 1.0f, -5.0f));
 	camera->FovAngle = 60.0f;
 
 	// 2. 프리미티브 목록 생성
@@ -73,12 +72,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	float orbitAngle = 0.0f;
 
-	ID3D11Buffer* vertexBufferCube = renderer.CreateVertexBuffer(cube_vertices, sizeof(cube_vertices));
-	UINT numVerticesCube = sizeof(cube_vertices) / sizeof(FVertexSimple);
-	ID3D11Buffer* vertexBufferSphere = renderer.CreateVertexBuffer(sphere_vertices, sizeof(sphere_vertices));
-	UINT numVerticesSphere = sizeof(sphere_vertices) / sizeof(FVertexSimple);
-	ID3D11Buffer* vertexBufferPlane = renderer.CreateVertexBuffer(plane_vertices, sizeof(plane_vertices));
-	UINT numVerticesPlane = sizeof(plane_vertices) / sizeof(FVertexSimple);
+	FObjectFactory::ConstructObject(UCubeComp::StaticClass());
 
 	// Quit Message가 들어오기 전까지 아래 Loop를 무한히 실행하게 됨
 	while (bIsExit == false)
@@ -107,28 +101,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		renderer.Prepare();
 		renderer.PrepareShader();
 
-		// M * V * P 행렬 처리 및 출력
-		for (auto* primitive : primitiveList) {
-			FMatrix MVP = renderer.CreateMVP(primitive, camera);
-			renderer.UpdateConstant(MVP);
-			if (primitive->IsA(UCube::StaticClass()))
-			{
-				renderer.RenderPrimitive(vertexBufferCube, numVerticesCube);
-			}
-			else if (primitive->IsA(USphere::StaticClass()))
-			{
-				renderer.RenderPrimitive(vertexBufferSphere, numVerticesSphere);
-			}
-			else renderer.RenderPrimitive(vertexBufferPlane, numVerticesPlane);
-		}
-
-		// M * V * P 행렬 입력 
-		renderer.UpdateConstant(MVP);
+		// M * V * P 행렬 입력
 		for (UObject* object : GUObjectArray)
 		{
 			UPrimitiveComponent* primitive = object->Cast<UPrimitiveComponent>(object);
 			if (primitive)
 			{
+				FMatrix MVP = renderer.CreateMVP(primitive, camera);
+				renderer.UpdateConstant(MVP);
 				primitive->Render(renderer);
 			}
 		}
