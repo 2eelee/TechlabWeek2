@@ -19,6 +19,7 @@
 #include "UObject.h"
 #include "USceneComponent.h"
 #include "FObjectFactory.h"
+#include "FEditor.h"
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
@@ -27,11 +28,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	// 1. 카메라 생성
 	UCamera* camera = new UCamera();
-	camera->SetRelativeLocation(FVector3(0.0f, 1.0f, -5.0f));
+	camera->SetRelativeLocation(FVector3(0.0f, 5.0f, -10.0f));
 	camera->FovAngle = 60.0f;
+	camera->AddPitch(20.0f);
 
-	// 2. 프리미티브 목록 생성
-	TArray<UPrimitiveComponent*> primitiveList;
+	FEditor EditorUI;
 
 	// Renderer Class를 생성합니다.
 	URenderer renderer;
@@ -71,8 +72,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	uint64 BeforeCount = FMemory::GetAllocationCount();
 
 	float orbitAngle = 0.0f;
-
-	FObjectFactory::ConstructObject(UCubeComp::StaticClass());
 
 	// Quit Message가 들어오기 전까지 아래 Loop를 무한히 실행하게 됨
 	while (bIsExit == false)
@@ -117,14 +116,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 		// 이후 ImGui UI 컨트롤 추가는 ImGui::NewFrame()과 ImGui::Render() 사이인 여기에 위치합니다. 
 
-		ImGui::Begin("Stat");
-
-		ImGui::Text("Memory Usage: %zu bytes", FMemory::GetCurrentMemoryUsage());
-		ImGui::Text("Allocation Count: %llu", static_cast<unsigned long long>(FMemory::GetAllocationCount()));
-
-		ImGui::End();
-
+		EditorUI.DrawStatUI();
+		EditorUI.DrawPropertyUI();
+		EditorUI.DrawControlUI();
 		imguiManager.EndFrame();
+
 
 		// 현재 화면에 보여지는 버퍼와 그리기 작업을 위한 버퍼를 서로 교환합니다.
 		renderer.SwapBuffer();
