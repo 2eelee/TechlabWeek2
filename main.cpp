@@ -9,8 +9,6 @@
 
 #include "FConsoleWindow.h"
 
-#include "FConsoleWindow.h"
-
 #include "URenderer.h"
 #include "UCamera.h"
 
@@ -29,8 +27,6 @@
 int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstanc ,LPSTR lpCmdLine,int nCmdShow)
 {
 	// Window 생성
-	
-
 	FWindow window;
 
 	HWND hWnd =window.Create(hInstance);
@@ -45,16 +41,8 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstanc ,LPSTR lpCmdLine,i
 
 	extern URenderer* GRenderer;
 
-	// 2. 프리미티브 목록 생성
-	TArray<UPrimitiveComponent*> primitiveList;
-
-	extern URenderer* GRenderer;
-
 	// Renderer 생성
-	
 	URenderer renderer;
-
-
 	renderer.Create(hWnd);
 
 	// Window.cpp에서 사용하는 Renderer와 연결
@@ -68,7 +56,6 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstanc ,LPSTR lpCmdLine,i
 	renderer.CreateConstantBuffer();
 
 	// ImGui 생성
-	
 	FImGuiManager imguiManager;
 
 	// 여기에서 ImGui를 생성합니다.
@@ -86,7 +73,7 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstanc ,LPSTR lpCmdLine,i
 
 	// Console / Host 비율
 	// 처음에는
-		// Width  = Host의 50%
+	// Width  = Host의 50%
 	// Height = Host의 30%
 
 	float consoleWidthRatio =0.5f;
@@ -114,32 +101,32 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstanc ,LPSTR lpCmdLine,i
 	LARGE_INTEGER startTime, endTime;
 	double elapsedTime = 0.0;
 
-	std::size_t BeforeMemory = FMemory::GetCurrentMemoryUsage();
-
-	uint64 BeforeCount = FMemory::GetAllocationCount();
-
-	float orbitAngle = 0.0f;
-
 	// Quit Message가 들어오기 전까지 아래 Loop를 무한히 실행하게 됨
 	while (bIsExit == false)
 	{
 		// Frame 시작 시간
+		QueryPerformanceCounter(&startTime);
 
-	QueryPerformanceCounter(&startTime);
 		// Windows Message
 		MSG msg;
 
-		while (PeekMessage(&msg,nullptr,0,0,PM_REMOVE))
+		while (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
 		{
 			TranslateMessage(&msg);
 			DispatchMessage(&msg);
+
 			if (msg.message == WM_QUIT)
 			{
 				bIsExit = true;
-
 				break;
 			}
 		}
+
+		if (bIsExit)
+		{
+			break;
+		}
+
 		////////////////////////////////////////////
 		// 매번 실행되는 코드를 여기에 추가합니다.
 	
@@ -160,22 +147,14 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstanc ,LPSTR lpCmdLine,i
 			}
 		}
 
-
 		// ImGui Frame 시작
-
-
 		imguiManager.BeginFrame();
 
 		// 현재 Host 크기
 		// 반드시 while 안에서 매 프레임 다시 가져옴
-
-
 		ImGuiIO& io = ImGui::GetIO();
 
-
 		float hostWidth = io.DisplaySize.x;
-
-
 		float hostHeight = io.DisplaySize.y;
 
 		// Console 첫 크기 설정
@@ -183,46 +162,29 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstanc ,LPSTR lpCmdLine,i
 		
 		// Host × 0.5
 		// Host × 0.3
-	
-
 		if (!consoleRatioInitialized)
 		{
 			ImGui::SetNextWindowSize(ImVec2( hostWidth *consoleWidthRatio, hostHeight *consoleHeightRatio), ImGuiCond_Always);
 		}
 
-
-
 		// Host 크기가 변경됐다면
-		//
+
 		// 직전에 저장되어 있던 Console 비율을 이용해서
 		// Console 크기도 같이 변경
-		
 
-		else if (
-			GWindowSizeChanged)
+		else if (GWindowSizeChanged)
 		{
 			float newConsoleWidth = hostWidth *consoleWidthRatio;
-
-
 			float newConsoleHeight = hostHeight *consoleHeightRatio;
-
-
-
 			ImGui::SetNextWindowSize(ImVec2(newConsoleWidth,newConsoleHeight),ImGuiCond_Always);
 		}
-
-
-
 	
 		// Console Draw Begin() 로그 출력 Input Enter End() 전부 여기 안에서 처리
-	
-
 		if (showConsole)
 		{
 			console.Draw("Example: Console", &showConsole);
 		}
 
-		
 		// Host 자체를 Resize하고 있는 중이 아니라면
 		// 사용자가 Console을 바꾼 결과를 계속 저장
 	
@@ -232,11 +194,7 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstanc ,LPSTR lpCmdLine,i
 			if (hostWidth > 0.0f &&hostHeight > 0.0f)
 			{
 				// 현재 Console Width / Host Width
-		
-
 				consoleWidthRatio = console.WindowSize.x / hostWidth;
-
-
 
 				// 현재 Console Height / Host Height
 				consoleHeightRatio =console.WindowSize.y /hostHeight;
@@ -244,7 +202,7 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstanc ,LPSTR lpCmdLine,i
 			}
 		}
 
-	// 이번 Host Resize 처리는 끝났음
+		// 이번 Host Resize 처리는 끝났음
 		GWindowSizeChanged =false;
 
 		// ImGui Frame 종료
@@ -260,7 +218,6 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstanc ,LPSTR lpCmdLine,i
 		renderer.SwapBuffer();
 
 		// FPS 제한
-		
 		do
 		{
 			Sleep(0);
@@ -272,6 +229,7 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstanc ,LPSTR lpCmdLine,i
 
 		} while (elapsedTime <targetFrameTime);
 	}
+
 	// ImGui 소멸
 	imguiManager.Release();
 
