@@ -25,10 +25,10 @@ void InputManager::ProcessMessage(UINT message, WPARAM wParam, LPARAM lParam)
 		m_current[MouseButton::RIGHT] = false;
 		break;
 	case WM_MOUSEMOVE:
-		int xPos = GET_X_LPARAM(lParam);
-		int yPos = GET_Y_LPARAM(lParam);
-		m_mousePosition.x = xPos;
-		m_mousePosition.y = yPos;
+		int32 xPos = GET_X_LPARAM(lParam);
+		int32 yPos = GET_Y_LPARAM(lParam);
+		m_mousePosition.X = xPos;
+		m_mousePosition.Y = yPos;
 	}
 }
 
