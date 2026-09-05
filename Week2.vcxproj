@@ -169,7 +169,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Containers.h" />
-    <ClInclude Include="Cube.h" />
     <ClInclude Include="FMatrix.h" />
     <ClInclude Include="FMemory.h" />
     <ClInclude Include="Core\FObjectFactory.h" />
@@ -179,6 +178,7 @@
     <ClInclude Include="Core\UObject.h" />
     <ClInclude Include="Core\USceneComponent.h" />
     <ClInclude Include="FVector3.h" />
+    <ClInclude Include="FVector4.h" />
     <ClInclude Include="FVertexSimple.h" />
     <ClInclude Include="ImGuiManager.h" />
     <ClInclude Include="ImGui\imconfig.h" />
@@ -190,7 +190,7 @@
     <ClInclude Include="ImGui\imstb_textedit.h" />
     <ClInclude Include="ImGui\imstb_truetype.h" />
     <ClInclude Include="InputManager.h" />
-    <ClInclude Include="Sphere.h" />
+    <ClInclude Include="MeshManager.h" />
     <ClInclude Include="Types.h" />
     <ClInclude Include="UCamera.h" />
     <ClInclude Include="UCube.h" />
@@ -198,6 +198,7 @@
     <ClInclude Include="URenderer.h" />
     <ClInclude Include="USceneComponent.h" />
     <ClInclude Include="USphere.h" />
+    <ClInclude Include="Vertices.h" />
     <ClInclude Include="Window.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

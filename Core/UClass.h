@@ -2,7 +2,8 @@
 
 class UObject;
 
-class UClass {
+class UClass 
+{
 public:
 	using CreateFunction = UObject* (*)();
 
