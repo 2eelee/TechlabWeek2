@@ -17,6 +17,9 @@
 #include "FMemory.h"
 #include "MeshManager.h"
 #include "Vertices.h"
+#include "UObject.h"
+#include "USceneComponent.h"
+#include "FObjectFactory.h"
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
@@ -107,7 +110,15 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 		// M * V * P 행렬 입력 
 		renderer.UpdateConstant(MVP);
-		renderer.RenderPrimitive(vertexBufferCube, numVerticesCube);
+		for (UObject* object : GUObjectArray)
+		{
+			UPrimitiveComponent* primitive = object->Cast<UPrimitiveComponent>(object);
+			if (primitive)
+			{
+				primitive->Render(renderer);
+			}
+		}
+
 		imguiManager.BeginFrame();
 
 		// 이후 ImGui UI 컨트롤 추가는 ImGui::NewFrame()과 ImGui::Render() 사이인 여기에 위치합니다. 
