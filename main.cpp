@@ -27,9 +27,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	// Renderer Class를 생성합니다.
 	URenderer renderer;
 
-	// 초기화
-	//renderer.Initialize( );
-
 
 	// D3D11 생성하는 함수를 호출합니다. 
 	renderer.Create(hWnd);
@@ -68,11 +65,15 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	LARGE_INTEGER startTime, endTime;
 	double elapsedTime = 0.0;
 
-
+	
 
 	// 콘솔 창의 크기를 화면 비율로 설정
 	float consoleWidthRatio = 0.5f;
 	float consoleHeightRatio = 0.3f;
+
+	bool consoleRatioInitialized = false;
+	
+
 
 	// Quit Message가 들어오기 전까지 아래 Loop를 무한히 실행하게 됨
 	while (bIsExit == false)
@@ -101,45 +102,40 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		// 준비 작업
 		renderer.Prepare();
 		renderer.PrepareShader();
-
 		imguiManager.BeginFrame();
 
 		ImGuiIO& io = ImGui::GetIO();
+
+		float hostWidth = io.DisplaySize.x;
+		float hostHeight = io.DisplaySize.y;
+
+
+		
 
 		// 호스트 창 자체가 Resize 됐다면
         // 저장된 비율로 Console 조정
   
 
-		if (GWindowSizeChanged)
+		if (GWindowSizeChanged && consoleRatioInitialized)
 		{
-		
+			float newConsoleWidth =
+				hostWidth * consoleWidthRatio;
 
-			float newWidth =
-				io.DisplaySize.x * consoleWidthRatio;
+			float newConsoleHeight =
+				hostHeight * consoleHeightRatio;
 
-			float newHeight =
-				io.DisplaySize.y * consoleHeightRatio;
-
-			/*ImGui::SetNextWindowPos(
-				ImVec2(newX, newY),
-				ImGuiCond_Always
-			);*/
-
+			
 			ImGui::SetNextWindowSize(
-				ImVec2(newWidth, newHeight),
+				ImVec2(newConsoleWidth, newConsoleHeight),
 				ImGuiCond_Always
 			);
 		}
-
 		// 이후 ImGui UI 컨트롤 추가는 ImGui::NewFrame()과 ImGui::Render() 사이인 여기에 위치합니다. 
 
 		ImGui::Begin("Jungle Property Window");
 
 		ImGui::Text("Hello Jungle World!");
 
-		// 현재 위치
-		ImVec2 consolePos =
-			ImGui::GetWindowPos();
 
 		// 현재 크기
 		ImVec2 consoleSize =
@@ -148,23 +144,26 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 		// 호스트 자체 Resize 중이 아니라면
 		// 사용자가 직접 만든 위치/크기를 비율로 저장
-		if (!GWindowSizeChanged)
+		if (!GIsResizing && !GWindowSizeChanged)
 		{
-			if (io.DisplaySize.x > 0 &&
-				io.DisplaySize.y > 0)
+			if (hostWidth > 0.0f && hostHeight > 0.0f)
 			{
-			
-
+				
+				// 크기 비율
 				consoleWidthRatio =
-					consoleSize.x / io.DisplaySize.x;
+					consoleSize.x / hostWidth;
 
 				consoleHeightRatio =
-					consoleSize.y / io.DisplaySize.y;
+					consoleSize.y / hostHeight;
+
+
+				consoleRatioInitialized = true;
 			}
 		}
 
-
 		ImGui::End();
+
+		GWindowSizeChanged = false; // 창 크기 변경 플래그 초기화
 
 		imguiManager.EndFrame();
 
