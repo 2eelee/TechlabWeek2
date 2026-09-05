@@ -5,23 +5,23 @@
 struct UCamera: public USceneComponent
 {
 	float FarZ;
-	float nearZ;
-	float fovangle;
-	float aspectratio;
+	float NearZ;
+	float FovAngle;
+	float AspectRatio;
 
 	UCamera()
 	{
 		FarZ = 1000.0f;
-		nearZ = 1.0f;
-		fovangle = 90.0f;
+		NearZ = 1.0f;
+		FovAngle = 90.0f;
 	}
 
 	virtual FVector3 GetForwardVector();
 	virtual FVector3 GetRightVector();
 	virtual FVector3 GetUPVector();
 
-	virtual void Addpitch(float pitchradian);
-	virtual void Addyaw(float yawradian);
+	virtual void AddPitch(float pitchradian);
+	virtual void AddYaw(float yawradian);
 	virtual void AddFov(float fovRad);
 };
 

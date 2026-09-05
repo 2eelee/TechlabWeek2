@@ -113,6 +113,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			{
 				renderer.RenderPrimitive(vertexBufferSphere, numVerticesSphere);
 			}
+			else renderer.RenderPrimitive(vertexBufferPlane, numVerticesPlane);
 		}
 
 		imguiManager.BeginFrame();

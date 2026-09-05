@@ -29,17 +29,17 @@ FVector3 UCamera::GetUPVector()
 	return FVector3(R.m[1][0], R.m[1][1], R.m[1][2]);
 }
 
-void UCamera::Addpitch(float deltaAngle)
+void UCamera::AddPitch(float deltaAngle)
 {
 	RelativeRotation.x = std::clamp(RelativeRotation.x + deltaAngle, -89.9f, 89.9f);
 }
 
-void UCamera::Addyaw(float deltaAngle)
+void UCamera::AddYaw(float deltaAngle)
 {
 	RelativeRotation.y += deltaAngle;
 }
 
 void UCamera::AddFov(float deltaAngle)
 {
-	fovangle = std::clamp(fovangle + deltaAngle, 5.0f, 170.0f);
+	FovAngle = std::clamp(FovAngle + deltaAngle, 5.0f, 170.0f);
 }
