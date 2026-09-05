@@ -3,7 +3,8 @@
 #include "TSubclassOf.h"
 #include "UObject.h"
 
-class FObjectFactory {
+class FObjectFactory 
+{
 public:
 	static UObject* ConstructObject(TSubclassOf<UObject> ClassType)
 	{
