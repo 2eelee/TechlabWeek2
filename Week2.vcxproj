@@ -173,6 +173,7 @@
     <ClInclude Include="FConsoleWindow.h" />
     <ClInclude Include="Containers.h" />
     <ClInclude Include="Core\USceneComponent.h" />
+    <ClInclude Include="FEditor.h" />
     <ClInclude Include="FMatrix.h" />
     <ClInclude Include="FMemory.h" />
     <ClInclude Include="Core\FObjectFactory.h" />
@@ -197,6 +198,7 @@
     <ClInclude Include="Types.h" />
     <ClInclude Include="UCamera.h" />
     <ClInclude Include="URenderer.h" />
+    <ClInclude Include="USceneManager.h" />
     <ClInclude Include="Vertices.h" />
     <ClInclude Include="Window.h" />
   </ItemGroup>
