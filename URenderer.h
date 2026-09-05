@@ -339,39 +339,11 @@ public:
 		return FMatrix::CreateProjection(cam->FarZ, cam->nearZ, DegreesToRadians(cam->fovangle), cam->aspectratio);
 	}
 
-	FMatrix CreateMVP(FMatrix Model, FMatrix View, FMatrix Projection)
+	FMatrix DrawPrimitive(UPrimitiveComponent* Primitive, UCamera* Camera)
 	{
-		return Model * View * Projection;
-	}
-
-	void DrawPrimitive(const TArray<UPrimitiveComponent*>& PrimitiveList, UCamera* Camera)
-	{
-		for (int i = 0;i < PrimitiveList.size(); i++) {
-			FMatrix Model = CreateModel(PrimitiveList[i]);
+			FMatrix Model = CreateModel(Primitive);
 			FMatrix View = CreateView(Camera, Model);
 			FMatrix Proj = CreateProjection(Camera, View);
-			FMatrix MVP = CreateMVP(Model, View, Proj);
-
-			UpdateConstant(MVP);
-
-			if (PrimitiveList[i]->IsA(UCube::StaticClass()))
-			{
-				RenderPrimitive(vertexBufferCube, numVerticesCube);
-			}
-			else if (PrimitiveList[i]->IsA(USphere::StaticClass()))
-			{
-				RenderPrimitive(vertexBufferSphere, numVerticesSphere);
-			}
-		}
-	}
-
-	void CreateMeshVertex()
-	{
-		vertexBufferCube = CreateVertexBuffer(cube_vertices, sizeof(cube_vertices));
-		numVerticesCube = sizeof(cube_vertices) / sizeof(FVertexSimple);
-		vertexBufferSphere = CreateVertexBuffer(sphere_vertices, sizeof(sphere_vertices));
-		numVerticesSphere = sizeof(sphere_vertices) / sizeof(FVertexSimple);
-		vertexBufferPlane = CreateVertexBuffer(plane_vertices, sizeof(plane_vertices));
-		numVerticesPlane = sizeof(plane_vertices) / sizeof(FVertexSimple);
+			return Model * View * Proj;
 	}
 };

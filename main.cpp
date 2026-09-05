@@ -41,9 +41,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	// 여기에 생성 함수를 추가합니다. 
 	renderer.CreateConstantBuffer();
 
-	// 기본 Mesh의 VertexBuffer 생성
-	renderer.CreateMeshVertex();
-
 	FImGuiManager imguiManager;
 
 	// 여기에서 ImGui를 생성합니다.
@@ -69,6 +66,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	uint64 BeforeCount = FMemory::GetAllocationCount();
 
 	float orbitAngle = 0.0f;
+
+	ID3D11Buffer* vertexBufferCube = renderer.CreateVertexBuffer(cube_vertices, sizeof(cube_vertices));
+	UINT numVerticesCube = sizeof(cube_vertices) / sizeof(FVertexSimple);
+	ID3D11Buffer* vertexBufferSphere = renderer.CreateVertexBuffer(sphere_vertices, sizeof(sphere_vertices));
+	UINT numVerticesSphere = sizeof(sphere_vertices) / sizeof(FVertexSimple);
+	ID3D11Buffer* vertexBufferPlane = renderer.CreateVertexBuffer(plane_vertices, sizeof(plane_vertices));
+	UINT numVerticesPlane = sizeof(plane_vertices) / sizeof(FVertexSimple);
 
 	// Quit Message가 들어오기 전까지 아래 Loop를 무한히 실행하게 됨
 	while (bIsExit == false)
@@ -98,7 +102,18 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		renderer.PrepareShader();
 
 		// M * V * P 행렬 처리 및 출력
-		renderer.DrawPrimitive(primitiveList,camera);
+		for (auto* primitive : primitiveList) {
+			FMatrix MVP = renderer.DrawPrimitive(primitive, camera);
+			renderer.UpdateConstant(MVP);
+			if (primitive->IsA(UCube::StaticClass()))
+			{
+				renderer.RenderPrimitive(vertexBufferCube, numVerticesCube);
+			}
+			else if (primitive->IsA(USphere::StaticClass()))
+			{
+				renderer.RenderPrimitive(vertexBufferSphere, numVerticesSphere);
+			}
+		}
 
 		imguiManager.BeginFrame();
 
