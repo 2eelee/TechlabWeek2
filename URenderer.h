@@ -2,14 +2,16 @@
 
 #include <Windows.h>
 #include <d3d11.h>
+#include <d3dcompiler.h>
 #include "FVector3.h"
 #include "FVertexSimple.h"
 #include "FConstants.h"
 #include "FMatrix.h"
 
-#pragma comment(lib, "user32")
 #pragma comment(lib, "d3d11")
+#pragma comment(lib, "d3dcompiler")
 
+// D3D11 렌더링 저수준 조작을 관리하는 클래스
 class URenderer
 {
 public:
