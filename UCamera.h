@@ -5,5 +5,5 @@ struct UCamera
 {
 	FVector3 Location;
 	FVector3 Rotation;
-
+	float FOV;
 };
