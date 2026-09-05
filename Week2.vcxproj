@@ -112,6 +112,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <PreprocessToFile>false</PreprocessToFile>
+      <AdditionalIncludeDirectories>.;ImGui;Core;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -142,7 +143,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="FConsoleWindow.cpp" />
-    <ClCompile Include="FConstants.h" />
+    <ClCompile Include="Core\UObject.cpp" />
+    <ClCompile Include="FMemory.cpp" />
     <ClCompile Include="ImGuiManager.cpp" />
     <ClCompile Include="ImGui\imgui.cpp" />
     <ClCompile Include="ImGui\imgui_demo.cpp" />
@@ -151,11 +153,13 @@
     <ClCompile Include="ImGui\imgui_impl_win32.cpp" />
     <ClCompile Include="ImGui\imgui_tables.cpp" />
     <ClCompile Include="ImGui\imgui_widgets.cpp" />
+    <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="main.cpp">
       <PreprocessToFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</PreprocessToFile>
       <PreprocessToFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</PreprocessToFile>
     </ClCompile>
     <ClCompile Include="URenderer.cpp" />
+    <ClCompile Include="UCamera.cpp" />
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -164,8 +168,20 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="FConstants.h" />
+    <ClInclude Include="FIntPoint.h" />
     <ClInclude Include="FConsoleWindow.h" />
+    <ClInclude Include="Containers.h" />
+    <ClInclude Include="Core\USceneComponent.h" />
+    <ClInclude Include="FMatrix.h" />
+    <ClInclude Include="FMemory.h" />
+    <ClInclude Include="Core\FObjectFactory.h" />
+    <ClInclude Include="Core\TSubclassOf.h" />
+    <ClInclude Include="Core\UClass.h" />
+    <ClInclude Include="Core\UEngineStatics.h" />
+    <ClInclude Include="Core\UObject.h" />
     <ClInclude Include="FVector3.h" />
+    <ClInclude Include="FVector4.h" />
     <ClInclude Include="FVertexSimple.h" />
     <ClInclude Include="ImGuiManager.h" />
     <ClInclude Include="ImGui\imconfig.h" />
@@ -176,8 +192,12 @@
     <ClInclude Include="ImGui\imstb_rectpack.h" />
     <ClInclude Include="ImGui\imstb_textedit.h" />
     <ClInclude Include="ImGui\imstb_truetype.h" />
-    <ClInclude Include="Sphere.h" />
+    <ClInclude Include="InputManager.h" />
+    <ClInclude Include="MeshManager.h" />
+    <ClInclude Include="Types.h" />
+    <ClInclude Include="UCamera.h" />
     <ClInclude Include="URenderer.h" />
+    <ClInclude Include="Vertices.h" />
     <ClInclude Include="Window.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

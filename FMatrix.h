@@ -30,6 +30,7 @@ struct FMatrix
 				result.m[i][j] = 0;
 			}
 		}
+		return result;
 	}
 
 	FMatrix operator*(FMatrix other) const 
@@ -94,7 +95,7 @@ struct FMatrix
 		return output;
 	}
 
-	static FMatrix CreateView(FVector3 Location, FVector3 Right, FVector3 Up, FVector3 Forward)
+	static FMatrix CreateView(FVector3 Location, FVector3 Right, FVector3 Up, FVector3 Forward) // Location : 카메라 위치 Right : 카메라 기준 Right 벡터 Up: 카메라 기준 Up 벡터 Forward: 카메라 기준 앞벡터(Yaw,Pitch 이용하여 유도)
 	{
 		FMatrix output;
 		output.m[0][0] = Right.x;
@@ -103,6 +104,7 @@ struct FMatrix
 		output.m[0][1] = Up.x;
 		output.m[1][1] = Up.y;
 		output.m[2][1] = Up.z;
+		output.m[2][1] = Up.z;
 		output.m[0][2] = Forward.x;
 		output.m[1][2] = Forward.y;
 		output.m[2][2] = Forward.z;
@@ -110,10 +112,10 @@ struct FMatrix
 		output.m[3][1] = -(Location.Dot(Up));
 		output.m[3][2] = -(Location.Dot(Forward));
 		output.m[3][3] = 1;
-		return output;
+		return output;	
 	}
 
-	static FMatrix CreateProjection(float farZ, float nearZ, float fovrad, float aspectratio)
+	static FMatrix CreateProjection(float farZ, float nearZ, float fovrad, float aspectratio)  // farZ : 최소 렌더링 시작 거리, nearZ : 최대 렌더링 거리, fovrad: 카메라의 시야각 aspectratio : 종횡비(가로/세로)
 	{
 		FMatrix output;
 		output.m[0][0] = 1 / tanf(fovrad*0.5)/aspectratio;
@@ -135,6 +137,16 @@ struct FMatrix
 		return output;
 	}
 };
+
+static float PI = 3.1415926535897932f;
+static float DegreesToRadians(float Degrees)
+{
+	return Degrees * (PI / 180.0f);
+}
+static float RadiansToDegrees(float Radians)
+{
+	return Radians * (180.0f / PI);
+}
 
 
 

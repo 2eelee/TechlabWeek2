@@ -1,4 +1,4 @@
-﻿#include <Windows.h>
+#include <Windows.h>
 
 #pragma comment(lib, "user32")
 #pragma comment(lib, "d3d11")
@@ -9,15 +9,20 @@
 
 #include "FConsoleWindow.h"
 
-#include "FVector3.h"
-#include "FVertexSimple.h"
+#include "FConsoleWindow.h"
+
 #include "URenderer.h"
+#include "UCamera.h"
 
 #include "Window.h"
 #include "ImGuiManager.h"
 #include "ImGui/imgui.h"
+#include "FMemory.h"
 
-#include "Sphere.h"
+#include "MeshManager.h"
+#include "UObject.h"
+#include "USceneComponent.h"
+#include "FObjectFactory.h"
 
 // WinMain
 int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstanc ,LPSTR lpCmdLine,int nCmdShow)
@@ -28,6 +33,14 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstanc ,LPSTR lpCmdLine,i
 	FWindow window;
 
 	HWND hWnd =window.Create(hInstance);
+
+	// 1. 카메라 생성
+	UCamera* camera = new UCamera();
+	camera->SetRelativeLocation(FVector3(0.0f, 1.0f, -5.0f));
+	camera->FovAngle = 60.0f;
+
+	// 2. 프리미티브 목록 생성
+	TArray<UPrimitiveComponent*> primitiveList;
 
 	extern URenderer* GRenderer;
 
@@ -44,21 +57,17 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstanc ,LPSTR lpCmdLine,i
 	// Shader 생성
 	renderer.CreateShader();
 
-	// Constant Buffer 생성
+	// 여기에 생성 함수를 추가합니다.
+	MeshManager::Get().Initialize(renderer);
 	renderer.CreateConstantBuffer();
 
 	// ImGui 생성
 	
 	FImGuiManager imguiManager;
 
-	imguiManager.Create(hWnd,renderer.Device,renderer.DeviceContext);
-	// Sphere Vertex Buffer
-
-	UINT numVerticesSphere = sizeof(sphere_vertices) /sizeof(FVertexSimple);
-
-	ID3D11Buffer*
-		vertexBufferSphere =
-		renderer.CreateVertexBuffer( sphere_vertices, sizeof(sphere_vertices));
+	// 여기에서 ImGui를 생성합니다.
+	imguiManager.Create(hWnd, renderer.Device, renderer.DeviceContext);
+	camera->AspectRatio = (float)renderer.ViewportInfo.Width / renderer.ViewportInfo.Height;
 
 	// Console 객체
 	
@@ -96,14 +105,18 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstanc ,LPSTR lpCmdLine,i
 
 	QueryPerformanceFrequency(&frequency);
 
-	LARGE_INTEGER startTime;
-	LARGE_INTEGER endTime;
+	LARGE_INTEGER startTime, endTime;
+	double elapsedTime = 0.0;
 
-	double elapsedTime =
-		0.0;
-	// Main Loop
+	std::size_t BeforeMemory = FMemory::GetCurrentMemoryUsage();
 
+	uint64 BeforeCount = FMemory::GetAllocationCount();
 
+	float orbitAngle = 0.0f;
+
+	FObjectFactory::ConstructObject(UCubeComp::StaticClass());
+
+	// Quit Message가 들어오기 전까지 아래 Loop를 무한히 실행하게 됨
 	while (bIsExit == false)
 	{
 		// Frame 시작 시간
@@ -123,20 +136,25 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstanc ,LPSTR lpCmdLine,i
 				break;
 			}
 		}
-
-
-		if (bIsExit)
-		{
-			break;
-		}
-
-
-		// Renderer 준비
+		////////////////////////////////////////////
+		// 매번 실행되는 코드를 여기에 추가합니다.
 	
-
+		// 준비 작업
 		renderer.Prepare();
 
 		renderer.PrepareShader();
+
+		// M * V * P 행렬 입력
+		for (UObject* object : GUObjectArray)
+		{
+			UPrimitiveComponent* primitive = object->Cast<UPrimitiveComponent>(object);
+			if (primitive)
+			{
+				FMatrix MVP = renderer.CreateMVP(primitive, camera);
+				renderer.UpdateConstant(MVP);
+				primitive->Render(renderer);
+			}
+		}
 
 
 		// ImGui Frame 시작
@@ -226,6 +244,15 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstanc ,LPSTR lpCmdLine,i
 		GWindowSizeChanged =false;
 
 		// ImGui Frame 종료
+		// 이후 ImGui UI 컨트롤 추가는 ImGui::NewFrame()과 ImGui::Render() 사이인 여기에 위치합니다. 
+
+		ImGui::Begin("Stat");
+
+		ImGui::Text("Memory Usage: %zu bytes", FMemory::GetCurrentMemoryUsage());
+		ImGui::Text("Allocation Count: %llu", static_cast<unsigned long long>(FMemory::GetAllocationCount()));
+
+		ImGui::End();
+
 		imguiManager.EndFrame();
 
 		// Buffer 교환
@@ -247,9 +274,12 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstanc ,LPSTR lpCmdLine,i
 	// ImGui 소멸
 	imguiManager.Release();
 
+	// 버텍스 버퍼 소멸은 Renderer 소멸 전에 처리합니다.
+	MeshManager::Get().Release(renderer);
+
+	// ReleaseShader() 직전에 소멸 함수를 추가합니다.
 	// Vertex Buffer 소멸
 
-	renderer.ReleaseVertexBuffer(vertexBufferSphere);
 	// Constant Buffer 소멸
 	renderer.ReleaseConstantBuffer();
 
