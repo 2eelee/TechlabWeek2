@@ -177,6 +177,7 @@
     <ClInclude Include="Core\UObject.h" />
     <ClInclude Include="Core\USceneComponent.h" />
     <ClInclude Include="FVector3.h" />
+    <ClInclude Include="FVector4.h" />
     <ClInclude Include="FVertexSimple.h" />
     <ClInclude Include="ImGuiManager.h" />
     <ClInclude Include="ImGui\imconfig.h" />
