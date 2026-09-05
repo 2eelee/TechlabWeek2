@@ -145,6 +145,7 @@
     <ClCompile Include="Core\UObject.cpp" />
     <ClCompile Include="FConstants.h" />
     <ClCompile Include="FMemory.cpp" />
+    <ClCompile Include="FRenderer.cpp" />
     <ClCompile Include="ImGuiManager.cpp" />
     <ClCompile Include="ImGui\imgui.cpp" />
     <ClCompile Include="ImGui\imgui_demo.cpp" />
@@ -175,6 +176,7 @@
     <ClInclude Include="Core\UEngineStatics.h" />
     <ClInclude Include="Core\UObject.h" />
     <ClInclude Include="Core\USceneComponent.h" />
+    <ClInclude Include="FRenderer.h" />
     <ClInclude Include="FVector3.h" />
     <ClInclude Include="FVertexSimple.h" />
     <ClInclude Include="ImGuiManager.h" />
