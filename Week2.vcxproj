@@ -144,6 +144,7 @@
   <ItemGroup>
     <ClCompile Include="Core\UObject.cpp" />
     <ClCompile Include="FConstants.h" />
+    <ClCompile Include="FIntPoint.h" />
     <ClCompile Include="FMemory.cpp" />
     <ClCompile Include="ImGuiManager.cpp" />
     <ClCompile Include="ImGui\imgui.cpp" />
@@ -153,6 +154,7 @@
     <ClCompile Include="ImGui\imgui_impl_win32.cpp" />
     <ClCompile Include="ImGui\imgui_tables.cpp" />
     <ClCompile Include="ImGui\imgui_widgets.cpp" />
+    <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="main.cpp">
       <PreprocessToFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</PreprocessToFile>
       <PreprocessToFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</PreprocessToFile>
@@ -187,6 +189,7 @@
     <ClInclude Include="ImGui\imstb_rectpack.h" />
     <ClInclude Include="ImGui\imstb_textedit.h" />
     <ClInclude Include="ImGui\imstb_truetype.h" />
+    <ClInclude Include="InputManager.h" />
     <ClInclude Include="Sphere.h" />
     <ClInclude Include="Types.h" />
     <ClInclude Include="UCamera.h" />

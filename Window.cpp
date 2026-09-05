@@ -1,4 +1,5 @@
 #include "Window.h"
+#include "InputManager.h"
 
 #include "ImGui/imgui.h"
 #include "ImGui/imgui_impl_win32.h"
@@ -12,6 +13,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	{
 		return true;
 	}
+
+	InputManager::GetInstance().ProcessMessage(message, wParam, lParam);
 
 	switch (message)
 	{
