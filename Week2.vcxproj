@@ -172,6 +172,7 @@
     <ClInclude Include="FIntPoint.h" />
     <ClInclude Include="FConsoleWindow.h" />
     <ClInclude Include="Containers.h" />
+    <ClInclude Include="CoordinateUtils.h" />
     <ClInclude Include="Core\USceneComponent.h" />
     <ClInclude Include="FEditor.h" />
     <ClInclude Include="FMatrix.h" />
@@ -181,6 +182,7 @@
     <ClInclude Include="Core\UClass.h" />
     <ClInclude Include="Core\UEngineStatics.h" />
     <ClInclude Include="Core\UObject.h" />
+    <ClInclude Include="FVector2.h" />
     <ClInclude Include="FVector3.h" />
     <ClInclude Include="FVector4.h" />
     <ClInclude Include="FVertexSimple.h" />
