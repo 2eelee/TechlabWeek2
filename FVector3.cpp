@@ -1,3 +1,4 @@
+#include <FMatrix.h>
 #include "FVector3.h"
 
 float FVector3::Dot(const FVector3& other) const
@@ -8,6 +9,20 @@ float FVector3::Dot(const FVector3& other) const
 FVector3 FVector3::Cross(const FVector3& other) const
 {
 	return FVector3(y * other.z - z * other.y, z * other.x - x * other.z, x * other.y - y * other.x);
+}
+
+FVector3 FVector3::operator * (const FMatrix& matrix) const
+{
+	return {
+			x * matrix.m[0][0] + y * matrix.m[1][0] + z * matrix.m[2][0],
+			x * matrix.m[0][1] + y * matrix.m[1][1] + z * matrix.m[2][1],
+			x * matrix.m[0][2] + y * matrix.m[1][2] + z * matrix.m[2][2]
+	};
+}
+
+FVector3 FVector3::Normalize() const
+{
+	return FVector3::Normalize(*this);
 }
 
 FVector3 FVector3::Normalize(const FVector3& FVector)
