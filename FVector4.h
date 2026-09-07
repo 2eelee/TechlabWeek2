@@ -2,7 +2,7 @@
 
 #include <cmath>
 
-class FMatrix;
+struct FMatrix;
 struct FVector4
 {
 	float X;
