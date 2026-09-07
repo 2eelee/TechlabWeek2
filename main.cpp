@@ -24,6 +24,8 @@
 #include "FObjectFactory.h"
 #include "FEditor.h"
 
+#include "InputManager.h"
+
 FConsoleWindow* GConsoleWindow = nullptr;
 
 // WinMain
@@ -77,9 +79,6 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstanc ,LPSTR lpCmdLine,i
 	// 처음에는
 	// Width  = Host의 50%
 	// Height = Host의 30%
-
-	float deltaTime = ImGui::GetIO().DeltaTime;
-
 	
 	// 프로그램 종료 여부
 	
@@ -160,6 +159,7 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstanc ,LPSTR lpCmdLine,i
 
 		Gizmo.DrawWorldAxis(renderer, camera);
 
+		float deltaTime = ImGui::GetIO().DeltaTime;
 		Cam->CamMove(deltaTime);
 
 		// ImGui Frame 시작
@@ -176,10 +176,10 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstanc ,LPSTR lpCmdLine,i
 
 		imguiManager.EndFrame();
 
+		InputManager::GetInstance().Update();
 
 		// Buffer 교환
 		renderer.SwapBuffer();
-
 		// FPS 제한
 		do
 		{
