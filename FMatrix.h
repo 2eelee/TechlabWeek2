@@ -49,13 +49,13 @@ struct FMatrix
 	static FMatrix CreateProjectionInverse(float aspectRatio, float fov, float farZ, float nearZ);
 	static FMatrix CreateOrthogonalProjection(float farZ, float nearZ, float width, float height);
 	static FMatrix CreateOrthogonalProjectionInverse(float farZ, float nearZ, float width, float height);
-
+	static FMatrix Identity();
 	FMatrix Inverse() const;
 
 	inline FMatrix operator*(float scalar) const;
 };
 
-static float PI = 3.1415926535897932f;
+inline constexpr float PI = 3.1415926535897932f;
 static float DegreesToRadians(float Degrees)
 {
 	return Degrees * (PI / 180.0f);

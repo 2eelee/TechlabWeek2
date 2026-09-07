@@ -203,7 +203,7 @@ void FConsoleWindow::AddLog(
         args
     );
 
-
+    
     va_end(args);
 
 
@@ -243,7 +243,8 @@ void FConsoleWindow::Draw(
     // Console 설명
 
     ImGui::TextWrapped(
-        "This example implements a console."
+        "This example implements a console with basic coloring, completion (TAB key) and history (Up/Down keys). A more elaborate "
+        "implementation may want to store entries along with extra data such as timestamp, emitter, etc."
     );
 
 
@@ -290,7 +291,7 @@ void FConsoleWindow::Draw(
         ImGui::SmallButton(
             "Copy"
         );
-
+    ImGui::Separator();
     // Options
 
     ImGui::SameLine();
@@ -857,7 +858,5 @@ int FConsoleWindow::TextEditCallback(
     }
 
     }
-
-
     return 0;
 }

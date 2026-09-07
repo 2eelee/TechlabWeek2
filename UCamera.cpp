@@ -3,6 +3,8 @@
 #include "UCamera.h"
 #include <algorithm>
 #include "FMatrix.h"
+#include "InputManager.h"
+#include "ImGui/imgui.h"
 
 FVector3 UCamera::GetForwardVector()
 {
@@ -28,6 +30,11 @@ FVector3 UCamera::GetUPVector()
 	return FVector3(R.m[1][0], R.m[1][1], R.m[1][2]);
 }
 
+void UCamera::SetOrthoWidth(float width)
+{
+	orthowidth = width;
+}
+
 void UCamera::AddPitch(float deltaAngle)
 {
 	FVector3 rot = GetRelativeRotation();
@@ -42,7 +49,52 @@ void UCamera::AddYaw(float deltaAngle)
 	SetRelativeRotation(rot);
 }
 
-void UCamera::AddFov(float deltaAngle)
+void UCamera::CamMove(float deltaTime)
 {
-	FovAngle = std::clamp(FovAngle + deltaAngle, 5.0f, 170.0f);
+	float speed = 10.0f;
+	float moveDist = speed * deltaTime;
+
+	if (!(ImGui::GetIO().WantCaptureKeyboard)) {
+		if (InputManager::GetInstance().GetKey('W'))
+		{
+			FVector3 Loc = this->GetRelativeLocation();
+			this->SetRelativeLocation(Loc + this->GetForwardVector() * moveDist);
+		}
+		if (InputManager::GetInstance().GetKey('S'))
+		{
+			FVector3 Loc = this->GetRelativeLocation();
+			this->SetRelativeLocation(Loc - (this->GetForwardVector() * moveDist));
+		}
+		if (InputManager::GetInstance().GetKey('D'))
+		{
+			FVector3 Loc = this->GetRelativeLocation();
+			this->SetRelativeLocation(Loc + this->GetRightVector() * moveDist);
+		}
+		if (InputManager::GetInstance().GetKey('A'))
+		{
+			FVector3 Loc = this->GetRelativeLocation();
+			this->SetRelativeLocation(Loc - (this->GetRightVector() * moveDist));
+		}
+	}
+}
+
+FRay UCamera::ScreenToRay(FIntPoint ScreenPosition, float ScreenWidth, float ScreenHeight)
+{
+	FVector2 normalizedPoint = MathUtils::ScreenToNDC(ScreenPosition, ScreenWidth, ScreenHeight);
+	FVector4 nearNormalized = { normalizedPoint.X, normalizedPoint.Y, 0.0f, 1.0f };
+	FVector4 farNormalized = { normalizedPoint.X, normalizedPoint.Y, 1.0f, 1.0f };
+
+	FMatrix InverseProj;
+	if (othogonalEnable)
+		InverseProj = FMatrix::CreateOrthogonalProjectionInverse(FarZ, NearZ, 20.0f, 20.0f);
+	else InverseProj = FMatrix::CreateProjectionInverse(ScreenWidth / ScreenHeight, DegreesToRadians(FovAngle), FarZ, NearZ);
+
+	FMatrix InverseView = FMatrix::CreateView(GetRelativeLocation(), GetRightVector(), GetUPVector(), GetForwardVector()).Inverse();
+	FVector4 deprojectedFar = (farNormalized * InverseProj * InverseView).DivideByW();
+	FVector4 deprojectedNear = (nearNormalized * InverseProj * InverseView).DivideByW();
+	FVector3 rayOrigin = { deprojectedNear.X, deprojectedNear.Y, deprojectedNear.Z };
+	FVector3 rayEnd = { deprojectedFar.X, deprojectedFar.Y, deprojectedFar.Z };
+	FVector3 rayDirection = (rayEnd - rayOrigin).Normalize();
+
+	return FRay{ rayOrigin, rayDirection };
 }

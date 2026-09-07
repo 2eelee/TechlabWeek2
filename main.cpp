@@ -11,6 +11,7 @@
 
 #include "URenderer.h"
 #include "UCamera.h"
+#include "FGizmo.h"
 
 #include "Window.h"
 #include "ImGuiManager.h"
@@ -22,6 +23,10 @@
 #include "USceneComponent.h"
 #include "FObjectFactory.h"
 #include "FEditor.h"
+
+#include "InputManager.h"
+
+FConsoleWindow* GConsoleWindow = nullptr;
 
 // WinMain
 int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstanc ,LPSTR lpCmdLine,int nCmdShow)
@@ -39,6 +44,9 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstanc ,LPSTR lpCmdLine,i
 
 	FEditor EditorUI;
 
+	FConsoleWindow console;
+	extern FConsoleWindow* GConsoleWindow;
+	GConsoleWindow = &console;
 	extern URenderer* GRenderer;
 
 	// Renderer 생성
@@ -51,37 +59,27 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstanc ,LPSTR lpCmdLine,i
 	// Shader 생성
 	renderer.CreateShader();
 
+	// BlendState 생성
+	renderer.CreateAlphaBlendState();
+
 	// 여기에 생성 함수를 추가합니다.
 	MeshManager::Get().Initialize(renderer);
 	renderer.CreateConstantBuffer();
+
+	FGizmo Gizmo;
+	Gizmo.Initialize(renderer);
 
 	// ImGui 생성
 	FImGuiManager imguiManager;
 
 	// 여기에서 ImGui를 생성합니다.
 	imguiManager.Create(hWnd, renderer.Device, renderer.DeviceContext);
-	camera->AspectRatio = (float)renderer.ViewportInfo.Width / renderer.ViewportInfo.Height;
-
-	// Console 객체
-	
-	// while 밖에 있어야 로그가 계속 유지됨
-
-	FConsoleWindow console;
-
-	bool showConsole = true;
-
 
 	// Console / Host 비율
 	// 처음에는
 	// Width  = Host의 50%
 	// Height = Host의 30%
-
-	float consoleWidthRatio =0.5f;
-
-	float consoleHeightRatio = 0.3f;
-
-	bool consoleRatioInitialized = false;
-
+	
 	// 프로그램 종료 여부
 	
 	bool bIsExit = false;
@@ -122,6 +120,11 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstanc ,LPSTR lpCmdLine,i
 			}
 		}
 
+		if (InputManager::GetInstance().GetKeyDown(VK_SPACE))
+		{
+			Gizmo.CycleMode();
+		}
+
 		if (bIsExit)
 		{
 			break;
@@ -132,7 +135,6 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstanc ,LPSTR lpCmdLine,i
 	
 		// 준비 작업
 		renderer.Prepare();
-
 		renderer.PrepareShader();
 
 		InputManager& manager = InputManager::GetInstance();
@@ -166,73 +168,41 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstanc ,LPSTR lpCmdLine,i
 				primitive->Render(renderer);
 			}
 		}
-
-		// ImGui Frame 시작
-		imguiManager.BeginFrame();
-
-		// 현재 Host 크기
-		// 반드시 while 안에서 매 프레임 다시 가져옴
-		ImGuiIO& io = ImGui::GetIO();
-
-		float hostWidth = io.DisplaySize.x;
-		float hostHeight = io.DisplaySize.y;
-
-		// Console 첫 크기 설정
-		// 처음 한 번:
 		
-		// Host × 0.5
-		// Host × 0.3
-		if (!consoleRatioInitialized)
+		Gizmo.DrawGrid(renderer, camera);
+
+		// 임시 Loop: Local Axis / Gizmo 도형마다 전부 그리기 - 
+		for (UObject* object : GUObjectArray)
 		{
-			ImGui::SetNextWindowSize(ImVec2( hostWidth *consoleWidthRatio, hostHeight *consoleHeightRatio), ImGuiCond_Always);
-		}
-
-		// Host 크기가 변경됐다면
-
-		// 직전에 저장되어 있던 Console 비율을 이용해서
-		// Console 크기도 같이 변경
-
-		else if (GWindowSizeChanged)
-		{
-			float newConsoleWidth = hostWidth *consoleWidthRatio;
-			float newConsoleHeight = hostHeight *consoleHeightRatio;
-			ImGui::SetNextWindowSize(ImVec2(newConsoleWidth,newConsoleHeight),ImGuiCond_Always);
-		}
-	
-		// Console Draw Begin() 로그 출력 Input Enter End() 전부 여기 안에서 처리
-		if (showConsole)
-		{
-			console.Draw("Example: Console", &showConsole);
-		}
-
-		// Host 자체를 Resize하고 있는 중이 아니라면
-		// 사용자가 Console을 바꾼 결과를 계속 저장
-	
-
-		if (!GIsResizing &&showConsole)
-		{
-			if (hostWidth > 0.0f &&hostHeight > 0.0f)
+			UPrimitiveComponent* primitive = object->Cast<UPrimitiveComponent>(object);
+			if (primitive)
 			{
-				// 현재 Console Width / Host Width
-				consoleWidthRatio = console.WindowSize.x / hostWidth;
-
-				// 현재 Console Height / Host Height
-				consoleHeightRatio =console.WindowSize.y /hostHeight;
-				consoleRatioInitialized =true;
+				Gizmo.DrawLocalAxis(renderer, camera, primitive);
+				Gizmo.DrawTransformGizmo(renderer, camera, primitive);
 			}
 		}
 
-		// 이번 Host Resize 처리는 끝났음
-		GWindowSizeChanged =false;
+		Gizmo.DrawWorldAxis(renderer, camera);
 
-		// ImGui Frame 종료
+		float deltaTime = ImGui::GetIO().DeltaTime;
+		
+		Cam->CamMove(deltaTime);
+
+		// ImGui Frame 시작
+		imguiManager.BeginFrame();
+		
 		// 이후 ImGui UI 컨트롤 추가는 ImGui::NewFrame()과 ImGui::Render() 사이인 여기에 위치합니다. 
-
-		EditorUI.DrawStatUI();
+		EditorUI.UpdateWindowSize();
+		EditorUI.DrawConsoleUI();
 		EditorUI.DrawPropertyUI();
 		EditorUI.DrawControlUI();
+		EditorUI.DrawStatUI();
+
+		GWindowSizeChanged = false;
+
 		imguiManager.EndFrame();
 
+		InputManager::GetInstance().Update();
 
 		// Buffer 교환
 		renderer.SwapBuffer();
@@ -255,6 +225,8 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstanc ,LPSTR lpCmdLine,i
 	// ImGui 소멸
 	imguiManager.Release();
 
+	Gizmo.Release(renderer);
+
 	// 버텍스 버퍼 소멸은 Renderer 소멸 전에 처리합니다.
 	MeshManager::Get().Release(renderer);
 
@@ -266,6 +238,10 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstanc ,LPSTR lpCmdLine,i
 
 	// Shader 소멸
 	renderer.ReleaseShader();
+
+	// BlendState 소멸
+	renderer.ReleaseAlphaBlendState();
+
 	// Renderer 소멸
 	renderer.Release();
 	return 0;

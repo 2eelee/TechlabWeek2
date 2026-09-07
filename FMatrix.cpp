@@ -166,6 +166,11 @@ inline FMatrix FMatrix::operator*(float scalar) const
 	};
 }
 
+FMatrix FMatrix::Identity()
+{
+	return FMatrix();
+}
+
 FMatrix FMatrix::Inverse() const
 {
 	float c00 = MathUtils::Det3x3(

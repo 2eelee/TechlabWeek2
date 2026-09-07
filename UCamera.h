@@ -11,7 +11,7 @@ struct UCamera: public USceneComponent
 	float FarZ;
 	float NearZ;
 	float FovAngle;
-	float AspectRatio;
+	float orthowidth;
 
 	bool othogonalEnable = false;
 
@@ -20,34 +20,18 @@ struct UCamera: public USceneComponent
 		FarZ = 1000.0f;
 		NearZ = 1.0f;
 		FovAngle = 90.0f;
+		orthowidth = 15.0f;
 	}
 
-	virtual FVector3 GetForwardVector();
-	virtual FVector3 GetRightVector();
-	virtual FVector3 GetUPVector();
+	FVector3 GetForwardVector();
+	FVector3 GetRightVector();
+	FVector3 GetUPVector();
+	void SetOrthoWidth(float width);
 
-	virtual void AddPitch(float pitchradian);
-	virtual void AddYaw(float yawradian);
-	virtual void AddFov(float fovRad);
+	void AddPitch(float pitchradian);
+    void AddYaw(float yawradian);
 
-	FRay ScreenToRay(FIntPoint ScreenPosition, float ScreenWidth, float ScreenHeight)
-	{
-		FVector2 normalizedPoint = MathUtils::ScreenToNDC(ScreenPosition, ScreenWidth, ScreenHeight);
-		FVector4 nearNormalized = { normalizedPoint.X, normalizedPoint.Y, 0.0f, 1.0f };
-		FVector4 farNormalized = { normalizedPoint.X, normalizedPoint.Y, 1.0f, 1.0f };
+	void CamMove(float deltaTime);
 
-		FMatrix InverseProj;
-		if (othogonalEnable)
-			InverseProj = FMatrix::CreateOrthogonalProjectionInverse(FarZ, NearZ, 20.0f, 20.0f);
-		else InverseProj = FMatrix::CreateProjectionInverse(AspectRatio, DegreesToRadians(FovAngle), FarZ, NearZ);
-
-		FMatrix InverseView = FMatrix::CreateView(GetRelativeLocation(), GetRightVector(), GetUPVector(), GetForwardVector()).Inverse();
-		FVector4 deprojectedFar = (farNormalized * InverseProj * InverseView).DivideByW();
-		FVector4 deprojectedNear = (nearNormalized * InverseProj * InverseView).DivideByW();
-		FVector3 rayOrigin = { deprojectedNear.X, deprojectedNear.Y, deprojectedNear.Z };
-		FVector3 rayEnd = { deprojectedFar.X, deprojectedFar.Y, deprojectedFar.Z };
-		FVector3 rayDirection = (rayEnd - rayOrigin).Normalize();
-
-		return FRay{ rayOrigin, rayDirection };
-	}
+	FRay ScreenToRay(FIntPoint ScreenPosition, float ScreenWidth, float ScreenHeight);
 };
