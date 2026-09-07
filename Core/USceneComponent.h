@@ -40,7 +40,7 @@ public:
 		}
 	}
 
-	bool IsHit(FRay& ray) const
+	bool IsHit(FRay& ray, float& hitDistance) const
 	{
 		FMatrix modelInverse = GetModelMatrix().Inverse();
 		FVector4 localOrigin = FVector4{ ray.Origin.x, ray.Origin.y, ray.Origin.z, 1.0f } * modelInverse;
@@ -83,6 +83,7 @@ public:
 			if (t < 0.0f)
 				continue;
 
+			hitDistance = t;
 			return true;
 		}
 

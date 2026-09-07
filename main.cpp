@@ -146,18 +146,30 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstanc ,LPSTR lpCmdLine,i
 		{
 			FIntPoint ScreenPos = manager.GetMousePosition();
 			FRay ray = camera->ScreenToRay(ScreenPos, (float)GWindowWidth, (float)GWindowHeight);
+			UPrimitiveComponent* closestPrimitive = nullptr;
+			float hitDistance = 0.0f;
+			float closestDistance = FLT_MAX;
 
 			for (UObject* object : GUObjectArray)
 			{
 				UPrimitiveComponent* primitive = object->Cast<UPrimitiveComponent>(object);
 				if (primitive)
 				{
-					if (primitive->IsHit(ray))
+					if (primitive->IsHit(ray, hitDistance))
 					{
-						// Add object selection logic
-						break;
+						if (hitDistance < closestDistance)
+						{
+							closestDistance = hitDistance;
+							closestPrimitive = primitive;
+						}
 					}
 				}
+			}
+
+			if (closestPrimitive)
+			{
+				// TODO: select logic
+				std::cout << closestPrimitive->UUID << " " << std::endl;
 			}
 		}
 
