@@ -144,7 +144,10 @@
   <ItemGroup>
     <ClCompile Include="FConsoleWindow.cpp" />
     <ClCompile Include="Core\UObject.cpp" />
+    <ClCompile Include="FMatrix.cpp" />
     <ClCompile Include="FMemory.cpp" />
+    <ClCompile Include="FVector3.cpp" />
+    <ClCompile Include="FVector4.cpp" />
     <ClCompile Include="ImGuiManager.cpp" />
     <ClCompile Include="ImGui\imgui.cpp" />
     <ClCompile Include="ImGui\imgui_demo.cpp" />
@@ -172,6 +175,7 @@
     <ClInclude Include="FIntPoint.h" />
     <ClInclude Include="FConsoleWindow.h" />
     <ClInclude Include="Containers.h" />
+    <ClInclude Include="FRay.h" />
     <ClInclude Include="MathUtils.h" />
     <ClInclude Include="Core\USceneComponent.h" />
     <ClInclude Include="FEditor.h" />

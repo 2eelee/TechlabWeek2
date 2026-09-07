@@ -55,14 +55,22 @@
     <ClCompile Include="ImGuiManager.cpp">
       <Filter>Editor</Filter>
     </ClCompile>
-    <ClCompile Include="FConstants.h">
-      <Filter>Rendering</Filter>
-    </ClCompile>
     <ClCompile Include="FMemory.cpp">
       <Filter>Core\Memory</Filter>
     </ClCompile>
-    <ClCompile Include="URenderer.cpp">
-      <Filter>소스 파일</Filter>
+    <ClCompile Include="FConsoleWindow.cpp" />
+    <ClCompile Include="Core\UObject.cpp" />
+    <ClCompile Include="InputManager.cpp" />
+    <ClCompile Include="URenderer.cpp" />
+    <ClCompile Include="UCamera.cpp" />
+    <ClCompile Include="FVector3.cpp">
+      <Filter>Math</Filter>
+    </ClCompile>
+    <ClCompile Include="FMatrix.cpp">
+      <Filter>Math</Filter>
+    </ClCompile>
+    <ClCompile Include="FVector4.cpp">
+      <Filter>Math</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -110,9 +118,6 @@
     <ClInclude Include="FVertexSimple.h">
       <Filter>Rendering</Filter>
     </ClInclude>
-    <ClInclude Include="Sphere.h">
-      <Filter>Object</Filter>
-    </ClInclude>
     <ClInclude Include="ImGuiManager.h">
       <Filter>Editor</Filter>
     </ClInclude>
@@ -122,11 +127,33 @@
     <ClInclude Include="FMemory.h">
       <Filter>Core\Memory</Filter>
     </ClInclude>
-    <ClInclude Include="FMatrix.h">
-      <Filter>헤더 파일</Filter>
+    <ClInclude Include="FConstants.h" />
+    <ClInclude Include="FIntPoint.h" />
+    <ClInclude Include="FConsoleWindow.h" />
+    <ClInclude Include="Core\USceneComponent.h" />
+    <ClInclude Include="FEditor.h" />
+    <ClInclude Include="Core\FObjectFactory.h" />
+    <ClInclude Include="Core\TSubclassOf.h" />
+    <ClInclude Include="Core\UClass.h" />
+    <ClInclude Include="Core\UEngineStatics.h" />
+    <ClInclude Include="Core\UObject.h" />
+    <ClInclude Include="InputManager.h" />
+    <ClInclude Include="MeshManager.h" />
+    <ClInclude Include="UCamera.h" />
+    <ClInclude Include="USceneManager.h" />
+    <ClInclude Include="Vertices.h" />
+    <ClInclude Include="MathUtils.h">
+      <Filter>Math</Filter>
     </ClInclude>
-    <ClInclude Include="Cube.h">
-      <Filter>헤더 파일</Filter>
+    <ClInclude Include="FRay.h" />
+    <ClInclude Include="FVector2.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="FVector4.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="FMatrix.h">
+      <Filter>Math</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
