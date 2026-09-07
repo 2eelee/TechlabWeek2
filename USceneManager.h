@@ -22,7 +22,7 @@ public:
 
 	bool SaveScene(const FString& Scenename)
 	{
-		FString Scenefilename = FString(Scenename) + ".json";
+		FString Scenefilename = "SaveScene\\" + FString(Scenename) + ".json";
 		json SavedScene;
 		int ObjectNum = 0;
 		SavedScene["Version"] = 3;
