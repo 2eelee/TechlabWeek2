@@ -9,6 +9,7 @@ struct UCamera: public USceneComponent
 	float NearZ;
 	float FovAngle;
 	float AspectRatio;
+	float orthowidth;
 
 	bool othogonalEnable = false;
 
@@ -17,15 +18,17 @@ struct UCamera: public USceneComponent
 		FarZ = 1000.0f;
 		NearZ = 1.0f;
 		FovAngle = 90.0f;
+		orthowidth = 15.0f;
 	}
 
 	virtual FVector3 GetForwardVector();
 	virtual FVector3 GetRightVector();
 	virtual FVector3 GetUPVector();
 
+	virtual void SetOrthoWidth(float width);
+
 	virtual void AddPitch(float pitchradian);
 	virtual void AddYaw(float yawradian);
-	virtual void AddFov(float fovRad);
 };
 
 
