@@ -71,6 +71,8 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstanc ,LPSTR lpCmdLine,i
 	// Width  = Host의 50%
 	// Height = Host의 30%
 
+	float deltaTime = ImGui::GetIO().DeltaTime;
+
 	
 	// 프로그램 종료 여부
 	
@@ -137,6 +139,7 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstanc ,LPSTR lpCmdLine,i
 			}
 		}
 
+		Cam->CamMove(deltaTime);
 		// ImGui Frame 시작
 		imguiManager.BeginFrame();
 		

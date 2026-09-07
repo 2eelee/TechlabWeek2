@@ -3,6 +3,7 @@
 #include "UCamera.h"
 #include <algorithm>
 #include "FMatrix.h"
+#include "InputManager.h"
 
 FVector3 UCamera::GetForwardVector()
 {
@@ -45,4 +46,31 @@ void UCamera::AddYaw(float deltaAngle)
 	FVector3 rot = GetRelativeRotation();
 	rot.y += deltaAngle;
 	SetRelativeRotation(rot);
+}
+
+void UCamera::CamMove(float deltaTime)
+{
+	float speed = 10.0f;
+	float moveDist = speed * deltaTime;
+
+	if (InputManager::GetInstance().GetKeyDown('W'))
+	{
+		FVector3 Loc = this->GetRelativeLocation();
+		this->SetRelativeLocation(Loc+this->GetForwardVector()*moveDist);
+	}
+	if (InputManager::GetInstance().GetKeyDown('S'))
+	{
+		FVector3 Loc = this->GetRelativeLocation();
+		this->SetRelativeLocation(Loc - (this->GetForwardVector() * moveDist));
+	}
+	if (InputManager::GetInstance().GetKeyDown('D'))
+	{
+		FVector3 Loc = this->GetRelativeLocation();
+		this->SetRelativeLocation(Loc + this->GetRightVector() * moveDist);
+	}
+	if (InputManager::GetInstance().GetKeyDown('A'))
+	{
+		FVector3 Loc = this->GetRelativeLocation();
+		this->SetRelativeLocation(Loc -(this->GetRightVector() * moveDist));
+	}
 }
