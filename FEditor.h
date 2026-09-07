@@ -7,6 +7,7 @@
 #include "UCamera.h"
 #include "FConsoleWindow.h"
 #include "Window.h"
+#include "USceneManager.h"
 
 const char* items[] = { "Sphere", "Cube", "Plane" };
 static char name_buffer[32] = "HelloScene";
@@ -125,10 +126,19 @@ public:
 		ImGui::SetNextItemWidth(-120.0f);
 		ImGui::InputInt("Number of spawn", &spawnCount, 0, 0, ImGuiInputTextFlags_ReadOnly);
 		ImGui::Separator();
-		ImGui::InputText("SceneName", name_buffer, sizeof(name_buffer), ImGuiInputTextFlags_ReadOnly);
-		ImGui::Button("New Scene");
-		ImGui::Button("Save Scene");
-		ImGui::Button("Load Scene");
+		ImGui::InputText("SceneName", name_buffer, sizeof(name_buffer));
+		if (ImGui::Button("New Scene"))
+		{
+			USceneManager::GetInstance().ClearScene();
+		}
+		if (ImGui::Button("Save Scene"))
+		{
+			USceneManager::GetInstance().SaveScene(name_buffer);
+		}
+		if (ImGui::Button("Load Scene"))
+		{
+			USceneManager::GetInstance().LoadScene(name_buffer);
+		}
 		ImGui::Separator();
 		for (UObject* object : GUObjectArray)
 		{
