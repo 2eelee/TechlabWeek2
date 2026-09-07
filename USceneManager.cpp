@@ -69,6 +69,7 @@ bool USceneManager::ClearScene()
 		if (primitive)
 		{
 			delete primitive;
+			
 		}
 	}
 	UE_LOG(Log, Success, "Open New Scene.");

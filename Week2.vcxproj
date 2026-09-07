@@ -144,6 +144,7 @@
   <ItemGroup>
     <ClCompile Include="FConsoleWindow.cpp" />
     <ClCompile Include="Core\UObject.cpp" />
+    <ClCompile Include="FEditor.cpp" />
     <ClCompile Include="FGizmo.cpp" />
     <ClCompile Include="FMatrix.cpp" />
     <ClCompile Include="FMemory.cpp" />

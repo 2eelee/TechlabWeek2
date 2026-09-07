@@ -166,7 +166,7 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstanc ,LPSTR lpCmdLine,i
 
 		float deltaTime = ImGui::GetIO().DeltaTime;
 		
-		Cam->CamMove(deltaTime);
+		camera->CamMove(deltaTime);
 
 		// ImGui Frame 시작
 		imguiManager.BeginFrame();
