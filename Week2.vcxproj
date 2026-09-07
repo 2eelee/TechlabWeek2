@@ -144,6 +144,7 @@
   <ItemGroup>
     <ClCompile Include="FConsoleWindow.cpp" />
     <ClCompile Include="Core\UObject.cpp" />
+    <ClCompile Include="FGizmo.cpp" />
     <ClCompile Include="FMemory.cpp" />
     <ClCompile Include="ImGuiManager.cpp" />
     <ClCompile Include="ImGui\imgui.cpp" />
@@ -169,6 +170,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FConstants.h" />
+    <ClInclude Include="FGizmo.h" />
     <ClInclude Include="FIntPoint.h" />
     <ClInclude Include="FConsoleWindow.h" />
     <ClInclude Include="Containers.h" />

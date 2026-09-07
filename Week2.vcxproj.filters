@@ -1,9 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Shaders">
-      <UniqueIdentifier>{a803b290-f403-4d88-8092-70083640cd18}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ImGui">
       <UniqueIdentifier>{ffaf7326-d28d-4524-a319-a55ba64e1977}</UniqueIdentifier>
     </Filter>
@@ -27,6 +24,18 @@
     </Filter>
     <Filter Include="Core\Memory">
       <UniqueIdentifier>{c74dfacd-6611-4605-9a25-160ef22a684f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scene">
+      <UniqueIdentifier>{c0fa4530-377f-4fe3-9238-409854e61760}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Input">
+      <UniqueIdentifier>{442c8d64-b1b6-4257-9503-b36b54070ce7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Rendering\Shaders">
+      <UniqueIdentifier>{a803b290-f403-4d88-8092-70083640cd18}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine">
+      <UniqueIdentifier>{7f0aef0f-1564-439f-81b6-4e7d0a4d95bd}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -58,19 +67,31 @@
     <ClCompile Include="ImGuiManager.cpp">
       <Filter>Editor</Filter>
     </ClCompile>
-    <ClCompile Include="FConstants.h">
-      <Filter>Rendering</Filter>
-    </ClCompile>
     <ClCompile Include="FMemory.cpp">
       <Filter>Core\Memory</Filter>
     </ClCompile>
+    <ClCompile Include="Core\UObject.cpp">
+      <Filter>Object</Filter>
+    </ClCompile>
+    <ClCompile Include="UCamera.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="FConsoleWindow.cpp">
+      <Filter>Platform</Filter>
+    </ClCompile>
+    <ClCompile Include="InputManager.cpp">
+      <Filter>Input</Filter>
+    </ClCompile>
     <ClCompile Include="URenderer.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="FGizmo.cpp">
+      <Filter>Editor</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="DefaultShader.hlsl">
-      <Filter>Shaders</Filter>
+      <Filter>Rendering\Shaders</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
@@ -113,9 +134,6 @@
     <ClInclude Include="FVertexSimple.h">
       <Filter>Rendering</Filter>
     </ClInclude>
-    <ClInclude Include="Sphere.h">
-      <Filter>Object</Filter>
-    </ClInclude>
     <ClInclude Include="ImGuiManager.h">
       <Filter>Editor</Filter>
     </ClInclude>
@@ -125,11 +143,59 @@
     <ClInclude Include="FMemory.h">
       <Filter>Core\Memory</Filter>
     </ClInclude>
-    <ClInclude Include="FMatrix.h">
-      <Filter>헤더 파일</Filter>
+    <ClInclude Include="FVector4.h">
+      <Filter>Math</Filter>
     </ClInclude>
-    <ClInclude Include="Cube.h">
-      <Filter>헤더 파일</Filter>
+    <ClInclude Include="FMatrix.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="FIntPoint.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\UObject.h">
+      <Filter>Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\UClass.h">
+      <Filter>Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\TSubclassOf.h">
+      <Filter>Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\FObjectFactory.h">
+      <Filter>Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\USceneComponent.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="USceneManager.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="UCamera.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="FEditor.h">
+      <Filter>Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="FConsoleWindow.h">
+      <Filter>Platform</Filter>
+    </ClInclude>
+    <ClInclude Include="InputManager.h">
+      <Filter>Input</Filter>
+    </ClInclude>
+    <ClInclude Include="FConstants.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Vertices.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="MeshManager.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\UEngineStatics.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="FGizmo.h">
+      <Filter>Editor</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

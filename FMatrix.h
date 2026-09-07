@@ -21,6 +21,11 @@ struct FMatrix
 		}
 	}
 
+	static FMatrix Identity()
+	{
+		return FMatrix();
+	}
+
 	static FMatrix Zero()
 	{
 		FMatrix result;
@@ -160,7 +165,7 @@ struct FMatrix
 	}
 };
 
-static float PI = 3.1415926535897932f;
+inline constexpr float PI = 3.1415926535897932f;
 static float DegreesToRadians(float Degrees)
 {
 	return Degrees * (PI / 180.0f);

@@ -30,6 +30,8 @@ class UPrimitiveComponent : public USceneComponent
 
 	void Render(URenderer& renderer)
 	{
+		renderer.SetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
 		if (VertexBuffer && VertexCount > 0)
 		{
 			renderer.RenderPrimitive(VertexBuffer, VertexCount);

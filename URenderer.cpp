@@ -12,13 +12,20 @@ FMatrix URenderer::CreateMVP(UPrimitiveComponent* Primitive, UCamera* Camera)
 		* FMatrix::CreateRotationZ(DegreesToRadians(Primitive->GetRelativeRotation().z));
 	FMatrix TranslationM = FMatrix::CreateTranslation(Primitive->GetRelativeLocation().x, Primitive->GetRelativeLocation().y, Primitive->GetRelativeLocation().z);
 	FMatrix Model = scaleM * RotationM * TranslationM;
+
+	return CreateMVPFromModel(Model, Camera);
+	
+}
+
+FMatrix URenderer::CreateMVPFromModel(const FMatrix& Model, UCamera* Camera)
+{
 	FMatrix View = FMatrix::CreateView(Camera->GetRelativeLocation(), Camera->GetRightVector(), Camera->GetUPVector(), Camera->GetForwardVector());
 	FMatrix Proj;
-	if (Camera->othogonalEnable) 
+	if (Camera->othogonalEnable)
 	{
-		Proj = FMatrix::CreateOrthogonalProjection(Camera->FarZ, Camera->NearZ, Camera->orthowidth, Camera->orthowidth/AspectRatio);
+		Proj = FMatrix::CreateOrthogonalProjection(Camera->FarZ, Camera->NearZ, Camera->orthowidth, Camera->orthowidth / AspectRatio);
 	}
 	else Proj = FMatrix::CreateProjection(Camera->FarZ, Camera->NearZ, DegreesToRadians(Camera->FovAngle), AspectRatio);
-	
+
 	return Model * View * Proj;
 }

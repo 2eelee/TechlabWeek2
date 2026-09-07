@@ -8,12 +8,8 @@
 #include "FConstants.h"
 #include "FMatrix.h"
 
-
-
 #pragma comment(lib, "user32")
 #pragma comment(lib, "d3d11")
-
-#include <d3dcompiler.h>
 #pragma comment(lib, "d3dcompiler")
 
 
@@ -27,6 +23,8 @@ public:
 
 	float AspectRatio;
 	FMatrix CreateMVP(UPrimitiveComponent* Primitive, UCamera* Camera);
+	FMatrix CreateMVPFromModel(const FMatrix& Model, UCamera* Camera);
+
 	// Direct3D 11 장치와 장치 컨텍스트 및 스왑 체인을 관리하기 위한 포인터들
 	ID3D11Device* Device = nullptr; // GPU와 통신하기 위한 Direct3D 장치
 	ID3D11DeviceContext* DeviceContext = nullptr; // GPU 명령 실행을 담당하는 컨텍스트
@@ -36,6 +34,15 @@ public:
 	ID3D11Texture2D* FrameBuffer = nullptr; // 화면 출력용 텍스처
 	ID3D11RenderTargetView* FrameBufferRTV = nullptr; // 텍스처를 렌더 타겟으로 사용하는 뷰
 	ID3D11RasterizerState* RasterizerState = nullptr; // 래스터라이저 상태(컬링, 채우기 모드 등 정의)
+	ID3D11RasterizerState* NoCullRasterizerState = nullptr;
+
+	ID3D11BlendState* AlphaBlendState = nullptr;
+
+	ID3D11Texture2D* DepthStencilBuffer = nullptr;
+	ID3D11DepthStencilView* DepthStencilView = nullptr;
+	ID3D11DepthStencilState* DepthStencilState = nullptr;
+	ID3D11DepthStencilState* DepthReadOnlyState = nullptr;
+
 
 	FLOAT ClearColor[4] = { 0.025f, 0.025f, 0.025f, 1.0f }; // 화면을 초기화(clear)할 때 사용할 색상(RGBA)
 	D3D11_VIEWPORT ViewportInfo; // 렌더링 영역을 정의하는 뷰포트 정보
@@ -53,7 +60,11 @@ public:
 		// 래스터라이저 상태 생성
 		CreateRasterizerState();
 
-		// 깊이 스텐실 버퍼 및 블렌드 상태는 이 코드에서는 다루지 않음
+		CreateAlphaBlendState();
+
+		CreateDepthStencilBuffer();
+		CreateDepthStencilState();
+		CreateDepthReadOnlyState();
 	}
 
 	void CreateDeviceAndSwapChain(HWND hWindow)
@@ -89,23 +100,22 @@ public:
 	// Direct3D 장치 및 스왑 체인을 해제하는 함수
 	void ReleaseDeviceAndSwapChain()
 	{
-		if (DeviceContext) {
-			DeviceContext->Flush(); // 남아있는 GPU 명령 실행
-		}
-
-		if (SwapChain) {
+		if (SwapChain)
+		{
 			SwapChain->Release();
 			SwapChain = nullptr;
 		}
 
-		if (Device) {
-			Device->Release();
-			Device = nullptr;
-		}
-
-		if (DeviceContext) {
+		if (DeviceContext)
+		{
 			DeviceContext->Release();
 			DeviceContext = nullptr;
+		}
+
+		if (Device)
+		{
+			Device->Release();
+			Device = nullptr;
 		}
 	}
 
@@ -144,9 +154,20 @@ public:
 	{
 		D3D11_RASTERIZER_DESC rasterizerDesc = {};
 		rasterizerDesc.FillMode = D3D11_FILL_SOLID; // 채우기 모드
-		rasterizerDesc.CullMode = D3D11_CULL_BACK; // 백 페이스 컬링
 
+		rasterizerDesc.CullMode = D3D11_CULL_BACK; // 백 페이스 컬링
 		Device->CreateRasterizerState(&rasterizerDesc, &RasterizerState);
+
+		rasterizerDesc.CullMode = D3D11_CULL_NONE;
+		Device->CreateRasterizerState(&rasterizerDesc, &NoCullRasterizerState);
+	}
+
+	void SetCullMode(D3D11_CULL_MODE Mode)
+	{
+		if (Mode == D3D11_CULL_NONE)
+			DeviceContext->RSSetState(NoCullRasterizerState);
+		else
+			DeviceContext->RSSetState(RasterizerState);
 	}
 
 	void Resize(UINT width, UINT height)
@@ -157,6 +178,11 @@ public:
 		}
 
 		ReleaseFrameBuffer();
+		
+		DeviceContext->OMSetRenderTargets(0, nullptr, nullptr);
+
+		ReleaseDepthStencilBuffer();
+		ReleaseFrameBuffer();
 
 		SwapChain->ResizeBuffers(
 			0,
@@ -166,12 +192,13 @@ public:
 			0
 		);
 
-		CreateFrameBuffer();
-
 		ViewportInfo.Width = static_cast<float>(width);
 		ViewportInfo.Height = static_cast<float>(height);
 
 		AspectRatio = ViewportInfo.Width / ViewportInfo.Height;
+
+		CreateFrameBuffer();
+		CreateDepthStencilBuffer();
 
 		DeviceContext->RSSetViewports( 1, &ViewportInfo );
 	}
@@ -184,17 +211,31 @@ public:
 			RasterizerState->Release();
 			RasterizerState = nullptr;
 		}
+
+		if (NoCullRasterizerState)
+		{
+			NoCullRasterizerState->Release();
+			NoCullRasterizerState = nullptr;
+		}
 	}
 
 	// 렌더러에 사용된 모든 리소스를 해제하는 함수
 	void Release()
 	{
+		if (DeviceContext)
+		{
+			DeviceContext->ClearState();
+			DeviceContext->Flush();
+		}
+
+		ReleaseAlphaBlendState();
 		ReleaseRasterizerState();
 
-		// 렌더 타겟을 초기화
-		DeviceContext->OMSetRenderTargets(0, nullptr, nullptr);
+		ReleaseDepthStencilState();
+		ReleaseDepthStencilBuffer();
 
 		ReleaseFrameBuffer();
+
 		ReleaseDeviceAndSwapChain();
 	}
 
@@ -204,10 +245,10 @@ public:
 		SwapChain->Present(1, 0); // 1: VSync 활성화
 	}
 
-	ID3D11VertexShader* SimpleVertexShader;
-	ID3D11PixelShader* SimplePixelShader;
-	ID3D11InputLayout* SimpleInputLayout;
-	unsigned int Stride;
+	ID3D11VertexShader* SimpleVertexShader = nullptr;
+	ID3D11PixelShader* SimplePixelShader = nullptr;
+	ID3D11InputLayout* SimpleInputLayout = nullptr;
+	unsigned int Stride = 0;
 
 	void CreateShader()
 	{
@@ -260,15 +301,22 @@ public:
 	void Prepare()
 	{
 		DeviceContext->ClearRenderTargetView(FrameBufferRTV, ClearColor);
+		DeviceContext->ClearDepthStencilView(DepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
 
-		DeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+		SetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 		DeviceContext->RSSetViewports(1, &ViewportInfo);
 		DeviceContext->RSSetState(RasterizerState);
 
-		DeviceContext->OMSetRenderTargets(1, &FrameBufferRTV, nullptr);
+		DeviceContext->OMSetRenderTargets(1, &FrameBufferRTV, DepthStencilView);
 		DeviceContext->OMSetBlendState(nullptr, nullptr, 0xFFFFFFFF);
+		DeviceContext->OMSetDepthStencilState(DepthStencilState, 0);
+		DeviceContext->OMSetDepthStencilState(DepthReadOnlyState, 0);
+	}
 
+	void SetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY Topology)
+	{
+		DeviceContext->IASetPrimitiveTopology(Topology);
 	}
 
 	void PrepareShader()
@@ -314,6 +362,151 @@ public:
 		{
 			pBuffer->Release();
 		}
+	}
+
+	void CreateAlphaBlendState()
+	{
+		D3D11_BLEND_DESC blendDesc = {};
+
+		blendDesc.RenderTarget[0].BlendEnable = TRUE;
+
+		blendDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
+		blendDesc.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
+		blendDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+
+		blendDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
+		blendDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
+		blendDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+
+		blendDesc.RenderTarget[0].RenderTargetWriteMask =
+			D3D11_COLOR_WRITE_ENABLE_ALL;
+
+		Device->CreateBlendState(&blendDesc, &AlphaBlendState);
+	}
+
+	void SetAlphaBlend(bool bEnable)
+	{
+		if (bEnable)
+		{
+			DeviceContext->OMSetBlendState(
+				AlphaBlendState,
+				nullptr,
+				0xFFFFFFFF
+			);
+		}
+		else
+		{
+			DeviceContext->OMSetBlendState(
+				nullptr,
+				nullptr,
+				0xFFFFFFFF
+			);
+		}
+	}
+
+	void ReleaseAlphaBlendState()
+	{
+		if (AlphaBlendState)
+		{
+			AlphaBlendState->Release();
+			AlphaBlendState = nullptr;
+		}
+	}
+
+	void CreateDepthStencilBuffer()
+	{
+		D3D11_TEXTURE2D_DESC depthDesc = {};
+
+		depthDesc.Width = static_cast<UINT>(ViewportInfo.Width);
+		depthDesc.Height = static_cast<UINT>(ViewportInfo.Height);
+		depthDesc.MipLevels = 1;
+		depthDesc.ArraySize = 1;
+		depthDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+		depthDesc.SampleDesc.Count = 1;
+		depthDesc.SampleDesc.Quality = 0;
+		depthDesc.Usage = D3D11_USAGE_DEFAULT;
+		depthDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+
+		Device->CreateTexture2D(
+			&depthDesc,
+			nullptr,
+			&DepthStencilBuffer
+		);
+
+		Device->CreateDepthStencilView(
+			DepthStencilBuffer,
+			nullptr,
+			&DepthStencilView
+		);
+	}
+
+	void CreateDepthStencilState()
+	{
+		D3D11_DEPTH_STENCIL_DESC depthDesc = {};
+
+		depthDesc.DepthEnable = TRUE;
+		depthDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+		depthDesc.DepthFunc = D3D11_COMPARISON_LESS;
+
+		depthDesc.StencilEnable = FALSE;
+
+		Device->CreateDepthStencilState(
+			&depthDesc,
+			&DepthStencilState
+		);
+	}
+
+	void CreateDepthReadOnlyState()
+	{
+		D3D11_DEPTH_STENCIL_DESC desc = {};
+
+		desc.DepthEnable = TRUE;
+		desc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;
+		desc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;
+		desc.StencilEnable = FALSE;
+
+		Device->CreateDepthStencilState(
+			&desc,
+			&DepthReadOnlyState
+		);
+	}
+
+	void ReleaseDepthStencilBuffer()
+	{
+		if (DepthStencilView)
+		{
+			DepthStencilView->Release();
+			DepthStencilView = nullptr;
+		}
+
+		if (DepthStencilBuffer)
+		{
+			DepthStencilBuffer->Release();
+			DepthStencilBuffer = nullptr;
+		}
+	}
+
+	void ReleaseDepthStencilState()
+	{
+		if (DepthStencilState)
+		{
+			DepthStencilState->Release();
+			DepthStencilState = nullptr;
+		}
+
+		if (DepthReadOnlyState)
+		{
+			DepthReadOnlyState->Release();
+			DepthReadOnlyState = nullptr;
+		}
+	}
+
+	void SetDepthWrite(bool bEnable)
+	{
+		DeviceContext->OMSetDepthStencilState(
+			bEnable ? DepthStencilState : DepthReadOnlyState,
+			0
+		);
 	}
 
 	ID3D11Buffer* ConstantBuffer = nullptr;
