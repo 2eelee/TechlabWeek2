@@ -11,9 +11,13 @@ void InputManager::ProcessMessage(UINT message, WPARAM wParam, LPARAM lParam)
 	switch (message)
 	{
 	case WM_KEYDOWN:
-	case WM_LBUTTONDOWN:
-	case WM_RBUTTONDOWN:
 		m_current[wParam] = true;
+		break;
+	case WM_LBUTTONDOWN:
+		m_current[MouseButton::LEFT] = true;
+		break;
+	case WM_RBUTTONDOWN:
+		m_current[MouseButton::RIGHT] = true;
 		break;
 	case WM_KEYUP:
 		m_current[wParam] = false;
@@ -25,16 +29,34 @@ void InputManager::ProcessMessage(UINT message, WPARAM wParam, LPARAM lParam)
 		m_current[MouseButton::RIGHT] = false;
 		break;
 	case WM_MOUSEMOVE:
+	{
 		int32 xPos = GET_X_LPARAM(lParam);
 		int32 yPos = GET_Y_LPARAM(lParam);
+
 		m_mousePosition.X = xPos;
 		m_mousePosition.Y = yPos;
+		break;
+	}
+	case WM_MOUSEWHEEL:
+	{
+		int delta = GET_WHEEL_DELTA_WPARAM(wParam); // 여기 breakpoint
+		m_mouseWheelDelta += delta;
+		break;
+	}
+
+	case WM_MOUSEHWHEEL:
+	{
+		int delta = GET_WHEEL_DELTA_WPARAM(wParam); // 여기 breakpoint
+		break;
+	}
 	}
 }
 
 void InputManager::Update()
 {
 	m_prev = m_current;
+	m_prevMousePosition = m_mousePosition;
+	m_mouseWheelDelta = 0;
 }
 
 bool InputManager::GetKeyDown(WPARAM wParam)
@@ -70,4 +92,14 @@ bool InputManager::GetMouseButtonUp(MouseButton type)
 FIntPoint InputManager::GetMousePosition()
 {
 	return m_mousePosition;
+}
+
+FIntPoint InputManager::GetMouseDelta()
+{
+	return m_mousePosition - m_prevMousePosition;
+}
+
+float InputManager::GetMouseWheelDelta()
+{
+	return static_cast<float>(m_mouseWheelDelta) / WHEEL_DELTA;
 }

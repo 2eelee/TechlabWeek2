@@ -18,12 +18,12 @@ extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam
 // 각종 메시지를 처리할 함수
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
+	InputManager::GetInstance().ProcessMessage(message, wParam, lParam);
+
 	if (ImGui_ImplWin32_WndProcHandler(hWnd, message, wParam, lParam))
 	{
 		return true;
 	}
-
-	InputManager::GetInstance().ProcessMessage(message, wParam, lParam);
 
 	switch (message)
 	{

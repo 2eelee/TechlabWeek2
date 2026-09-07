@@ -91,10 +91,11 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstanc ,LPSTR lpCmdLine,i
 	const double targetFrameTime = 1000.0 /targetFPS;
 
 	// Timer
-
-	LARGE_INTEGER frequency;
-
+	LARGE_INTEGER frequency{};
 	QueryPerformanceFrequency(&frequency);
+
+	LARGE_INTEGER previousTime{};
+	QueryPerformanceCounter(&previousTime);
 
 	LARGE_INTEGER startTime, endTime;
 	double elapsedTime = 0.0;
@@ -104,6 +105,9 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstanc ,LPSTR lpCmdLine,i
 	{
 		// Frame 시작 시간
 		QueryPerformanceCounter(&startTime);
+
+		float deltaTime = static_cast<float>(startTime.QuadPart - previousTime.QuadPart) / static_cast<float>(frequency.QuadPart);
+		previousTime = startTime;
 
 		// Windows Message
 		MSG msg;
@@ -184,9 +188,7 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstanc ,LPSTR lpCmdLine,i
 
 		Gizmo.DrawWorldAxis(renderer, camera);
 
-		float deltaTime = ImGui::GetIO().DeltaTime;
-		
-		Cam->CamMove(deltaTime);
+		camera->CamMove(deltaTime);
 
 		// ImGui Frame 시작
 		imguiManager.BeginFrame();
