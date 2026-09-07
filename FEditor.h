@@ -126,11 +126,11 @@ public:
 		ImGui::SetNextItemWidth(-120.0f);
 		ImGui::InputInt("Number of spawn", &spawnCount, 0, 0, ImGuiInputTextFlags_ReadOnly);
 		ImGui::Separator();
-		ImGui::InputText("SceneName", name_buffer, sizeof(name_buffer), ImGuiInputTextFlags_ReadOnly);
+		ImGui::InputText("SceneName", name_buffer, sizeof(name_buffer));
 		ImGui::Button("New Scene");
 		if (ImGui::Button("Save Scene"))
 		{
-			USceneManager::GetInstance().SaveScene("Hello");
+			USceneManager::GetInstance().SaveScene(name_buffer);
 		};
 		ImGui::Button("Load Scene");
 		ImGui::Separator();
