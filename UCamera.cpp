@@ -76,4 +76,27 @@ void UCamera::CamMove(float deltaTime)
 			this->SetRelativeLocation(Loc - (this->GetRightVector() * moveDist));
 		}
 	}
+	if (InputManager::GetInstance().GetMouseButton(MouseButton::RIGHT))
+	{
+		FIntPoint delta = InputManager::GetInstance().GetMouseDelta();
+
+		const float sensitivity = 0.1f;
+
+		AddYaw(delta.X * sensitivity);
+		AddPitch(delta.Y * sensitivity);
+	}
+
+	float wheel = InputManager::GetInstance().GetMouseWheelDelta();
+
+	if (othogonalEnable)
+	{
+		orthowidth *= std::pow(0.9f, wheel);
+		orthowidth = std::clamp(orthowidth, 1.0f, 10000.0f);
+	}
+	else
+	{
+		FVector3 loc = GetRelativeLocation();
+		loc += GetForwardVector() * wheel * 2.0f;
+		SetRelativeLocation(loc);
+	}
 }
