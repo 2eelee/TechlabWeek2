@@ -100,23 +100,22 @@ public:
 	// Direct3D 장치 및 스왑 체인을 해제하는 함수
 	void ReleaseDeviceAndSwapChain()
 	{
-		if (DeviceContext) {
-			DeviceContext->Flush(); // 남아있는 GPU 명령 실행
-		}
-
-		if (SwapChain) {
+		if (SwapChain)
+		{
 			SwapChain->Release();
 			SwapChain = nullptr;
 		}
 
-		if (Device) {
-			Device->Release();
-			Device = nullptr;
-		}
-
-		if (DeviceContext) {
+		if (DeviceContext)
+		{
 			DeviceContext->Release();
 			DeviceContext = nullptr;
+		}
+
+		if (Device)
+		{
+			Device->Release();
+			Device = nullptr;
 		}
 	}
 
@@ -193,12 +192,13 @@ public:
 			0
 		);
 
-		CreateFrameBuffer();
-
 		ViewportInfo.Width = static_cast<float>(width);
 		ViewportInfo.Height = static_cast<float>(height);
 
 		AspectRatio = ViewportInfo.Width / ViewportInfo.Height;
+
+		CreateFrameBuffer();
+		CreateDepthStencilBuffer();
 
 		DeviceContext->RSSetViewports( 1, &ViewportInfo );
 	}
@@ -245,10 +245,10 @@ public:
 		SwapChain->Present(1, 0); // 1: VSync 활성화
 	}
 
-	ID3D11VertexShader* SimpleVertexShader;
-	ID3D11PixelShader* SimplePixelShader;
-	ID3D11InputLayout* SimpleInputLayout;
-	unsigned int Stride;
+	ID3D11VertexShader* SimpleVertexShader = nullptr;
+	ID3D11PixelShader* SimplePixelShader = nullptr;
+	ID3D11InputLayout* SimpleInputLayout = nullptr;
+	unsigned int Stride = 0;
 
 	void CreateShader()
 	{
