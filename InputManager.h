@@ -27,6 +27,9 @@ public:
 	bool GetMouseButtonUp(MouseButton type);
 
 	FIntPoint GetMousePosition();
+	FIntPoint GetMouseDelta();
+
+	float GetMouseWheelDelta();
 
 private:
 	InputManager() = default;
@@ -38,4 +41,7 @@ private:
 	std::bitset<256> m_prev{};
 
 	FIntPoint m_mousePosition{};
+	FIntPoint m_prevMousePosition{};
+
+	int32 m_mouseWheelDelta = 0;
 };
