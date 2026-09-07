@@ -135,6 +135,20 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstanc ,LPSTR lpCmdLine,i
 
 		renderer.PrepareShader();
 
+		InputManager& manager = InputManager::GetInstance();
+		if (manager.GetMouseButtonUp(MouseButton::LEFT))
+		{
+			FIntPoint ScreenPos = manager.GetMousePosition();
+			FRay ray = camera->ScreenToRay(ScreenPos, (float)GWindowWidth, (float)GWindowHeight);
+
+			for (UObject* object : GUObjectArray)
+			{
+				UPrimitiveComponent* primitive = object->Cast<UPrimitiveComponent>(object);
+				if (primitive)
+				{
+				}
+			}
+		}
 		// M * V * P 행렬 입력
 		for (UObject* object : GUObjectArray)
 		{
@@ -216,6 +230,8 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstanc ,LPSTR lpCmdLine,i
 
 		// Buffer 교환
 		renderer.SwapBuffer();
+
+		InputManager::GetInstance().Update();
 
 		// FPS 제한
 		do
