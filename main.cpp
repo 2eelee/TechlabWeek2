@@ -146,9 +146,15 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstanc ,LPSTR lpCmdLine,i
 				UPrimitiveComponent* primitive = object->Cast<UPrimitiveComponent>(object);
 				if (primitive)
 				{
+					if (primitive->IsHit(ray))
+					{
+						// Add object selection logic
+						break;
+					}
 				}
 			}
 		}
+
 		// M * V * P 행렬 입력
 		for (UObject* object : GUObjectArray)
 		{
