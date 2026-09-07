@@ -5,6 +5,7 @@
 #include "ImGui/imgui.h"
 #include "FMemory.h"
 #include "UCamera.h"
+#include "FConsoleWindow.h"
 
 const char* items[] = { "Sphere", "Cube", "Plane" };
 static char name_buffer[32] = "HelloScene";
@@ -69,6 +70,7 @@ public:
 		if (ImGui::Button("Spawn"))
 		{
 			spawnCount++;
+			UE_LOG(LogTemp, Warning, "Spawned primitive: %s, Total: %d", items[currentItem], spawnCount);
 			switch (currentItem)
 			{
 			case 0:

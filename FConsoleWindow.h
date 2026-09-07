@@ -21,10 +21,17 @@ public:
         bool* p_open
     );
 
+    // 새로운 로그 추가
+    void AddLog(
+        const char* fmt,
+        ...
+    );
 
     // 현재 Console Window 크기
     // Main에서 Console / Host 비율 계산할 때 사용
     ImVec2 WindowSize;
+
+
 
 
 private:
@@ -67,11 +74,7 @@ private:
     void ClearLog();
 
 
-    // 새로운 로그 추가
-    void AddLog(
-        const char* fmt,
-        ...
-    );
+    
 
 
     // 명령어 처리
@@ -91,3 +94,11 @@ private:
         ImGuiInputTextCallbackData* data
     );
 };
+
+extern FConsoleWindow* GConsoleWindow;
+
+#define UE_LOG(LogCategory, LogSpec, LogText, ...)\
+    do{ \
+    if (GConsoleWindow) \
+        GConsoleWindow->AddLog("[%s][%s] " LogText, #LogCategory, #LogSpec, ##__VA_ARGS__); \
+    } while (0)

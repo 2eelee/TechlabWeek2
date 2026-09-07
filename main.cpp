@@ -23,6 +23,8 @@
 #include "FObjectFactory.h"
 #include "FEditor.h"
 
+FConsoleWindow* GConsoleWindow = nullptr;
+
 // WinMain
 int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstanc ,LPSTR lpCmdLine,int nCmdShow)
 {
@@ -66,6 +68,7 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstanc ,LPSTR lpCmdLine,i
 	// while 밖에 있어야 로그가 계속 유지됨
 
 	FConsoleWindow console;
+	GConsoleWindow = &console;
 
 	bool showConsole = true;
 
