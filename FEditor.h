@@ -41,12 +41,13 @@ public:
 
 	void DrawPropertyUI()
 	{
-		ImGui::SetNextWindowPos(ImVec2(display.x - 20, 20), cond, ImVec2(1.0f, 0.0f));		
+				
 		for (UObject* object : GUObjectArray)
 		{
 			UPrimitiveComponent* primitive = object->Cast<UPrimitiveComponent>(object);
 			if (primitive)
 			{
+				ImGui::SetNextWindowPos(ImVec2(display.x - 20, 20), cond, ImVec2(1.0f, 0.0f));
 				FVector3 Loc = primitive->GetRelativeLocation();
 				FVector3 Rot = primitive->GetRelativeRotation();
 				FVector3 Scale = primitive->GetRelativeScale3D();
