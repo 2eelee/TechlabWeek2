@@ -1,5 +1,6 @@
 #include "USceneManager.h"
 #include "FObjectFactory.h"
+#include "FEditor.h"
 
 bool USceneManager::SaveScene(const FString& Scenename)
 {
@@ -68,7 +69,7 @@ bool USceneManager::ClearScene()
 		UPrimitiveComponent* primitive = object->Cast<UPrimitiveComponent>(object);
 		if (primitive)
 		{
-			delete primitive;
+			delete primitive;	
 		}
 	}
 	UE_LOG(Log, Success, "Open New Scene.");

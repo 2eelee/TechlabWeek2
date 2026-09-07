@@ -187,7 +187,6 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstanc ,LPSTR lpCmdLine,i
 		}
 
 		Gizmo.DrawWorldAxis(renderer, camera);
-
 		camera->CamMove(deltaTime);
 
 		// ImGui Frame 시작
