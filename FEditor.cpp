@@ -79,8 +79,6 @@ void FEditor::DrawControlUI()
 	ImGui::Combo("Primitive", &currentItem, items, IM_ARRAYSIZE(items));
 	if (ImGui::Button("Spawn"))
 	{
-		spawnCount++;
-		UE_LOG(LogTemp, Warning, "Spawned primitive: %s, Total: %d", items[currentItem], spawnCount);
 		switch (currentItem)
 		{
 		case 0:
@@ -108,6 +106,15 @@ void FEditor::DrawControlUI()
 	}
 	ImGui::SameLine();
 	ImGui::SetNextItemWidth(-120.0f);
+	spawnCount = 0;
+	for (UObject* object : GUObjectArray)
+	{
+		UPrimitiveComponent* primitive = object->Cast<UPrimitiveComponent>(object);
+		if (primitive)
+		{
+			spawnCount++;
+		}
+	}
 	ImGui::InputInt("Number of spawn", &spawnCount, 0, 0, ImGuiInputTextFlags_ReadOnly);
 	ImGui::Separator();
 	ImGui::InputText("SceneName", name_buffer, sizeof(name_buffer));
