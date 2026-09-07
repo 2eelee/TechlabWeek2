@@ -10,18 +10,7 @@ struct FMatrix
 {
 	float m[4][4];
 
-	FMatrix()
-	{
-		for (int i = 0;i < 4;i++)
-		{
-			for (int j = 0;j < 4;j++) {
-				if (i == j) {
-					m[i][j] = 1;
-				}
-				else m[i][j] = 0;
-			}
-		}
-	}
+	FMatrix();
 
 	FMatrix(
 		float e00, float e01, float e02, float e03,
@@ -36,12 +25,12 @@ struct FMatrix
 		m[3][0] = e30; m[3][1] = e31; m[3][2] = e32; m[3][3] = e33;
 	}
 
-	FMatrix operator*(FMatrix other) const;
-
 	static FMatrix Zero();
+	FMatrix operator*(FMatrix other) const;
+	inline FMatrix operator*(float scalar) const;
 	static FMatrix CreateScale(float sX, float sY, float sZ);
-	static FMatrix CreateRotationY(float angleRad);
 	static FMatrix CreateRotationX(float angleRad);
+	static FMatrix CreateRotationY(float angleRad);
 	static FMatrix CreateRotationZ(float angleRad);
 	static FMatrix CreateTranslation(float Tx, float Ty, float Tz);
 	static FMatrix CreateView(FVector3 Location, FVector3 Right, FVector3 Up, FVector3 Forward);
@@ -51,8 +40,6 @@ struct FMatrix
 	static FMatrix CreateOrthogonalProjectionInverse(float farZ, float nearZ, float width, float height);
 	static FMatrix Identity();
 	FMatrix Inverse() const;
-
-	inline FMatrix operator*(float scalar) const;
 };
 
 inline constexpr float PI = 3.1415926535897932f;

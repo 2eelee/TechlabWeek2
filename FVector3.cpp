@@ -1,5 +1,5 @@
-#include <FVector3.h>
 #include <FMatrix.h>
+#include "FVector3.h"
 
 float FVector3::Dot(const FVector3& other) const
 {
@@ -23,6 +23,16 @@ FVector3 FVector3::operator * (const FMatrix& matrix) const
 FVector3 FVector3::Normalize() const
 {
 	return FVector3::Normalize(*this);
+}
+
+FVector3 FVector3::Normalize(const FVector3& FVector)
+{
+	float dist = sqrtf(FVector.x * FVector.x + FVector.y * FVector.y + FVector.z * FVector.z);
+	if (dist > 0.00001f)
+	{
+		return FVector3(FVector.x / dist, FVector.y / dist, FVector.z / dist);
+	}
+	return FVector3(0, 0, 0);
 }
 
 FVector3 FVector3::operator+(const FVector3& other) const {
@@ -58,14 +68,4 @@ FVector3& FVector3::operator-=(const FVector3& other) {
 FVector3& FVector3::operator*=(float scale) {
 	x *= scale; y *= scale; z *= scale;
 	return *this;
-}
-
-FVector3 FVector3::Normalize(const FVector3& FVector)
-{
-	float dist = sqrtf(FVector.x * FVector.x + FVector.y * FVector.y + FVector.z * FVector.z);
-	if (dist > 0.00001f)
-	{
-		return FVector3(FVector.x / dist, FVector.y / dist, FVector.z / dist);
-	}
-	return FVector3(0, 0, 0);
 }

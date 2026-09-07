@@ -1,6 +1,19 @@
 #include "FMatrix.h"
 #include "FVector3.h"
 
+FMatrix::FMatrix()
+{
+	for (int i = 0;i < 4;i++)
+	{
+		for (int j = 0;j < 4;j++) {
+			if (i == j) {
+				m[i][j] = 1;
+			}
+			else m[i][j] = 0;
+		}
+	}
+}
+
 FMatrix FMatrix::Zero()
 {
 	FMatrix result;
@@ -11,6 +24,19 @@ FMatrix FMatrix::Zero()
 		}
 	}
 	return result;
+}
+
+FMatrix FMatrix::operator*(FMatrix other) const
+{
+	FMatrix output = Zero();
+	for (int i = 0;i < 4;i++) {
+		for (int j = 0; j < 4; j++) {
+			for (int k = 0; k < 4; k++) {
+				output.m[i][j] += m[i][k] * other.m[k][j];
+			}
+		}
+	}
+	return output;
 }
 
 FMatrix FMatrix::CreateScale(float sX, float sY, float sZ)
@@ -85,12 +111,12 @@ FMatrix FMatrix::CreateView(FVector3 Location, FVector3 Right, FVector3 Up, FVec
 FMatrix FMatrix::CreateProjection(float farZ, float nearZ, float fovrad, float aspectratio)  // farZ : 최소 렌더링 시작 거리, nearZ : 최대 렌더링 거리, fovrad: 카메라의 시야각 aspectratio : 종횡비(가로/세로)
 {
 	FMatrix output;
-	output.m[0][0] = 1 / tanf(fovrad * 0.5) / aspectratio;
+	output.m[0][0] = 1 / tanf(fovrad * 0.5);
 	output.m[0][1] = 0;
 	output.m[0][2] = 0;
 	output.m[0][3] = 0;
 	output.m[1][0] = 0;
-	output.m[1][1] = 1 / tanf(fovrad * 0.5);
+	output.m[1][1] = 1 / tanf(fovrad * 0.5) * aspectratio;
 	output.m[1][2] = 0;
 	output.m[1][3] = 0;
 	output.m[2][0] = 0;
@@ -282,17 +308,4 @@ FMatrix FMatrix::Inverse() const
 	};
 
 	return adjucate * (1.0f / determinant);
-}
-
-FMatrix FMatrix::operator*(FMatrix other) const
-{
-	FMatrix output = Zero();
-	for (int i = 0;i < 4;i++) {
-		for (int j = 0; j < 4; j++) {
-			for (int k = 0; k < 4; k++) {
-				output.m[i][j] += m[i][k] * other.m[k][j];
-			}
-		}
-	}
-	return output;
 }

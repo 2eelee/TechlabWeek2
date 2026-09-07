@@ -146,6 +146,7 @@
     <ClCompile Include="Core\UObject.cpp" />
     <ClCompile Include="FMatrix.cpp" />
     <ClCompile Include="FGizmo.cpp" />
+    <ClCompile Include="FMatrix.cpp" />
     <ClCompile Include="FMemory.cpp" />
     <ClCompile Include="FVector3.cpp" />
     <ClCompile Include="FVector4.cpp" />
@@ -164,6 +165,7 @@
     </ClCompile>
     <ClCompile Include="URenderer.cpp" />
     <ClCompile Include="UCamera.cpp" />
+    <ClCompile Include="USceneManager.cpp" />
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
