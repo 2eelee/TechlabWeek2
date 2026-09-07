@@ -16,6 +16,8 @@
 #include <d3dcompiler.h>
 #pragma comment(lib, "d3dcompiler")
 
+
+
 class UPrimitiveComponent;
 class UCamera;
 
@@ -23,6 +25,7 @@ class URenderer
 {
 public:
 
+	float AspectRatio;
 	FMatrix CreateMVP(UPrimitiveComponent* Primitive, UCamera* Camera);
 	// Direct3D 11 장치와 장치 컨텍스트 및 스왑 체인을 관리하기 위한 포인터들
 	ID3D11Device* Device = nullptr; // GPU와 통신하기 위한 Direct3D 장치
@@ -41,6 +44,8 @@ public:
 	{
 		// Direct3D 장치 및 스왑 체인 생성
 		CreateDeviceAndSwapChain(hWindow);
+
+		AspectRatio = ViewportInfo.Width / ViewportInfo.Height;
 
 		// 프레임 버퍼 생성
 		CreateFrameBuffer();
@@ -165,6 +170,8 @@ public:
 
 		ViewportInfo.Width = static_cast<float>(width);
 		ViewportInfo.Height = static_cast<float>(height);
+
+		AspectRatio = ViewportInfo.Width / ViewportInfo.Height;
 
 		DeviceContext->RSSetViewports( 1, &ViewportInfo );
 	}

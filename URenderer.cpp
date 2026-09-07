@@ -16,9 +16,9 @@ FMatrix URenderer::CreateMVP(UPrimitiveComponent* Primitive, UCamera* Camera)
 	FMatrix Proj;
 	if (Camera->othogonalEnable) 
 	{
-		Proj = FMatrix::CreateOrthogonalProjection(Camera->FarZ, Camera->NearZ, Camera->orthowidth, Camera->orthowidth/Camera->AspectRatio);
+		Proj = FMatrix::CreateOrthogonalProjection(Camera->FarZ, Camera->NearZ, Camera->orthowidth, Camera->orthowidth/AspectRatio);
 	}
-	else Proj = FMatrix::CreateProjection(Camera->FarZ, Camera->NearZ, DegreesToRadians(Camera->FovAngle), Camera->AspectRatio);
+	else Proj = FMatrix::CreateProjection(Camera->FarZ, Camera->NearZ, DegreesToRadians(Camera->FovAngle), AspectRatio);
 	
 	return Model * View * Proj;
 }

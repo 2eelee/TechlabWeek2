@@ -123,7 +123,7 @@ struct FMatrix
 		output.m[0][2] = 0;
 		output.m[0][3] = 0;
 		output.m[1][0] = 0;
-		output.m[1][1] = 1 / tanf(fovrad * 0.5) / aspectratio;
+		output.m[1][1] = 1 / tanf(fovrad * 0.5) * aspectratio;
 		output.m[1][2] = 0;
 		output.m[1][3] = 0;
 		output.m[2][0] = 0;
