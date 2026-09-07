@@ -20,14 +20,16 @@ struct UCamera: public USceneComponent
 		orthowidth = 15.0f;
 	}
 
-	virtual FVector3 GetForwardVector();
-	virtual FVector3 GetRightVector();
-	virtual FVector3 GetUPVector();
+	FVector3 GetForwardVector();
+	FVector3 GetRightVector();
+	FVector3 GetUPVector();
 
-	virtual void SetOrthoWidth(float width);
+	void SetOrthoWidth(float width);
 
-	virtual void AddPitch(float pitchradian);
-	virtual void AddYaw(float yawradian);
+	void AddPitch(float pitchradian);
+    void AddYaw(float yawradian);
+
+	void CamMove(float deltaTime);
 };
 
 
