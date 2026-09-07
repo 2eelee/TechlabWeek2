@@ -6,12 +6,15 @@
 #include "FMemory.h"
 #include "UCamera.h"
 #include "FConsoleWindow.h"
+#include "Window.h"
 
 const char* items[] = { "Sphere", "Cube", "Plane" };
 static char name_buffer[32] = "HelloScene";
 static int currentItem = 0;
 static int spawnCount = 0;
 bool othogonalEnable = false;
+float bottomX;
+float bottomY;
 
 UCamera* Cam;
 
@@ -19,8 +22,17 @@ UCamera* Cam;
 class FEditor
 {
 public:
+	ImVec2 display;
+	ImGuiCond cond;
+	void UpdateWindowSize() 
+	{
+		display = ImGui::GetIO().DisplaySize;
+		cond = GWindowSizeChanged ? ImGuiCond_Always : ImGuiCond_FirstUseEver;
+	}
+
 	void DrawStatUI()
 	{
+		ImGui::SetNextWindowPos(ImVec2(bottomX, bottomY+20), cond, ImVec2(0.0f, 0.0f));
 		ImGui::Begin("Stat");
 		ImGui::Text("Memory Usage: %zu bytes", FMemory::GetCurrentMemoryUsage());
 		ImGui::Text("Allocation Count: %llu", static_cast<unsigned long long>(FMemory::GetAllocationCount()));
@@ -29,6 +41,7 @@ public:
 
 	void DrawPropertyUI()
 	{
+		ImGui::SetNextWindowPos(ImVec2(display.x - 20, 20), cond, ImVec2(1.0f, 0.0f));		
 		for (UObject* object : GUObjectArray)
 		{
 			UPrimitiveComponent* primitive = object->Cast<UPrimitiveComponent>(object);
@@ -57,14 +70,25 @@ public:
 
 	void DrawConsoleUI()
 	{
-		ImGui::Begin("Stat");
-		ImGui::End();
+		bool showConsole = true;
+
+		if (!showConsole || !GConsoleWindow) return;
+
+		ImGui::SetNextWindowPos(ImVec2(20, display.y - 20), cond, ImVec2(0.0f, 1.0f));
+
+		ImGui::SetNextWindowSize(ImVec2(display.x-40, display.y * 0.3f), cond);
+
+		if (showConsole)
+		{
+			GConsoleWindow->Draw("Example: Console", &showConsole);
+		}
 	}
 
 
 
 	void DrawControlUI()
 	{
+		ImGui::SetNextWindowPos(ImVec2(20, 20), cond, ImVec2(0.0f, 0.0f));
 		ImGui::Begin("Jungle Control Panel");
 		ImGui::Combo("Primitive", &currentItem, items, IM_ARRAYSIZE(items));
 		if (ImGui::Button("Spawn"))
@@ -130,6 +154,8 @@ public:
 		{
 			Cam->SetRelativeRotation(CamRot);
 		}
+		bottomX = ImGui::GetWindowPos().x;
+		bottomY = ImGui::GetWindowPos().y + ImGui::GetWindowHeight();
 		ImGui::End();
 	}
 };
