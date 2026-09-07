@@ -16,9 +16,6 @@
     <Filter Include="Rendering">
       <UniqueIdentifier>{ec17c55e-4cdf-4f84-a0a4-ff3308ff6906}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Object">
-      <UniqueIdentifier>{b171db33-d2b0-4d79-b514-d016456edff4}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Editor">
       <UniqueIdentifier>{cf2e415c-0734-46e3-be93-ca12be4462dd}</UniqueIdentifier>
     </Filter>
