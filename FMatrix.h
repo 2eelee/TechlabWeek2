@@ -115,15 +115,15 @@ struct FMatrix
 		return output;	
 	}
 
-	static FMatrix CreateProjection(float farZ, float nearZ, float fovrad, float aspectratio)  // farZ : 최소 렌더링 시작 거리, nearZ : 최대 렌더링 거리, fovrad: 카메라의 시야각 aspectratio : 종횡비(가로/세로)
+	static FMatrix CreateProjection(float farZ, float nearZ, float fovrad, float aspectratio)  // farZ : 최대 렌더링 거리, nearZ : 최소 렌더링 거리, fovrad: 카메라의 가로 시야각 aspectratio : 종횡비(가로/세로)
 	{
 		FMatrix output;
-		output.m[0][0] = 1 / tanf(fovrad*0.5)/aspectratio;
+		output.m[0][0] = 1 / tanf(fovrad * 0.5);
 		output.m[0][1] = 0;
 		output.m[0][2] = 0;
 		output.m[0][3] = 0;
 		output.m[1][0] = 0;
-		output.m[1][1] = 1 / tanf(fovrad * 0.5);
+		output.m[1][1] = 1 / tanf(fovrad * 0.5) / aspectratio;
 		output.m[1][2] = 0;
 		output.m[1][3] = 0;
 		output.m[2][0] = 0;

@@ -113,11 +113,21 @@ public:
 			}
 		}
 		ImGui::Checkbox("Orthogonal", &Cam->othogonalEnable);
-		ImGui::InputFloat("FOV", &Cam->FovAngle, 0, 0, " % .1f", ImGuiInputTextFlags_ReadOnly);
+		if (Cam->othogonalEnable)
+		{
+			ImGui::SliderFloat("Othogonal Width", &Cam->orthowidth, 1.0f, 10000.0f);
+		}
+		ImGui::DragFloat("FOV", &Cam->FovAngle, 1.0f, 5.0f, 170.0f);
 		FVector3 CamLoc = Cam->GetRelativeLocation();
 		FVector3 CamRot = Cam->GetRelativeRotation();
-		ImGui::InputFloat3("Camera Location", &CamLoc.x);
-		ImGui::InputFloat3("Camera Rotation", &CamRot.x);
+		if (ImGui::InputFloat3("Camera Location", &CamLoc.x))
+		{
+			Cam->SetRelativeLocation(CamLoc);
+		}
+		if (ImGui::InputFloat3("Camera Rotation", &CamRot.x))
+		{
+			Cam->SetRelativeRotation(CamRot);
+		}
 		ImGui::End();
 	}
 };

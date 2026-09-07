@@ -28,6 +28,11 @@ FVector3 UCamera::GetUPVector()
 	return FVector3(R.m[1][0], R.m[1][1], R.m[1][2]);
 }
 
+void UCamera::SetOrthoWidth(float width)
+{
+	orthowidth = width;
+}
+
 void UCamera::AddPitch(float deltaAngle)
 {
 	FVector3 rot = GetRelativeRotation();
@@ -40,9 +45,4 @@ void UCamera::AddYaw(float deltaAngle)
 	FVector3 rot = GetRelativeRotation();
 	rot.y += deltaAngle;
 	SetRelativeRotation(rot);
-}
-
-void UCamera::AddFov(float deltaAngle)
-{
-	FovAngle = std::clamp(FovAngle + deltaAngle, 5.0f, 170.0f);
 }
