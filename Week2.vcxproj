@@ -163,6 +163,7 @@
     </ClCompile>
     <ClCompile Include="URenderer.cpp" />
     <ClCompile Include="UCamera.cpp" />
+    <ClCompile Include="USceneManager.cpp" />
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
