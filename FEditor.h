@@ -7,6 +7,7 @@
 #include "UCamera.h"
 #include "FConsoleWindow.h"
 #include "Window.h"
+#include "USceneManager.h"
 
 const char* items[] = { "Sphere", "Cube", "Plane" };
 static char name_buffer[32] = "HelloScene";
@@ -127,7 +128,10 @@ public:
 		ImGui::Separator();
 		ImGui::InputText("SceneName", name_buffer, sizeof(name_buffer), ImGuiInputTextFlags_ReadOnly);
 		ImGui::Button("New Scene");
-		ImGui::Button("Save Scene");
+		if (ImGui::Button("Save Scene"))
+		{
+			USceneManager::GetInstance().SaveScene("Hello");
+		};
 		ImGui::Button("Load Scene");
 		ImGui::Separator();
 		for (UObject* object : GUObjectArray)
