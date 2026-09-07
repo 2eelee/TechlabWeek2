@@ -1,6 +1,8 @@
 #pragma once
 
 #include "Types.h"
+#include "json.hpp"
+
 class USceneManager
 {
 	static USceneManager& GetInstance()
