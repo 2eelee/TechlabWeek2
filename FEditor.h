@@ -127,11 +127,14 @@ public:
 		ImGui::InputInt("Number of spawn", &spawnCount, 0, 0, ImGuiInputTextFlags_ReadOnly);
 		ImGui::Separator();
 		ImGui::InputText("SceneName", name_buffer, sizeof(name_buffer));
-		ImGui::Button("New Scene");
+		if (ImGui::Button("New Scene"))
+		{
+			USceneManager::GetInstance().ClearScene();
+		}
 		if (ImGui::Button("Save Scene"))
 		{
 			USceneManager::GetInstance().SaveScene(name_buffer);
-		};
+		}
 		if (ImGui::Button("Load Scene"))
 		{
 			USceneManager::GetInstance().LoadScene(name_buffer);

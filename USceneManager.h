@@ -51,16 +51,49 @@ public:
 	}
 
 	
-	bool LoadScene(const FString& path)
+	bool LoadScene(const FString& Scenename)
 	{
-		std::ifstream saveFile("파일명.json");
+		FString Scenefilename = "SaveScene\\" + FString(Scenename) + ".Scene";
+		std::ifstream saveFile(Scenefilename);
 		if (!saveFile.is_open()) {
 			UE_LOG(Log, Error, "Can't Open JSON File");
 			return false;
 		}
+		json SavedScene;
+		saveFile >> SavedScene;
+		for (auto& items : SavedScene["Primitives"])
+		{
+			FString PrimType = items["Type"];
 
+			const UClass* ClassType = nullptr;
+			if (PrimType == "Cube") ClassType = UCubeComp::StaticClass();
+			if (PrimType == "Sphere") ClassType = USphereComp::StaticClass();
+			if (PrimType == "Plane") ClassType = UPlaneComp::StaticClass();
+
+			UObject* PrimObject = FObjectFactory::ConstructObject(ClassType);
+			UPrimitiveComponent* Primitive = PrimObject->Cast<UPrimitiveComponent>(PrimObject);
+			Primitive->SetRelativeLocation(FVector3(items["Location"][0], items["Location"][1], items["Location"][2]));
+			Primitive->SetRelativeRotation(FVector3(items["Rotation"][0], items["Location"][1], items["Location"][2]));
+			Primitive->SetRelativeScale3D(FVector3(items["Scale"][0], items["Scale"][1], items["Scale"][2]));
+		}
+		saveFile.close();
+		UE_LOG(Log, Success, "Load Scene Complete.");
+		return true;
 	}
 
+	bool ClearScene()
+	{
+		for (UObject* object : GUObjectArray)
+		{
+			UPrimitiveComponent* primitive = object->Cast<UPrimitiveComponent>(object);
+			if (primitive)
+			{
+				delete primitive;
+			}
+		}
+		UE_LOG(Log, Success, "Open New Scene.");
+		return true;
+	}
 	
 
 private:
