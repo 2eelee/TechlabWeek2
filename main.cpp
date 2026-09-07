@@ -11,6 +11,7 @@
 
 #include "URenderer.h"
 #include "UCamera.h"
+#include "FGizmo.h"
 
 #include "Window.h"
 #include "ImGuiManager.h"
@@ -56,9 +57,15 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstanc ,LPSTR lpCmdLine,i
 	// Shader 생성
 	renderer.CreateShader();
 
+	// BlendState 생성
+	renderer.CreateAlphaBlendState();
+
 	// 여기에 생성 함수를 추가합니다.
 	MeshManager::Get().Initialize(renderer);
 	renderer.CreateConstantBuffer();
+
+	FGizmo Gizmo;
+	Gizmo.Initialize(renderer);
 
 	// ImGui 생성
 	FImGuiManager imguiManager;
@@ -124,7 +131,6 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstanc ,LPSTR lpCmdLine,i
 	
 		// 준비 작업
 		renderer.Prepare();
-
 		renderer.PrepareShader();
 
 		// M * V * P 행렬 입력
@@ -138,8 +144,24 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstanc ,LPSTR lpCmdLine,i
 				primitive->Render(renderer);
 			}
 		}
+		
+		Gizmo.DrawGrid(renderer, camera);
+
+		// 임시 Loop: Local Axis / Gizmo 도형마다 전부 그리기 - 
+		for (UObject* object : GUObjectArray)
+		{
+			UPrimitiveComponent* primitive = object->Cast<UPrimitiveComponent>(object);
+			if (primitive)
+			{
+				Gizmo.DrawLocalAxis(renderer, camera, primitive);
+				Gizmo.DrawTransformGizmo(renderer, camera, primitive);
+			}
+		}
+
+		Gizmo.DrawWorldAxis(renderer, camera);
 
 		Cam->CamMove(deltaTime);
+
 		// ImGui Frame 시작
 		imguiManager.BeginFrame();
 		
@@ -174,6 +196,8 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstanc ,LPSTR lpCmdLine,i
 	// ImGui 소멸
 	imguiManager.Release();
 
+	Gizmo.Release(renderer);
+
 	// 버텍스 버퍼 소멸은 Renderer 소멸 전에 처리합니다.
 	MeshManager::Get().Release(renderer);
 
@@ -185,6 +209,10 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstanc ,LPSTR lpCmdLine,i
 
 	// Shader 소멸
 	renderer.ReleaseShader();
+
+	// BlendState 소멸
+	renderer.ReleaseAlphaBlendState();
+
 	// Renderer 소멸
 	renderer.Release();
 	return 0;
