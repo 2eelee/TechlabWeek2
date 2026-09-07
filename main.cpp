@@ -120,6 +120,11 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstanc ,LPSTR lpCmdLine,i
 			}
 		}
 
+		if (InputManager::GetInstance().GetKeyDown(VK_SPACE))
+		{
+			Gizmo.CycleMode();
+		}
+
 		if (bIsExit)
 		{
 			break;

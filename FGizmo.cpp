@@ -5,6 +5,24 @@
 #include "FMatrix.h"
 #include "UCamera.h"
 
+void FGizmo::CycleMode()
+{
+	switch (CurrentMode)
+	{
+	case GizmoMode::Translate:
+		CurrentMode = GizmoMode::Rotate;
+		break;
+
+	case GizmoMode::Rotate:
+		CurrentMode = GizmoMode::Scale;
+		break;
+
+	case GizmoMode::Scale:
+		CurrentMode = GizmoMode::Translate;
+		break;
+	}
+}
+
 void FGizmo::Initialize(URenderer& Renderer)
 {
 	LocalAxisVertexBuffer = Renderer.CreateVertexBuffer(LocalAxisVertices, sizeof(LocalAxisVertices));
@@ -137,7 +155,7 @@ void FGizmo::DrawTransformGizmo(URenderer& Renderer, UCamera* Camera, UPrimitive
 		FMatrix MVP = Renderer.CreateMVPFromModel(Model, Camera);
 		Renderer.UpdateConstant(MVP);
 
-		Renderer.RenderPrimitive(LocalAxisVertexBuffer, 6);
+		Renderer.RenderPrimitive(ScaleGizmoVertexBuffer, ScaleGizmoVertexCount);
 	}
 }
 

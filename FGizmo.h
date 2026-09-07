@@ -15,6 +15,7 @@ struct ID3D11Buffer;
 class FGizmo
 {
 public: 
+	void CycleMode();
 	void Initialize(URenderer& Renderer);
 	void DrawGrid(URenderer& Renderer, UCamera* Camera);
 	void DrawWorldAxis(URenderer& Renderer, UCamera* Camera);
@@ -24,7 +25,7 @@ public:
 	void Release(URenderer& Renderer);
 
 private:
-	GizmoMode CurrentMode = GizmoMode::Rotate;
+	GizmoMode CurrentMode = GizmoMode::Translate;
 
 	ID3D11Buffer* LocalAxisVertexBuffer = nullptr;
 	ID3D11Buffer* WorldAxisVertexBuffer = nullptr;
