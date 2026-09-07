@@ -172,7 +172,7 @@
     <ClInclude Include="FIntPoint.h" />
     <ClInclude Include="FConsoleWindow.h" />
     <ClInclude Include="Containers.h" />
-    <ClInclude Include="CoordinateUtils.h" />
+    <ClInclude Include="MathUtils.h" />
     <ClInclude Include="Core\USceneComponent.h" />
     <ClInclude Include="FEditor.h" />
     <ClInclude Include="FMatrix.h" />
