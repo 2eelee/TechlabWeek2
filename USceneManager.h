@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Types.h"
+
 class USceneManager
 {
 	static USceneManager& GetInstance()

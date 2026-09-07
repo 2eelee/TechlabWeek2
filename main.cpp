@@ -141,7 +141,7 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstanc ,LPSTR lpCmdLine,i
 			UPrimitiveComponent* primitive = object->Cast<UPrimitiveComponent>(object);
 			if (primitive)
 			{
-				FMatrix MVP = renderer.CreateMVP(primitive, camera);
+				FMatrix MVP = renderer.CreateMVP(*primitive, camera);
 				renderer.UpdateConstant(MVP);
 				primitive->Render(renderer);
 			}
