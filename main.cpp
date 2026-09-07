@@ -60,7 +60,6 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstanc ,LPSTR lpCmdLine,i
 
 	// 여기에서 ImGui를 생성합니다.
 	imguiManager.Create(hWnd, renderer.Device, renderer.DeviceContext);
-	camera->AspectRatio = (float)renderer.ViewportInfo.Width / renderer.ViewportInfo.Height;
 
 	// Console 객체
 	

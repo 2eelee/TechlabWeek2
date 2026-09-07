@@ -8,7 +8,6 @@ struct UCamera: public USceneComponent
 	float FarZ;
 	float NearZ;
 	float FovAngle;
-	float AspectRatio;
 	float orthowidth;
 
 	bool othogonalEnable = false;
