@@ -36,6 +36,15 @@ class UPrimitiveComponent : public USceneComponent
 		}
 	}
 
+	FMatrix GetModelMatrix() const
+	{
+		FMatrix ScaleM = FMatrix::CreateScale(GetRelativeScale3D().x, GetRelativeScale3D().y, GetRelativeScale3D().z);
+		FMatrix RotationM = FMatrix::CreateRotationX(DegreesToRadians(GetRelativeRotation().x))
+			* FMatrix::CreateRotationY(DegreesToRadians(GetRelativeRotation().y))
+			* FMatrix::CreateRotationZ(DegreesToRadians(GetRelativeRotation().z));
+		FMatrix TranslationM = FMatrix::CreateTranslation(GetRelativeLocation().x, GetRelativeLocation().y, GetRelativeLocation().z);
+		return ScaleM * RotationM * TranslationM;
+	}
 protected:
 	ID3D11Buffer* VertexBuffer = nullptr;
 	UINT VertexCount = 0;
