@@ -37,14 +37,14 @@ public:
 		return &Class;
 	}
 
-	template<typename T, typename U>
-	static T* Cast(U* object)
+	template<typename To, typename From>
+	static To* Cast(From* object)
 	{
 		if (!object) { return nullptr; }
 
-		if (object->IsA(T::StaticClass()))
+		if (object->IsA(To::StaticClass()))
 		{
-			return static_cast<T*>(object);
+			return static_cast<To*>(object);
 		}
 
 		return nullptr;

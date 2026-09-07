@@ -8,7 +8,6 @@ UCamera* Cam;
 const char* items[] = { "Sphere", "Cube", "Plane" };
 static char name_buffer[32] = "HelloScene";
 static int currentItem = 0;
-static int spawnCount = 0;
 
 void FEditor::UpdateWindowSize()
 {

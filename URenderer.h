@@ -20,11 +20,9 @@ class UCamera;
 class URenderer
 {
 public:
-
 	float AspectRatio;
-	FMatrix CreateMVP(UPrimitiveComponent* Primitive, UCamera* Camera);
+	FMatrix CreateMVP(UPrimitiveComponent& Primitive, UCamera* Camera);
 	FMatrix CreateMVPFromModel(const FMatrix& Model, UCamera* Camera);
-
 	// Direct3D 11 장치와 장치 컨텍스트 및 스왑 체인을 관리하기 위한 포인터들
 	ID3D11Device* Device = nullptr; // GPU와 통신하기 위한 Direct3D 장치
 	ID3D11DeviceContext* DeviceContext = nullptr; // GPU 명령 실행을 담당하는 컨텍스트

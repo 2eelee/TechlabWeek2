@@ -17,6 +17,7 @@ public:
 	bool othogonalEnable = false;
 	float bottomX;
 	float bottomY;
+	int spawnCount = 0;
 
 	void UpdateWindowSize();
 	void DrawStatUI();

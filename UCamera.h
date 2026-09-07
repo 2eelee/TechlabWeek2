@@ -1,4 +1,7 @@
 #pragma once
+
+#include "FRay.h"
+#include "FVector4.h"
 #include "USceneComponent.h"
 
 struct UCamera: public USceneComponent
@@ -23,14 +26,12 @@ struct UCamera: public USceneComponent
 	FVector3 GetForwardVector();
 	FVector3 GetRightVector();
 	FVector3 GetUPVector();
-
 	void SetOrthoWidth(float width);
 
 	void AddPitch(float pitchradian);
     void AddYaw(float yawradian);
 
 	void CamMove(float deltaTime);
+
+	FRay ScreenToRay(FIntPoint ScreenPosition, float ScreenWidth, float ScreenHeight);
 };
-
-
-

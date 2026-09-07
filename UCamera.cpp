@@ -75,28 +75,50 @@ void UCamera::CamMove(float deltaTime)
 			FVector3 Loc = this->GetRelativeLocation();
 			this->SetRelativeLocation(Loc - (this->GetRightVector() * moveDist));
 		}
+
+		if (InputManager::GetInstance().GetMouseButton(MouseButton::RIGHT))
+		{
+			FIntPoint delta = InputManager::GetInstance().GetMouseDelta();
+
+			const float sensitivity = 0.1f;
+
+			AddYaw(delta.X * sensitivity);
+			AddPitch(delta.Y * sensitivity);
+		}
+
+		float wheel = InputManager::GetInstance().GetMouseWheelDelta();
+
+		if (othogonalEnable)
+		{
+			orthowidth *= std::pow(0.9f, wheel);
+			orthowidth = std::clamp(orthowidth, 1.0f, 10000.0f);
+		}
+		else
+		{
+			FVector3 loc = GetRelativeLocation();
+			loc += GetForwardVector() * wheel * 2.0f;
+			SetRelativeLocation(loc);
+		}
 	}
-	if (InputManager::GetInstance().GetMouseButton(MouseButton::RIGHT))
-	{
-		FIntPoint delta = InputManager::GetInstance().GetMouseDelta();
+}
 
-		const float sensitivity = 0.1f;
+FRay UCamera::ScreenToRay(FIntPoint ScreenPosition, float ScreenWidth, float ScreenHeight)
+{
+	FVector2 normalizedPoint = MathUtils::ScreenToNDC(ScreenPosition, ScreenWidth, ScreenHeight);
+	FVector4 nearNormalized = { normalizedPoint.X, normalizedPoint.Y, 0.0f, 1.0f };
+	FVector4 farNormalized = { normalizedPoint.X, normalizedPoint.Y, 1.0f, 1.0f };
 
-		AddYaw(delta.X * sensitivity);
-		AddPitch(delta.Y * sensitivity);
-	}
-
-	float wheel = InputManager::GetInstance().GetMouseWheelDelta();
-
+	FMatrix InverseProj;
 	if (othogonalEnable)
-	{
-		orthowidth *= std::pow(0.9f, wheel);
-		orthowidth = std::clamp(orthowidth, 1.0f, 10000.0f);
-	}
-	else
-	{
-		FVector3 loc = GetRelativeLocation();
-		loc += GetForwardVector() * wheel * 2.0f;
-		SetRelativeLocation(loc);
-	}
+		InverseProj = FMatrix::CreateOrthogonalProjectionInverse(FarZ, NearZ, 20.0f, 20.0f);
+	else InverseProj = FMatrix::CreateProjectionInverse(ScreenWidth / ScreenHeight, DegreesToRadians(FovAngle), FarZ, NearZ);
+
+	FMatrix InverseView = FMatrix::CreateView(GetRelativeLocation(), GetRightVector(), GetUPVector(), GetForwardVector()).Inverse();
+	FVector4 deprojectedFar = (farNormalized * InverseProj * InverseView).DivideByW();
+	FVector4 deprojectedNear = (nearNormalized * InverseProj * InverseView).DivideByW();
+	FVector3 rayOrigin = { deprojectedNear.X, deprojectedNear.Y, deprojectedNear.Z };
+	FVector3 rayEnd = { deprojectedFar.X, deprojectedFar.Y, deprojectedFar.Z };
+	FVector3 rayDirection = (rayEnd - rayOrigin).Normalize();
+
+	return FRay{ rayOrigin, rayDirection };
 }
