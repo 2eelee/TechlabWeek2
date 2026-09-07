@@ -429,3 +429,6 @@ FodyWeavers.xsd
 *.msp
 
 imgui.ini
+
+# Scene Save
+*.Scene
