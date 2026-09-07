@@ -75,6 +75,18 @@ void UCamera::CamMove(float deltaTime)
 			FVector3 Loc = this->GetRelativeLocation();
 			this->SetRelativeLocation(Loc - (this->GetRightVector() * moveDist));
 		}
+		if (InputManager::GetInstance().GetKey('Q'))
+		{
+			FVector3 Loc = this->GetRelativeLocation();
+			this->SetRelativeLocation(Loc - (this->GetUPVector() * moveDist));
+		}
+		if (InputManager::GetInstance().GetKey('E'))
+		{
+			FVector3 Loc = this->GetRelativeLocation();
+			this->SetRelativeLocation(Loc + (this->GetUPVector() * moveDist));
+		}
+
+
 
 		if (InputManager::GetInstance().GetMouseButton(MouseButton::RIGHT))
 		{
