@@ -55,22 +55,22 @@ void UCamera::CamMove(float deltaTime)
 	float moveDist = speed * deltaTime;
 
 	if (!(ImGui::GetIO().WantCaptureKeyboard)) {
-		if (InputManager::GetInstance().GetKeyDown('W'))
+		if (InputManager::GetInstance().GetKey('W'))
 		{
 			FVector3 Loc = this->GetRelativeLocation();
 			this->SetRelativeLocation(Loc + this->GetForwardVector() * moveDist);
 		}
-		if (InputManager::GetInstance().GetKeyDown('S'))
+		if (InputManager::GetInstance().GetKey('S'))
 		{
 			FVector3 Loc = this->GetRelativeLocation();
 			this->SetRelativeLocation(Loc - (this->GetForwardVector() * moveDist));
 		}
-		if (InputManager::GetInstance().GetKeyDown('D'))
+		if (InputManager::GetInstance().GetKey('D'))
 		{
 			FVector3 Loc = this->GetRelativeLocation();
 			this->SetRelativeLocation(Loc + this->GetRightVector() * moveDist);
 		}
-		if (InputManager::GetInstance().GetKeyDown('A'))
+		if (InputManager::GetInstance().GetKey('A'))
 		{
 			FVector3 Loc = this->GetRelativeLocation();
 			this->SetRelativeLocation(Loc - (this->GetRightVector() * moveDist));
