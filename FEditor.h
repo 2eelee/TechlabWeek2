@@ -132,7 +132,10 @@ public:
 		{
 			USceneManager::GetInstance().SaveScene(name_buffer);
 		};
-		ImGui::Button("Load Scene");
+		if (ImGui::Button("Load Scene"))
+		{
+			USceneManager::GetInstance().LoadScene(name_buffer);
+		}
 		ImGui::Separator();
 		for (UObject* object : GUObjectArray)
 		{
