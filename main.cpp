@@ -87,7 +87,7 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstanc ,LPSTR lpCmdLine,i
 
 	// FPS
 
-	const int targetFPS = 30;
+	const int targetFPS = 60;
 
 	const double targetFrameTime = 1000.0 /targetFPS;
 
