@@ -22,6 +22,8 @@ public:
 	void ClearHover();
 	void ClearSelected();
 
+	static bool IntersectPlane(const FRay& ray, const FVector3& planePoint, const FVector3& planeNormal, FVector3& hitPoint);
+
 	UPrimitiveComponent* GetClosestPrimitive() const { return ClosestPrimitive; }
 	UPrimitiveComponent* GetSelectedPrimitive() const { return SelectedPrimitive; }
 

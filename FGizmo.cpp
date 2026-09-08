@@ -53,7 +53,7 @@ FMatrix FGizmo::GetTransformGizmoModel(const UPrimitiveComponent* Primitive) con
 	}
 	else if (CurrentMode == GizmoMode::Rotate)
 	{
-		return RotationM * TranslationM;
+		return TranslationM;
 	}
 	else if (CurrentMode == GizmoMode::Scale)
 	{

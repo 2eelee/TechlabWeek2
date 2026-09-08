@@ -179,3 +179,20 @@ bool FMousePicker::IntersectTriangle(const FRay& ray, const FVector3& v0, const 
 	distance = t;
 	return true;
 }
+
+bool FMousePicker::IntersectPlane(const FRay& ray, const FVector3& planePoint, const FVector3& planeNormal, FVector3& hitPoint)
+{
+	float D = ray.Direction.Dot(planeNormal);
+
+	// 광선이 평면과 평행한 경우
+	const float EPSILON = 1.0e-6f;
+	if (std::abs(D) < EPSILON) return false;
+
+	float t = (planePoint - ray.Origin).Dot(planeNormal) / D;
+
+	// 교차점이 광선의 뒤쪽에 있는 경우
+	if (t < 0.0f) return false;
+
+	hitPoint = ray.Origin + ray.Direction * t;
+	return true;
+}

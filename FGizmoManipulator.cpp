@@ -99,27 +99,34 @@ void FGizmoManipulator::UpdateRotateDrag(UCamera& Camera, UPrimitiveComponent* S
 	// 마우스 과거 위치  = 현재 위치 - 델타값
 	FVector2 previousMouse = currentMouse - mouseDelta;
 
-	FVector3 Loc = SelectedPrimitive->GetRelativeLocation();
-	FVector2 screenCenter = Camera.WorldToScreen(Loc, ScreenWidth, ScreenHeight);
+	FVector3 center = SelectedPrimitive->GetRelativeLocation();
+	FVector3 axisDir = GetAxisDirection(ActiveAxis);
 
-	FVector3 dirA, dirB;
-	GetRotationPlaneAxes(ActiveAxis, dirA, dirB);
+	// 이전 / 현재 마우스 Ray
+	FIntPoint previousMouseInt{ static_cast<int>(previousMouse.X), static_cast<int>(previousMouse.Y) };
 
-	FVector2 screenA = Camera.WorldToScreen(Loc + dirA, ScreenWidth, ScreenHeight) - screenCenter;
-	FVector2 screenB = Camera.WorldToScreen(Loc + dirB, ScreenWidth, ScreenHeight) - screenCenter;
+	FRay previousRay = Camera.ScreenToRay(previousMouseInt, ScreenWidth, ScreenHeight);
+	FRay currentRay = Camera.ScreenToRay(currentMouseInt, ScreenWidth, ScreenHeight);
 
-	FVector2 previousDir = previousMouse - screenCenter;
-	FVector2 currentDir = currentMouse - screenCenter;
+	// Ray와 회전 평면의 교차점
+	FVector3 previousHit, currentHit;
+
+	if (!FMousePicker::IntersectPlane(previousRay, center, axisDir, previousHit)) return;
+	if (!FMousePicker::IntersectPlane(currentRay, center, axisDir, currentHit)) return;
+
+	// 오브젝트 중심 → 교차점 방향
+	FVector3 previousDir = previousHit - center;
+	FVector3 currentDir = currentHit - center;
 
 	if (previousDir.Length() < 0.000001f || currentDir.Length() < 0.000001f) return;
 
 	previousDir = previousDir.Normalize();
 	currentDir = currentDir.Normalize();
 
+	// 회전축 기준 signed angle
 	float dot = previousDir.Dot(currentDir);
-	float cross = previousDir.X * currentDir.Y - previousDir.Y * currentDir.X;
+	float cross = axisDir.Dot(previousDir.Cross(currentDir));
 
-	// atan2 → 화면에서 얼마나 돌았는지
 	float deltaRad = atan2f(cross, dot);
 
 	FMatrix DeltaR = FMatrix::Identity();
@@ -131,7 +138,7 @@ void FGizmoManipulator::UpdateRotateDrag(UCamera& Camera, UPrimitiveComponent* S
 	case EGizmoAxis::None: return;
 	}
 
-	FMatrix NewR = DeltaR * CurrentR;
+	FMatrix NewR = CurrentR * DeltaR;
 
 	float radX, radY, radZ;
 	if (fabsf(NewR.m[0][2]) < 0.9999f)
@@ -152,6 +159,7 @@ void FGizmoManipulator::UpdateRotateDrag(UCamera& Camera, UPrimitiveComponent* S
 		RadiansToDegrees(radY),
 		RadiansToDegrees(radZ)
 	));
+
 }
 
 void FGizmoManipulator::UpdateScaleDrag(UCamera& Camera, UPrimitiveComponent* SelectedPrimitive)
