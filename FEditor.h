@@ -24,5 +24,5 @@ public:
 	void DrawStatUI();
 	void DrawPropertyUI(const FMousePicker& mousepicker);
 	void DrawConsoleUI();
-	void DrawControlUI();
+	void DrawControlUI(FMousePicker& mousePicker);
 };

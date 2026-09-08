@@ -203,7 +203,7 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstanc ,LPSTR lpCmdLine,i
 		EditorUI.UpdateWindowSize();
 		EditorUI.DrawConsoleUI();
 		EditorUI.DrawPropertyUI(MousePicker);
-		EditorUI.DrawControlUI();
+		EditorUI.DrawControlUI(MousePicker);
 		EditorUI.DrawStatUI();
 
 		GWindowSizeChanged = false;

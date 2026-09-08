@@ -20,6 +20,7 @@ public:
 	void HitTestGizmoAxis(FIntPoint ScreenPos, UCamera& Camera, float ScreenWidth, float ScreenHeight, const FGizmo& Gizmo);
 	void HandleMouseInput(bool allowWorldInput);
 	void ClearHover();
+	void ClearSelected();
 
 	UPrimitiveComponent* GetClosestPrimitive() const { return ClosestPrimitive; }
 	UPrimitiveComponent* GetSelectedPrimitive() const { return SelectedPrimitive; }

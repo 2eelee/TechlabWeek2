@@ -33,6 +33,11 @@ void FMousePicker::ClearHover()
 	HoveredAxis = EGizmoAxis::None;
 }
 
+void FMousePicker::ClearSelected()
+{
+	SelectedPrimitive = nullptr;
+}
+
 void FMousePicker::HitTestPrimitive(FIntPoint ScreenPos, UCamera& Camera, float ScreenWidth, float ScreenHeight)
 {
 	UPrimitiveComponent* closestPrimitive = nullptr;
