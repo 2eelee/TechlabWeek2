@@ -44,6 +44,7 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstanc ,LPSTR lpCmdLine,i
 
 	FEditor EditorUI;
 	FMousePicker MousePicker;
+	GMousePicker = &MousePicker;
 
 	FConsoleWindow console;
 	extern FConsoleWindow* GConsoleWindow;
@@ -80,9 +81,6 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstanc ,LPSTR lpCmdLine,i
 	// 처음에는
 	// Width  = Host의 50%
 	// Height = Host의 30%
-	
-	// 프로그램 종료 여부
-	
 	bool bIsExit = false;
 
 	// FPS
@@ -142,7 +140,7 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstanc ,LPSTR lpCmdLine,i
 		renderer.Prepare();
 		renderer.PrepareShader();
 
-		MousePicker.HandleMousePosition(InputManager::GetInstance().GetMousePosition(), *camera, GWindowWidth, GWindowHeight);
+		GMousePicker->HandleMousePosition(InputManager::GetInstance().GetMousePosition(), *camera, GWindowWidth, GWindowHeight);
 
 		// M * V * P 행렬 입력
 		for (UObject* object : GUObjectArray)

@@ -11,8 +11,12 @@ class FMousePicker
 {
 public:
 	void HandleMousePosition(FIntPoint ScreenPos, UCamera& Camera, float ScreenWidth, float ScreenHeight);
-	const UPrimitiveComponent* GetClosestPrimitive() const { return ClosestPrimitive; }
+	UPrimitiveComponent* GetClosestPrimitive() const { return ClosestPrimitive; }
+	UPrimitiveComponent* GetSelectedPrimitive() const { return SelectedPrimitive; }
 
 private:
 	UPrimitiveComponent* ClosestPrimitive = nullptr;
+	UPrimitiveComponent* SelectedPrimitive = nullptr;
 };
+
+extern FMousePicker* GMousePicker;

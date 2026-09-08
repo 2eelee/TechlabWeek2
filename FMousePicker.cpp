@@ -3,6 +3,7 @@
 #include "FIntPoint.h"
 #include "FRay.h"
 #include "UCamera.h"
+#include "InputManager.h"
 
 void FMousePicker::HandleMousePosition(FIntPoint ScreenPos, UCamera& Camera, float ScreenWidth, float ScreenHeight)
 {
@@ -27,4 +28,8 @@ void FMousePicker::HandleMousePosition(FIntPoint ScreenPos, UCamera& Camera, flo
 		}
 	}
 	ClosestPrimitive = closestPrimitive;
+	if (ClosestPrimitive && InputManager::GetInstance().GetKeyDown(VK_LBUTTON))
+	{
+		SelectedPrimitive = ClosestPrimitive;
+	}
 }

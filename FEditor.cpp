@@ -2,12 +2,15 @@
 
 #include "FEditor.h"
 #include "FObjectFactory.h"
+#include "FMousePicker.h"
 
 UCamera* Cam;
 
 const char* items[] = { "Sphere", "Cube", "Plane" };
 static char name_buffer[32] = "HelloScene";
 static int currentItem = 0;
+
+FMousePicker* GMousePicker;
 
 void FEditor::UpdateWindowSize()
 {
@@ -26,31 +29,26 @@ void FEditor::DrawStatUI()
 
 void FEditor::DrawPropertyUI()
 {
-
-	for (UObject* object : GUObjectArray)
-	{
-		UPrimitiveComponent* primitive = object->Cast<UPrimitiveComponent>(object);
-		if (primitive)
+	ImGui::SetNextWindowPos(ImVec2(display.x - 20, 20), cond, ImVec2(1.0f, 0.0f));
+	UPrimitiveComponent* primitive = GMousePicker->GetSelectedPrimitive();
+	if (primitive) {
+		FVector3 Loc = primitive->GetRelativeLocation();
+		FVector3 Rot = primitive->GetRelativeRotation();
+		FVector3 Scale = primitive->GetRelativeScale3D();
+		ImGui::Begin("Jungle Property Window");
+		if (ImGui::InputFloat3("Translation", &Loc.x))
 		{
-			ImGui::SetNextWindowPos(ImVec2(display.x - 20, 20), cond, ImVec2(1.0f, 0.0f));
-			FVector3 Loc = primitive->GetRelativeLocation();
-			FVector3 Rot = primitive->GetRelativeRotation();
-			FVector3 Scale = primitive->GetRelativeScale3D();
-			ImGui::Begin("Jungle Property Window");
-			if (ImGui::InputFloat3("Translation", &Loc.x))
-			{
-				primitive->SetRelativeLocation(Loc);
-			}
-			if (ImGui::InputFloat3("Rotation", &Rot.x))
-			{
-				primitive->SetRelativeRotation(Rot);
-			}
-			if (ImGui::InputFloat3("Scale", &Scale.x))
-			{
-				primitive->SetRelativeScale3D(Scale);
-			}
-			ImGui::End();
+			primitive->SetRelativeLocation(Loc);
 		}
+		if (ImGui::InputFloat3("Rotation", &Rot.x))
+		{
+			primitive->SetRelativeRotation(Rot);
+		}
+		if (ImGui::InputFloat3("Scale", &Scale.x))
+		{
+			primitive->SetRelativeScale3D(Scale);
+		}
+		ImGui::End();
 	}
 }
 
