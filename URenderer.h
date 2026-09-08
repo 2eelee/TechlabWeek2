@@ -108,5 +108,5 @@ public:
 
 	void CreateConstantBuffer();
 	void ReleaseConstantBuffer();
-	void UpdateConstant(const FMatrix& MVP, const bool IsHovered = false);
+	void UpdateConstant(const FMatrix& MVP, const bool IsHighlighted = false);
 };
