@@ -44,8 +44,8 @@ const std::vector<FVertexSimple>& FGizmo::GetCurrentVertices() const
 FMatrix FGizmo::GetTransformGizmoModel(const UPrimitiveComponent* Primitive) const
 {
 	FMatrix RotationM = FMatrix::CreateRotationX(DegreesToRadians(Primitive->GetRelativeRotation().x))
-		* FMatrix::CreateRotationY(DegreesToRadians(Primitive->GetRelativeRotation().y))
-		* FMatrix::CreateRotationZ(DegreesToRadians(Primitive->GetRelativeRotation().z));
+	* FMatrix::CreateRotationY(DegreesToRadians(Primitive->GetRelativeRotation().y))
+	* FMatrix::CreateRotationZ(DegreesToRadians(Primitive->GetRelativeRotation().z));
 	FMatrix TranslationM = FMatrix::CreateTranslation(Primitive->GetRelativeLocation().x, Primitive->GetRelativeLocation().y, Primitive->GetRelativeLocation().z);
 	if (CurrentMode == GizmoMode::Translate)
 	{
@@ -53,7 +53,7 @@ FMatrix FGizmo::GetTransformGizmoModel(const UPrimitiveComponent* Primitive) con
 	}
 	else if (CurrentMode == GizmoMode::Rotate)
 	{
-		return TranslationM;
+		return RotationM * TranslationM;
 	}
 	else if (CurrentMode == GizmoMode::Scale)
 	{

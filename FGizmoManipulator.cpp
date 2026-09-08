@@ -73,6 +73,10 @@ void FGizmoManipulator::UpdateTranslateDrag(UCamera& Camera, UPrimitiveComponent
 
 void FGizmoManipulator::UpdateRotateDrag(UCamera& Camera, UPrimitiveComponent* SelectedPrimitive, float ScreenWidth, float ScreenHeight)
 {
+	FMatrix CurrentR = FMatrix::CreateRotationX(DegreesToRadians(SelectedPrimitive->GetRelativeRotation().x))
+		* FMatrix::CreateRotationY(DegreesToRadians(SelectedPrimitive->GetRelativeRotation().y))
+		* FMatrix::CreateRotationZ(DegreesToRadians(SelectedPrimitive->GetRelativeRotation().z));
+	
 	FVector3 axisDir = GetAxisDirection(ActiveAxis);
 	FVector3 objectPos = SelectedPrimitive->GetRelativeLocation();
 	FVector3 cameraPos = Camera.GetRelativeLocation();
@@ -101,21 +105,38 @@ void FGizmoManipulator::UpdateRotateDrag(UCamera& Camera, UPrimitiveComponent* S
 	float dot = previousDir.Dot(currentDir);
 	float cross = previousDir.X * currentDir.Y - previousDir.Y * currentDir.X;
 
-	float angleDegree = RadiansToDegrees(atan2f(cross, dot));
+	float deltaRad = atan2f(cross, dot);
 
-	float sign = side > 0.0f ? 1.0f : -1.0f;
-	angleDegree *= sign;
-
-	FVector3 Rotation = SelectedPrimitive->GetRelativeRotation();
-
+	FMatrix DeltaR = FMatrix::Identity();
 	switch (ActiveAxis)
 	{
-		case EGizmoAxis::X: Rotation.x += angleDegree; break;
-		case EGizmoAxis::Y: Rotation.y += angleDegree; break;
-		case EGizmoAxis::Z: Rotation.z += angleDegree; break;
-		case EGizmoAxis::None: return;
+	case EGizmoAxis::X: DeltaR = FMatrix::CreateRotationX(deltaRad); break;
+	case EGizmoAxis::Y: DeltaR = FMatrix::CreateRotationY(deltaRad); break;
+	case EGizmoAxis::Z: DeltaR = FMatrix::CreateRotationZ(deltaRad); break;
+	case EGizmoAxis::None: return;
 	}
-	SelectedPrimitive->SetRelativeRotation(Rotation);
+
+	FMatrix NewR = DeltaR * CurrentR;
+
+	float radX, radY, radZ;
+	if (fabsf(NewR.m[0][2]) < 0.9999f)
+	{
+		radY = asinf(std::clamp(-NewR.m[0][2], -1.0f, 1.0f));
+		radZ = atan2f(NewR.m[0][1], NewR.m[0][0]);
+		radX = atan2f(NewR.m[1][2], NewR.m[2][2]);
+	}
+	else
+	{
+		// 짐벌락 특이점 예외 처리
+		radY = (NewR.m[0][2] < 0) ? (3.14159265f * 0.5f) : (-3.14159265f * 0.5f);
+		radZ = 0.0f;
+		radX = atan2f(-NewR.m[2][1], NewR.m[1][1]);
+	}
+	SelectedPrimitive->SetRelativeRotation(FVector3(
+		RadiansToDegrees(radX),
+		RadiansToDegrees(radY),
+		RadiansToDegrees(radZ)
+	));
 }
 
 void FGizmoManipulator::UpdateScaleDrag(UCamera& Camera, UPrimitiveComponent* SelectedPrimitive)
