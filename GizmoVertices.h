@@ -398,4 +398,3 @@ inline std::vector<FVertexSimple> CreateRotateGizmoVertices()
 
 	return vertices;
 }
-#pragma once

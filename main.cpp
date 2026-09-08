@@ -76,6 +76,7 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstanc ,LPSTR lpCmdLine,i
 
 	// 여기에서 ImGui를 생성합니다.
 	imguiManager.Create(hWnd, renderer.Device, renderer.DeviceContext);
+	ImGuiIO& io = ImGui::GetIO();
 
 	// Console / Host 비율
 	// 처음에는
@@ -158,15 +159,12 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstanc ,LPSTR lpCmdLine,i
 		
 		Gizmo.DrawGrid(renderer, camera);
 
-		// 임시 Loop: Local Axis / Gizmo 도형마다 전부 그리기 - 
-		for (UObject* object : GUObjectArray)
+		UPrimitiveComponent* selected = MousePicker.GetSelectedPrimitive();
+
+		if (selected)
 		{
-			UPrimitiveComponent* primitive = object->Cast<UPrimitiveComponent>(object);
-			if (primitive)
-			{
-				Gizmo.DrawLocalAxis(renderer, camera, primitive);
-				Gizmo.DrawTransformGizmo(renderer, camera, primitive);
-			}
+			Gizmo.DrawLocalAxis(renderer, camera, selected);
+			Gizmo.DrawTransformGizmo(renderer, camera, selected);
 		}
 
 		Gizmo.DrawWorldAxis(renderer, camera);
@@ -190,8 +188,6 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstanc ,LPSTR lpCmdLine,i
 
 		// Buffer 교환
 		renderer.SwapBuffer();
-
-		InputManager::GetInstance().Update();
 
 		// FPS 제한
 		do

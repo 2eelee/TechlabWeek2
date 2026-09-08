@@ -33,6 +33,8 @@ public:
 	void Render(URenderer& renderer);
 	bool IsHit(FRay& ray, float& hitDistance) const;
 	FMatrix GetModelMatrix() const;
+	UINT GetVertexCount() const { return VertexCount; }
+	const FVertexSimple* GetVertices() const { return Vertices; }
 
 protected:
 	ID3D11Buffer* VertexBuffer = nullptr;
