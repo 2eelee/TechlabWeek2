@@ -181,6 +181,7 @@
     <ClInclude Include="FIntPoint.h" />
     <ClInclude Include="FConsoleWindow.h" />
     <ClInclude Include="Containers.h" />
+    <ClInclude Include="FMousePicker.h" />
     <ClInclude Include="FRay.h" />
     <ClInclude Include="MathUtils.h" />
     <ClInclude Include="Core\USceneComponent.h" />
