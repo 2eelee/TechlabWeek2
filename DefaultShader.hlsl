@@ -3,6 +3,7 @@
 cbuffer constants : register(b0)
 {
     row_major float4x4 MVP;
+    int IsHovered;
 }
 
 struct VS_INPUT
