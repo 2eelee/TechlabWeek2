@@ -33,5 +33,9 @@ PS_INPUT mainVS(VS_INPUT input)
 float4 mainPS(PS_INPUT input) : SV_TARGET
 {
     // Output the color directly
+    if (IsHovered)
+    {
+        return saturate(input.color * float4(1.8, 1.8, 1.2, 1.0));
+    }
     return input.color;
 }
