@@ -14,9 +14,8 @@ public:
     EGizmoAxis GetActiveAxis() const { return ActiveAxis; }
 
 private:
-    void UpdateWorldTranslateDrag(UCamera& Camera, UPrimitiveComponent* SelectedPrimitive);
-    void UpdateRotateDrag(UCamera& Camera, UPrimitiveComponent* SelectedPrimitive, float ScreenWidth, float ScreenHeight);
     void UpdateTranslateDrag(UCamera& Camera, UPrimitiveComponent* SelectedPrimitive, bool isLocalAxisMode);
+    void UpdateRotateDrag(UCamera& Camera, UPrimitiveComponent* SelectedPrimitive, float ScreenWidth, float ScreenHeight, bool isLocalAxisMode);
     void UpdateScaleDrag(UCamera& Camera, UPrimitiveComponent* SelectedPrimitive);
 
     FVector3 GetAxisDirection(EGizmoAxis Axis);

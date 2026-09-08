@@ -29,7 +29,7 @@ void FGizmoManipulator::UpdateGizmoDrag(UCamera& Camera, const FGizmo& Gizmo, UP
 		UpdateTranslateDrag(Camera, SelectedPrimitive, isLocalAxisMode);
 		break;
 	case GizmoMode::Rotate:    
-		UpdateRotateDrag(Camera, SelectedPrimitive, ScreenWidth, ScreenHeight); 
+		UpdateRotateDrag(Camera, SelectedPrimitive, ScreenWidth, ScreenHeight, isLocalAxisMode);
 		break;
 	case GizmoMode::Scale:     
 		UpdateScaleDrag(Camera, SelectedPrimitive); 
@@ -73,7 +73,7 @@ void FGizmoManipulator::UpdateTranslateDrag(UCamera& Camera, UPrimitiveComponent
 	FVector3 worldAxis = axisDir;
 
 	if (isLocalAxisMode)
-	{
+	{ 
 		FMatrix RotationM = FMatrix::CreateRotationX(DegreesToRadians(SelectedPrimitive->GetRelativeRotation().x))
 			* FMatrix::CreateRotationY(DegreesToRadians(SelectedPrimitive->GetRelativeRotation().y))
 			* FMatrix::CreateRotationZ(DegreesToRadians(SelectedPrimitive->GetRelativeRotation().z));
@@ -89,8 +89,7 @@ void FGizmoManipulator::UpdateTranslateDrag(UCamera& Camera, UPrimitiveComponent
 	SelectedPrimitive->SetRelativeLocation(Loc);
 }
 
-
-void FGizmoManipulator::UpdateRotateDrag(UCamera& Camera, UPrimitiveComponent* SelectedPrimitive, float ScreenWidth, float ScreenHeight)
+void FGizmoManipulator::UpdateRotateDrag(UCamera& Camera, UPrimitiveComponent* SelectedPrimitive, float ScreenWidth, float ScreenHeight, bool isLocalAxisMode)
 {
 	FMatrix CurrentR = FMatrix::CreateRotationX(DegreesToRadians(SelectedPrimitive->GetRelativeRotation().x))
 		* FMatrix::CreateRotationY(DegreesToRadians(SelectedPrimitive->GetRelativeRotation().y))
@@ -135,7 +134,11 @@ void FGizmoManipulator::UpdateRotateDrag(UCamera& Camera, UPrimitiveComponent* S
 	case EGizmoAxis::None: return;
 	}
 
-	FMatrix NewR = DeltaR * CurrentR;
+	FMatrix NewR;
+	if (isLocalAxisMode)
+		NewR = CurrentR * DeltaR;
+	else 
+		NewR = DeltaR * CurrentR;
 
 	float radX, radY, radZ;
 	if (fabsf(NewR.m[0][2]) < 0.9999f)
