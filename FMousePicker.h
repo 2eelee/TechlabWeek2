@@ -24,5 +24,3 @@ private:
     bool IntersectTriangleList(const FRay& ray, const FVertexSimple* vertices, UINT vertexCount, float& closestDistance);
     bool IntersectTriangle(const FRay& ray, const FVector3& v0, const FVector3& v1, const FVector3& v2, float& distance);
 };
-
-extern FMousePicker* GMousePicker;

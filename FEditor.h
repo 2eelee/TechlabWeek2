@@ -8,6 +8,7 @@
 #include "FConsoleWindow.h"
 #include "Window.h"
 #include "USceneManager.h"
+#include "FMousePicker.h"
 
 class FEditor
 {
@@ -21,7 +22,7 @@ public:
 
 	void UpdateWindowSize();
 	void DrawStatUI();
-	void DrawPropertyUI();
+	void DrawPropertyUI(FMousePicker mousepicker);
 	void DrawConsoleUI();
 	void DrawControlUI();
 };
