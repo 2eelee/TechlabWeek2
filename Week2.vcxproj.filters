@@ -34,6 +34,12 @@
     <Filter Include="Engine">
       <UniqueIdentifier>{7f0aef0f-1564-439f-81b6-4e7d0a4d95bd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Core\Object">
+      <UniqueIdentifier>{9c2ad9a9-c01a-4a0c-9a80-040c1e8098e4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Editor\Gizmo">
+      <UniqueIdentifier>{7d8773ad-8356-4f01-b913-a630e97c4fac}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ImGui\imgui.cpp">
@@ -67,11 +73,7 @@
     <ClCompile Include="FMemory.cpp">
       <Filter>Core\Memory</Filter>
     </ClCompile>
-    <ClCompile Include="URenderer.cpp" />
     <ClCompile Include="FVector3.cpp">
-      <Filter>Math</Filter>
-    </ClCompile>
-    <ClCompile Include="FMatrix.cpp">
       <Filter>Math</Filter>
     </ClCompile>
     <ClCompile Include="FVector4.cpp">
@@ -89,10 +91,6 @@
     <ClCompile Include="URenderer.cpp">
       <Filter>Rendering</Filter>
     </ClCompile>
-    <ClCompile Include="FGizmo.cpp">
-      <Filter>Editor</Filter>
-    </ClCompile>
-    <ClCompile Include="Core\UObject.cpp" />
     <ClCompile Include="FMatrix.cpp" />
     <ClCompile Include="FMousePicker.cpp">
       <Filter>Editor</Filter>
@@ -105,6 +103,18 @@
     </ClCompile>
     <ClCompile Include="FEditor.cpp">
       <Filter>Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="FMatrix.cpp">
+      <Filter>Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\UObject.cpp">
+      <Filter>Core\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="URenderer.cpp">
+      <Filter>Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="FGizmo.cpp">
+      <Filter>Editor\Gizmo</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -164,7 +174,6 @@
     <ClInclude Include="MathUtils.h">
       <Filter>Math</Filter>
     </ClInclude>
-    <ClInclude Include="FRay.h" />
     <ClInclude Include="FVector2.h">
       <Filter>Math</Filter>
     </ClInclude>
@@ -207,15 +216,29 @@
     <ClInclude Include="Core\UEngineStatics.h">
       <Filter>Engine</Filter>
     </ClInclude>
-    <ClInclude Include="FGizmo.h">
-      <Filter>Editor</Filter>
-    </ClInclude>
-    <ClInclude Include="Core\FObjectFactory.h" />
-    <ClInclude Include="Core\TSubclassOf.h" />
-    <ClInclude Include="Core\UClass.h" />
-    <ClInclude Include="Core\UObject.h" />
     <ClInclude Include="FMousePicker.h">
       <Filter>Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\FObjectFactory.h">
+      <Filter>Core\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\TSubclassOf.h">
+      <Filter>Core\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\UClass.h">
+      <Filter>Core\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\UObject.h">
+      <Filter>Core\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="FRay.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="FGizmo.h">
+      <Filter>Editor\Gizmo</Filter>
+    </ClInclude>
+    <ClInclude Include="GizmoVertices.h">
+      <Filter>Editor\Gizmo</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -145,7 +145,6 @@
     <ClCompile Include="FConsoleWindow.cpp" />
     <ClCompile Include="Core\UObject.cpp" />
     <ClCompile Include="FEditor.cpp" />
-    <ClCompile Include="FMatrix.cpp" />
     <ClCompile Include="FGizmo.cpp" />
     <ClCompile Include="FMatrix.cpp" />
     <ClCompile Include="FMemory.cpp" />
@@ -184,6 +183,7 @@
     <ClInclude Include="Containers.h" />
     <ClInclude Include="FMousePicker.h" />
     <ClInclude Include="FRay.h" />
+    <ClInclude Include="GizmoVertices.h" />
     <ClInclude Include="MathUtils.h" />
     <ClInclude Include="Core\USceneComponent.h" />
     <ClInclude Include="FEditor.h" />
