@@ -151,7 +151,24 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstanc ,LPSTR lpCmdLine,i
 			if (primitive)
 			{
 				FMatrix MVP = renderer.CreateMVP(*primitive, camera);
-				bool IsHovered = (closest && (closest->UUID == object->UUID)) || (selected && (selected->UUID == object ->UUID));
+				bool IsHovered = (closest && (closest->UUID == object->UUID)) || (selected && (selected->UUID == object->UUID));
+				FMatrix OutlineMVP = FMatrix::CreateScale(1.05f, 1.05f, 1.05f) * MVP;
+				if (MousePicker.GetSelectedPrimitive() == primitive)
+				{
+					bool IsSelected = true;
+					if (primitive->GetClass() == UPlaneComp::StaticClass())
+					{
+						renderer.SetRSStateForWireFrame();
+						renderer.UpdateConstant(MVP, IsHovered, IsSelected);
+					}
+					else
+					{
+						renderer.SetRSStateForFrame();
+						renderer.UpdateConstant(OutlineMVP, IsHovered, IsSelected);
+					}	
+					primitive->Render(renderer);
+					renderer.SetCullMode(D3D11_CULL_BACK);
+				}
 				renderer.UpdateConstant(MVP, IsHovered);
 				primitive->Render(renderer);
 			}
@@ -170,6 +187,10 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstanc ,LPSTR lpCmdLine,i
 		Gizmo.DrawWorldAxis(renderer, camera);
 		camera->CamMove(deltaTime);
 
+		if (MousePicker.GetSelectedPrimitive())
+		{
+
+		}
 		// ImGui Frame 시작
 		imguiManager.BeginFrame();
 		
