@@ -141,7 +141,7 @@ void FEditor::DrawControlUI()
 	ImGui::Checkbox("Orthogonal", &Cam->othogonalEnable);
 	if (Cam->othogonalEnable)
 	{
-		ImGui::SliderFloat("Othogonal Width", &Cam->orthowidth, 1.0f, 10000.0f);
+		ImGui::SliderFloat("Othogonal Width", &Cam->orthowidth, 1.0f, 50.0f);
 	}
 	ImGui::DragFloat("FOV", &Cam->FovAngle, 1.0f, 5.0f, 170.0f);
 	FVector3 CamLoc = Cam->GetRelativeLocation();
