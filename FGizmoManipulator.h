@@ -19,6 +19,7 @@ private:
     void UpdateScaleDrag(UCamera& Camera, UPrimitiveComponent* SelectedPrimitive);
 
     FVector3 GetAxisDirection(EGizmoAxis Axis);
+    void GetRotationPlaneAxes(EGizmoAxis Axis, FVector3& DirA, FVector3& DirB);
     float CalculateDragAmount(UCamera& Camera, const FVector3& WorldAxis);
 
     EGizmoAxis ActiveAxis = EGizmoAxis::None;

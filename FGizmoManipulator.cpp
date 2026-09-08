@@ -45,6 +45,17 @@ FVector3 FGizmoManipulator::GetAxisDirection(EGizmoAxis Axis)
 	return axisDir;
 }
 
+void FGizmoManipulator::GetRotationPlaneAxes(EGizmoAxis Axis, FVector3& DirA, FVector3& DirB)
+{
+	switch (Axis)
+	{
+	case EGizmoAxis::X: DirA = { 0, 1, 0 }; DirB = { 0, 0, 1 }; break;
+	case EGizmoAxis::Y: DirA = { 0, 0, 1 }; DirB = { 1, 0, 0 }; break;
+	case EGizmoAxis::Z: DirA = { 1, 0, 0 }; DirB = { 0, 1, 0 }; break;
+	case EGizmoAxis::None: return;
+	}
+}
+
 float FGizmoManipulator::CalculateDragAmount(UCamera& Camera, const FVector3& WorldAxis)
 {
 	FIntPoint mouseDeltaInt = InputManager::GetInstance().GetMouseDelta();
@@ -73,27 +84,30 @@ void FGizmoManipulator::UpdateTranslateDrag(UCamera& Camera, UPrimitiveComponent
 
 void FGizmoManipulator::UpdateRotateDrag(UCamera& Camera, UPrimitiveComponent* SelectedPrimitive, float ScreenWidth, float ScreenHeight)
 {
-	FVector3 axisDir = GetAxisDirection(ActiveAxis);
-	FVector3 objectPos = SelectedPrimitive->GetRelativeLocation();
-	FVector3 cameraPos = Camera.GetRelativeLocation();
-
-	FVector3 objectToCamera = cameraPos - objectPos;
-
-	float side = axisDir.Dot(objectToCamera);
-
+	// 마우스 현재 위치
 	FIntPoint currentMouseInt = InputManager::GetInstance().GetMousePosition();
 	FVector2 currentMouse{ static_cast<float>(currentMouseInt.X), static_cast<float>(currentMouseInt.Y) };
 
+	// 마우스 델타값
 	FIntPoint mouseDeltaInt = InputManager::GetInstance().GetMouseDelta();
 	FVector2 mouseDelta{ static_cast<float>(mouseDeltaInt.X), static_cast<float>(mouseDeltaInt.Y) };
 
+	// 마우스 과거 위치  = 현재 위치 - 델타값
 	FVector2 previousMouse = currentMouse - mouseDelta;
 
 	FVector3 Loc = SelectedPrimitive->GetRelativeLocation();
 	FVector2 screenCenter = Camera.WorldToScreen(Loc, ScreenWidth, ScreenHeight);
 
+	FVector3 dirA, dirB;
+	GetRotationPlaneAxes(ActiveAxis, dirA, dirB);
+
+	FVector2 screenA = Camera.WorldToScreen(Loc + dirA, ScreenWidth, ScreenHeight) - screenCenter;
+	FVector2 screenB = Camera.WorldToScreen(Loc + dirB, ScreenWidth, ScreenHeight) - screenCenter;
+
 	FVector2 previousDir = previousMouse - screenCenter;
 	FVector2 currentDir = currentMouse - screenCenter;
+
+	if (previousDir.Length() < 0.000001f || currentDir.Length() < 0.000001f) return;
 
 	previousDir = previousDir.Normalize();
 	currentDir = currentDir.Normalize();
@@ -101,9 +115,13 @@ void FGizmoManipulator::UpdateRotateDrag(UCamera& Camera, UPrimitiveComponent* S
 	float dot = previousDir.Dot(currentDir);
 	float cross = previousDir.X * currentDir.Y - previousDir.Y * currentDir.X;
 
+	// atan2 → 화면에서 얼마나 돌았는지
 	float angleDegree = RadiansToDegrees(atan2f(cross, dot));
 
-	float sign = side > 0.0f ? 1.0f : -1.0f;
+	float planeCross = screenA.X * screenB.Y - screenA.Y * screenB.X;
+	if (fabsf(planeCross) < 0.000001f) return;
+
+	float sign = planeCross > 0.0f ? 1.0f : -1.0f;
 	angleDegree *= sign;
 
 	FVector3 Rotation = SelectedPrimitive->GetRelativeRotation();
