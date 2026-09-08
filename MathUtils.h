@@ -17,6 +17,11 @@ namespace MathUtils
 		};
 	}
 
+	inline FVector2 NDCToScreen(const FVector2& ndc, float w, float h)
+	{
+		return { (ndc.X + 1.0f) * 0.5f * w, (1.0f - ndc.Y) * 0.5f * h };
+	}
+
 	inline float Det3x3(
 		float a, float b, float c,
 		float d, float e, float f,
