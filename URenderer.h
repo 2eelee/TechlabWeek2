@@ -90,7 +90,7 @@ public:
 	void Prepare();
 	void SetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY Topology);
 	void PrepareShader();
-	void RenderPrimitive(ID3D11Buffer* pBuffer, UINT numVertices);
+	void RenderPrimitive(ID3D11Buffer* pBuffer, UINT numVertices, UINT startVertexLocation = 0);
 
 	ID3D11Buffer* CreateVertexBuffer(FVertexSimple* vertices, UINT byteWidth);
 	void ReleaseVertexBuffer(ID3D11Buffer* pBuffer);

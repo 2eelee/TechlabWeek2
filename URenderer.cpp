@@ -288,12 +288,12 @@ void URenderer::PrepareShader()
 	}
 }
 
-void URenderer::RenderPrimitive(ID3D11Buffer* pBuffer, UINT numVertices)
+void URenderer::RenderPrimitive(ID3D11Buffer* pBuffer, UINT numVertices, UINT startVertexLocation)
 {
 	UINT offset = 0;
 	DeviceContext->IASetVertexBuffers(0, 1, &pBuffer, &Stride, &offset);
 
-	DeviceContext->Draw(numVertices, 0);
+	DeviceContext->Draw(numVertices, startVertexLocation);
 }
 
 ID3D11Buffer* URenderer::CreateVertexBuffer(FVertexSimple* vertices, UINT byteWidth)
