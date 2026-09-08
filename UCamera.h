@@ -34,4 +34,5 @@ struct UCamera: public USceneComponent
 	void CamMove(float deltaTime);
 
 	FRay ScreenToRay(FIntPoint ScreenPosition, float ScreenWidth, float ScreenHeight);
+	FVector2 WorldToScreen(const FVector3& WorldPosition, float ScreenWidth, float ScreenHeight);
 };

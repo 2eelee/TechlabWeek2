@@ -143,3 +143,14 @@ FRay UCamera::ScreenToRay(FIntPoint ScreenPosition, float ScreenWidth, float Scr
 
 	return FRay{ rayOrigin, rayDirection };
 }
+
+FVector2 UCamera::WorldToScreen(const FVector3& WorldPosition, float ScreenWidth, float ScreenHeight)
+{
+	FMatrix View = FMatrix::CreateView(GetRelativeLocation(), GetRightVector(), GetUPVector(), GetForwardVector());
+	FMatrix Projection = FMatrix::CreateProjection(FarZ, NearZ, DegreesToRadians(FovAngle), ScreenWidth / ScreenHeight);
+
+	FVector4 clip = FVector4{ WorldPosition.x, WorldPosition.y, WorldPosition.z, 1.0f } * View * Projection;
+	FVector4 ndc = clip.DivideByW();
+
+	return MathUtils::NDCToScreen(FVector2{ ndc.X, ndc.Y }, ScreenWidth, ScreenHeight);
+}
