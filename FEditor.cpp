@@ -10,8 +10,6 @@ const char* items[] = { "Sphere", "Cube", "Plane" };
 static char name_buffer[32] = "HelloScene";
 static int currentItem = 0;
 
-FMousePicker* GMousePicker;
-
 void FEditor::UpdateWindowSize()
 {
 	display = ImGui::GetIO().DisplaySize;
@@ -70,7 +68,7 @@ void FEditor::DrawConsoleUI()
 
 
 
-void FEditor::DrawControlUI()
+void FEditor::DrawControlUI(FMousePicker& mousePicker)
 {
 	ImGui::SetNextWindowPos(ImVec2(20, 20), cond, ImVec2(0.0f, 0.0f));
 	ImGui::Begin("Jungle Control Panel");
@@ -113,6 +111,14 @@ void FEditor::DrawControlUI()
 			spawnCount++;
 		}
 	}
+	ImGui::BeginDisabled(mousePicker.GetSelectedPrimitive() == nullptr);
+	if (ImGui::Button("Remove"))
+	{
+		delete mousePicker.GetSelectedPrimitive();
+		mousePicker.ClearSelected();
+		spawnCount--;
+	}
+	ImGui::EndDisabled();
 	ImGui::InputInt("Number of spawn", &spawnCount, 0, 0, ImGuiInputTextFlags_ReadOnly);
 	ImGui::Separator();
 	ImGui::InputText("SceneName", name_buffer, sizeof(name_buffer));
@@ -131,7 +137,7 @@ void FEditor::DrawControlUI()
 	ImGui::Separator();
 	for (UObject* object : GUObjectArray)
 	{
-		UCamera* Camera = object->Cast<UCamera>(object);
+		UCamera* Camera = object->Cast<UCamera >(object);
 		if (Camera)
 		{
 			Cam = Camera;
