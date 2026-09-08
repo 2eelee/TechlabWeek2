@@ -9,23 +9,44 @@ enum class GizmoMode
 	Scale
 };
 
+enum class EGizmoAxis
+{
+	None,
+	X,
+	Y,
+	Z
+};
+
 class URenderer;
 struct ID3D11Buffer;
+class FMousePicker;
 
 class FGizmo
 {
 public: 
 	void CycleMode();
+
 	void Initialize(URenderer& Renderer);
+
 	void DrawGrid(URenderer& Renderer, UCamera* Camera);
 	void DrawWorldAxis(URenderer& Renderer, UCamera* Camera);
 	void DrawLocalAxis(URenderer& Renderer, UCamera* Camera, UPrimitiveComponent* Primitive);
-	void DrawTransformGizmo(URenderer& Renderer, UCamera* Camera, UPrimitiveComponent* Primitive);
-	void SetGizmoMode(GizmoMode NewMode) { CurrentMode = NewMode; }
+	void DrawTransformGizmo(URenderer& Renderer, UCamera* Camera, UPrimitiveComponent* Primitive, EGizmoAxis HoveredAxis);
+	
 	void Release(URenderer& Renderer);
+
+	const std::vector<FVertexSimple>& GetCurrentVertices() const;
+	FMatrix GetTransformGizmoModel(const UPrimitiveComponent* Primitive) const;
+
+	GizmoMode GetGizmoMode() const { return CurrentMode; }
+	void SetGizmoMode(GizmoMode NewMode) { CurrentMode = NewMode; }
 
 private:
 	GizmoMode CurrentMode = GizmoMode::Translate;
+
+	std::vector<FVertexSimple> TranslateVertices;
+	std::vector<FVertexSimple> RotateVertices;
+	std::vector<FVertexSimple> ScaleVertices;
 
 	ID3D11Buffer* LocalAxisVertexBuffer = nullptr;
 	ID3D11Buffer* WorldAxisVertexBuffer = nullptr;

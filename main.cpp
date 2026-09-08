@@ -141,14 +141,29 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstanc ,LPSTR lpCmdLine,i
 		renderer.Prepare();
 		renderer.PrepareShader();
 
-		GMousePicker->HandleMousePosition(InputManager::GetInstance().GetMousePosition(), *camera, GWindowWidth, GWindowHeight);
+		bool allowWorldInput = !ImGui::GetIO().WantCaptureMouse;
+
+		if (allowWorldInput) {
+			GMousePicker->HitTestPrimitive(InputManager::GetInstance().GetMousePosition(), *camera, GWindowWidth, GWindowHeight);
+			GMousePicker->HitTestGizmoAxis(InputManager::GetInstance().GetMousePosition(), *camera, GWindowWidth, GWindowHeight, Gizmo);
+		}
+		else {
+			GMousePicker->ClearHover();
+		}
+
+		GMousePicker->HandleMouseInput(allowWorldInput);
+		
+		UPrimitiveComponent* closest = MousePicker.GetClosestPrimitive();
+		UPrimitiveComponent* selected = MousePicker.GetSelectedPrimitive();
+
+		EGizmoAxis hoveredAxis = MousePicker.GetHoveredAxis();
+		EGizmoAxis activeAxis = MousePicker.GetActiveAxis();
 
 		// M * V * P 행렬 입력
 		for (UObject* object : GUObjectArray)
 		{
 			UPrimitiveComponent* primitive = object->Cast<UPrimitiveComponent>(object);
-			const UPrimitiveComponent* closest = MousePicker.GetClosestPrimitive();
-			const UPrimitiveComponent* selected = MousePicker.GetSelectedPrimitive();
+			
 			if (primitive)
 			{
 				FMatrix MVP = renderer.CreateMVP(*primitive, camera);
@@ -160,12 +175,10 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstanc ,LPSTR lpCmdLine,i
 		
 		Gizmo.DrawGrid(renderer, camera);
 
-		UPrimitiveComponent* selected = MousePicker.GetSelectedPrimitive();
-
 		if (selected)
 		{
 			Gizmo.DrawLocalAxis(renderer, camera, selected);
-			Gizmo.DrawTransformGizmo(renderer, camera, selected);
+			Gizmo.DrawTransformGizmo(renderer, camera, selected, hoveredAxis);
 		}
 
 		Gizmo.DrawWorldAxis(renderer, camera);

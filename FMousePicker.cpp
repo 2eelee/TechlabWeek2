@@ -5,8 +5,35 @@
 #include "UCamera.h"
 #include "InputManager.h"
 #include "FMatrix.h"
+#include "FGizmo.h"
 
-void FMousePicker::HandleMousePosition(FIntPoint ScreenPos, UCamera& Camera, float ScreenWidth, float ScreenHeight)
+
+void FMousePicker::HandleMouseInput(bool allowWorldInput)
+{
+	if (InputManager::GetInstance().GetMouseButtonUp(MouseButton::LEFT))
+	{
+		ActiveAxis = EGizmoAxis::None;
+	}
+
+	if (!allowWorldInput)
+		return;
+
+	if (InputManager::GetInstance().GetMouseButtonDown(MouseButton::LEFT))
+	{
+		if (HoveredAxis != EGizmoAxis::None)
+			ActiveAxis = HoveredAxis;
+		else
+			SelectedPrimitive = ClosestPrimitive;
+	}
+}
+
+void FMousePicker::ClearHover()
+{
+	ClosestPrimitive = nullptr;
+	HoveredAxis = EGizmoAxis::None;
+}
+
+void FMousePicker::HitTestPrimitive(FIntPoint ScreenPos, UCamera& Camera, float ScreenWidth, float ScreenHeight)
 {
 	UPrimitiveComponent* closestPrimitive = nullptr;
 	float closestDistance = FLT_MAX;
@@ -35,9 +62,51 @@ void FMousePicker::HandleMousePosition(FIntPoint ScreenPos, UCamera& Camera, flo
 		}
 	}
 	ClosestPrimitive = closestPrimitive;
-	if (ClosestPrimitive && InputManager::GetInstance().GetMouseButtonDown(MouseButton::LEFT))
+}
+
+void FMousePicker::HitTestGizmoAxis(FIntPoint ScreenPos, UCamera& Camera, float ScreenWidth, float ScreenHeight, const FGizmo& Gizmo)
+{
+	if (!SelectedPrimitive)
 	{
-		SelectedPrimitive = ClosestPrimitive;
+		HoveredAxis = EGizmoAxis::None;
+		return;
+	}
+
+	FRay ray = Camera.ScreenToRay(ScreenPos, (float)ScreenWidth, (float)ScreenHeight);
+
+	const auto& vertices = Gizmo.GetCurrentVertices();
+	FMatrix gizmoModel = Gizmo.GetTransformGizmoModel(SelectedPrimitive);
+	FRay localRay = TransformRayToLocal(ray, gizmoModel);
+
+	UINT axisVertexCount = static_cast<UINT>(vertices.size() / 3);
+
+	float xDistance;
+	float yDistance;
+	float zDistance;
+
+	bool hitX = IntersectTriangleList(localRay, vertices.data(), axisVertexCount, xDistance);
+	bool hitY = IntersectTriangleList(localRay, vertices.data() + axisVertexCount, axisVertexCount, yDistance);
+	bool hitZ = IntersectTriangleList(localRay, vertices.data() + axisVertexCount * 2, axisVertexCount, zDistance);
+
+	HoveredAxis = EGizmoAxis::None;
+	float closestDistance = FLT_MAX;
+
+	if (hitX && xDistance < closestDistance)
+	{
+		closestDistance = xDistance;
+		HoveredAxis = EGizmoAxis::X;
+	}
+
+	if (hitY && yDistance < closestDistance)
+	{
+		closestDistance = yDistance;
+		HoveredAxis = EGizmoAxis::Y;
+	}
+
+	if (hitZ && zDistance < closestDistance)
+	{
+		closestDistance = zDistance;
+		HoveredAxis = EGizmoAxis::Z;
 	}
 }
 

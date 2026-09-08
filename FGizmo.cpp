@@ -2,6 +2,7 @@
 #include "FVertexSimple.h"
 #include "URenderer.h"
 #include "GizmoVertices.h"
+#include "FMousePicker.h"
 #include "FMatrix.h"
 #include "UCamera.h"
 
@@ -23,6 +24,45 @@ void FGizmo::CycleMode()
 	}
 }
 
+const std::vector<FVertexSimple>& FGizmo::GetCurrentVertices() const
+{
+	if (CurrentMode == GizmoMode::Translate)
+	{
+		return TranslateVertices;
+	}
+	else if (CurrentMode == GizmoMode::Rotate)
+	{
+		return RotateVertices;
+	}
+	else if (CurrentMode == GizmoMode::Scale)
+	{
+		return ScaleVertices;
+	}
+	return TranslateVertices;
+}
+
+FMatrix FGizmo::GetTransformGizmoModel(const UPrimitiveComponent* Primitive) const
+{
+	FMatrix RotationM = FMatrix::CreateRotationX(DegreesToRadians(Primitive->GetRelativeRotation().x))
+		* FMatrix::CreateRotationY(DegreesToRadians(Primitive->GetRelativeRotation().y))
+		* FMatrix::CreateRotationZ(DegreesToRadians(Primitive->GetRelativeRotation().z));
+	FMatrix TranslationM = FMatrix::CreateTranslation(Primitive->GetRelativeLocation().x, Primitive->GetRelativeLocation().y, Primitive->GetRelativeLocation().z);
+	if (CurrentMode == GizmoMode::Translate)
+	{
+		return TranslationM;
+	}
+	else if (CurrentMode == GizmoMode::Rotate)
+	{
+		return RotationM * TranslationM;
+	}
+	else if (CurrentMode == GizmoMode::Scale)
+	{
+		return RotationM * TranslationM;
+	}
+	
+	return RotationM * TranslationM;
+}
+
 void FGizmo::Initialize(URenderer& Renderer)
 {
 	LocalAxisVertexBuffer = Renderer.CreateVertexBuffer(LocalAxisVertices, sizeof(LocalAxisVertices));
@@ -37,7 +77,7 @@ void FGizmo::Initialize(URenderer& Renderer)
 		static_cast<UINT>(GridVertices.size() * sizeof(FVertexSimple))
 	);
 
-	auto TranslateVertices = CreateTranslateGizmoVertices();
+	TranslateVertices = CreateTranslateGizmoVertices();
 	TranslateGizmoVertexCount = static_cast<UINT>(TranslateVertices.size());
 	TranslateGizmoVertexBuffer = Renderer.CreateVertexBuffer(
 		TranslateVertices.data(),
@@ -46,7 +86,7 @@ void FGizmo::Initialize(URenderer& Renderer)
 			)
 	);
 
-	auto RotateVertices = CreateRotateGizmoVertices();
+	RotateVertices = CreateRotateGizmoVertices();
 	RotateGizmoVertexCount = static_cast<UINT>(RotateVertices.size());
 	RotateGizmoVertexBuffer = Renderer.CreateVertexBuffer(
 		RotateVertices.data(),
@@ -55,7 +95,7 @@ void FGizmo::Initialize(URenderer& Renderer)
 			)
 	);
 
-	auto ScaleVertices = CreateScaleGizmoVertices();
+	ScaleVertices = CreateScaleGizmoVertices();
 	ScaleGizmoVertexCount =	static_cast<UINT>(ScaleVertices.size());
 	ScaleGizmoVertexBuffer = Renderer.CreateVertexBuffer(
 		ScaleVertices.data(),
@@ -63,7 +103,6 @@ void FGizmo::Initialize(URenderer& Renderer)
 			ScaleVertices.size() * sizeof(FVertexSimple)
 			)
 	);
-
 }
 
 void FGizmo::DrawGrid(URenderer& Renderer, UCamera* Camera)
@@ -112,51 +151,50 @@ void FGizmo::DrawLocalAxis(URenderer& Renderer, UCamera* Camera, UPrimitiveCompo
 	Renderer.RenderPrimitive(LocalAxisVertexBuffer, 6);
 }
 
-void FGizmo::DrawTransformGizmo(URenderer& Renderer, UCamera* Camera, UPrimitiveComponent* Primitive)
+void FGizmo::DrawTransformGizmo(URenderer& Renderer, UCamera* Camera, UPrimitiveComponent* Primitive, EGizmoAxis HoveredAxis)
 {
 	Renderer.SetAlphaBlend(false);
 	Renderer.SetDepthWrite(false);
 	Renderer.SetCullMode(D3D11_CULL_NONE);
 	Renderer.SetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
+	FMatrix Model = GetTransformGizmoModel(Primitive);
+	FMatrix MVP = Renderer.CreateMVPFromModel(Model, Camera);
+
+	ID3D11Buffer* gizmoBuffer = nullptr;
+	UINT gizmoVertexCount = 0;
+
 	if (CurrentMode == GizmoMode::Translate)
 	{
-		FMatrix TranslationM = FMatrix::CreateTranslation(Primitive->GetRelativeLocation().x, Primitive->GetRelativeLocation().y, Primitive->GetRelativeLocation().z);
-		FMatrix Model = TranslationM;
-
-		FMatrix MVP = Renderer.CreateMVPFromModel(Model, Camera);
-		Renderer.UpdateConstant(MVP);
-
-		Renderer.RenderPrimitive(TranslateGizmoVertexBuffer, TranslateGizmoVertexCount);
+		gizmoBuffer = TranslateGizmoVertexBuffer;
+		gizmoVertexCount = TranslateGizmoVertexCount;
 	}
 
 	else if (CurrentMode == GizmoMode::Rotate)
 	{
-		FMatrix RotationM = FMatrix::CreateRotationX(DegreesToRadians(Primitive->GetRelativeRotation().x))
-			* FMatrix::CreateRotationY(DegreesToRadians(Primitive->GetRelativeRotation().y))
-			* FMatrix::CreateRotationZ(DegreesToRadians(Primitive->GetRelativeRotation().z));
-		FMatrix TranslationM = FMatrix::CreateTranslation(Primitive->GetRelativeLocation().x, Primitive->GetRelativeLocation().y, Primitive->GetRelativeLocation().z);
-		FMatrix Model = RotationM * TranslationM;
-
-		FMatrix MVP = Renderer.CreateMVPFromModel(Model, Camera);
-		Renderer.UpdateConstant(MVP);
-
-		Renderer.RenderPrimitive(RotateGizmoVertexBuffer, RotateGizmoVertexCount);
+		gizmoBuffer = RotateGizmoVertexBuffer;
+		gizmoVertexCount = RotateGizmoVertexCount;
 	}
 
 	else if (CurrentMode == GizmoMode::Scale)
 	{
-		FMatrix RotationM = FMatrix::CreateRotationX(DegreesToRadians(Primitive->GetRelativeRotation().x))
-			* FMatrix::CreateRotationY(DegreesToRadians(Primitive->GetRelativeRotation().y))
-			* FMatrix::CreateRotationZ(DegreesToRadians(Primitive->GetRelativeRotation().z));
-		FMatrix TranslationM = FMatrix::CreateTranslation(Primitive->GetRelativeLocation().x, Primitive->GetRelativeLocation().y, Primitive->GetRelativeLocation().z);
-		FMatrix Model = RotationM * TranslationM;
-
-		FMatrix MVP = Renderer.CreateMVPFromModel(Model, Camera);
-		Renderer.UpdateConstant(MVP);
-
-		Renderer.RenderPrimitive(ScaleGizmoVertexBuffer, ScaleGizmoVertexCount);
+		gizmoBuffer = ScaleGizmoVertexBuffer;
+		gizmoVertexCount = ScaleGizmoVertexCount;
 	}
+
+	UINT axisVertexCount = gizmoVertexCount / 3;
+	UINT xStart = 0;
+	UINT yStart = axisVertexCount;
+	UINT zStart = axisVertexCount * 2;
+
+	Renderer.UpdateConstant(MVP, HoveredAxis == EGizmoAxis::X);
+	Renderer.RenderPrimitive(gizmoBuffer, axisVertexCount, xStart);
+
+	Renderer.UpdateConstant(MVP, HoveredAxis == EGizmoAxis::Y);
+	Renderer.RenderPrimitive(gizmoBuffer, axisVertexCount, yStart);
+
+	Renderer.UpdateConstant(MVP, HoveredAxis == EGizmoAxis::Z);
+	Renderer.RenderPrimitive(gizmoBuffer, axisVertexCount, zStart);
 }
 
 void FGizmo::Release(URenderer& Renderer)
