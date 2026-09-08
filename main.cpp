@@ -83,6 +83,10 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstanc ,LPSTR lpCmdLine,i
 	
 	// 프로그램 종료 여부
 	
+	FMousePicker MousePicker;
+	extern FMousePicker* GMousePicker;
+	GMousePicker = &MousePicker;
+
 	bool bIsExit = false;
 
 	// FPS
