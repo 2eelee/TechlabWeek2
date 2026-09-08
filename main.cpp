@@ -75,7 +75,7 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstanc ,LPSTR lpCmdLine,i
 
 	// 여기에서 ImGui를 생성합니다.
 	imguiManager.Create(hWnd, renderer.Device, renderer.DeviceContext);
-	ImGuiIO& io = ImGui::GetIO();
+
 
 	// Console / Host 비율
 	// 처음에는
@@ -166,8 +166,7 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstanc ,LPSTR lpCmdLine,i
 			if (primitive)
 			{
 				FMatrix MVP = renderer.CreateMVP(*primitive, camera);
-				FMatrix OutlineMVP = FMatrix::CreateScale(1.05f, 1.05f, 1.05f) * MVP;
-				FMatrix OutlineMVPforPlane = FMatrix::CreateScale(1.03f, 1.03f, 1.03f) * MVP;
+
 				bool IsHighlighted = closest && closest->UUID == object->UUID;
 				if (selected == primitive)
 				{

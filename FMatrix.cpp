@@ -132,8 +132,8 @@ FMatrix FMatrix::CreateProjection(float farZ, float nearZ, float fovrad, float a
 
 FMatrix FMatrix::CreateProjectionInverse(float aspectRatio, float fov, float farZ, float nearZ)
 {
-	float a = aspectRatio * tanf(fov * 0.5);
-	float b = tanf(fov * 0.5);
+	float a = tanf(fov * 0.5);
+	float b = tanf(fov * 0.5) / aspectRatio;
 	float c = -(farZ - nearZ) / (nearZ * farZ);
 	float d = 1.0f / nearZ;
 
