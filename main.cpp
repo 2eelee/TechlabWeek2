@@ -148,10 +148,11 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstanc ,LPSTR lpCmdLine,i
 		{
 			UPrimitiveComponent* primitive = object->Cast<UPrimitiveComponent>(object);
 			const UPrimitiveComponent* closest = MousePicker.GetClosestPrimitive();
+			const UPrimitiveComponent* selected = MousePicker.GetSelectedPrimitive();
 			if (primitive)
 			{
 				FMatrix MVP = renderer.CreateMVP(*primitive, camera);
-				bool IsHovered = (closest && (closest->UUID == object->UUID));
+				bool IsHovered = (closest && (closest->UUID == object->UUID)) || (selected && (selected->UUID == object ->UUID));
 				renderer.UpdateConstant(MVP, IsHovered);
 				primitive->Render(renderer);
 			}
