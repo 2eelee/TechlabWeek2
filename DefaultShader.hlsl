@@ -25,7 +25,11 @@ PS_INPUT mainVS(VS_INPUT input)
     output.position = mul(input.position, MVP);
     
     // Pass the color to the pixel shader
-    output.color = input.color;
+    if (IsHovered)
+    {
+        output.color = saturate(input.color * float4(1.8, 1.8, 1.2, 1.0));
+    }
+    else output.color = input.color;
     
     return output;
 }
@@ -33,9 +37,5 @@ PS_INPUT mainVS(VS_INPUT input)
 float4 mainPS(PS_INPUT input) : SV_TARGET
 {
     // Output the color directly
-    if (IsHovered)
-    {
-        return saturate(input.color * float4(1.8, 1.8, 1.2, 1.0));
-    }
     return input.color;
 }

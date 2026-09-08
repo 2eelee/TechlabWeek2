@@ -285,7 +285,6 @@ void URenderer::PrepareShader()
 	if (ConstantBuffer)
 	{
 		DeviceContext->VSSetConstantBuffers(0, 1, &ConstantBuffer);
-		DeviceContext->PSSetConstantBuffers(0, 1, &ConstantBuffer);
 	}
 }
 
