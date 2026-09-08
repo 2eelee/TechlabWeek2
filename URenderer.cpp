@@ -488,7 +488,7 @@ void URenderer::ReleaseConstantBuffer()
 	}
 }
 
-void URenderer::UpdateConstant(const FMatrix& MVP, const bool IsHovered)
+void URenderer::UpdateConstant(const FMatrix& MVP, const bool IsHighlighted)
 {
 	if (ConstantBuffer)
 	{
@@ -498,7 +498,7 @@ void URenderer::UpdateConstant(const FMatrix& MVP, const bool IsHovered)
 		FConstants* constants = (FConstants*)constantbufferMSR.pData;
 		{
 			constants->MVP = MVP;
-			constants->IsHovered = IsHovered ? 1 : 0;
+			constants->IsHighlighted = IsHighlighted ? 1 : 0;
 		}
 		DeviceContext->Unmap(ConstantBuffer, 0);
 	}

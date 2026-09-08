@@ -6,5 +6,5 @@
 struct FConstants
 {
 	FMatrix MVP;
-	int IsHovered;
+	int IsHighlighted;
 };

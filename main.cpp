@@ -152,8 +152,8 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstanc ,LPSTR lpCmdLine,i
 			if (primitive)
 			{
 				FMatrix MVP = renderer.CreateMVP(*primitive, camera);
-				bool IsHovered = (closest && (closest->UUID == object->UUID)) || (selected && (selected->UUID == object ->UUID));
-				renderer.UpdateConstant(MVP, IsHovered);
+				bool IsHighlighted = (closest && (closest->UUID == object->UUID)) || (selected && (selected->UUID == object ->UUID));
+				renderer.UpdateConstant(MVP, IsHighlighted);
 				primitive->Render(renderer);
 			}
 		}
