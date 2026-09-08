@@ -23,7 +23,7 @@
 #include "USceneComponent.h"
 #include "FObjectFactory.h"
 #include "FEditor.h"
-
+#include "FMousePicker.h"
 #include "InputManager.h"
 
 FConsoleWindow* GConsoleWindow = nullptr;
@@ -141,37 +141,7 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstanc ,LPSTR lpCmdLine,i
 		renderer.Prepare();
 		renderer.PrepareShader();
 
-		InputManager& manager = InputManager::GetInstance();
-		if (manager.GetMouseButtonUp(MouseButton::LEFT))
-		{
-			FIntPoint ScreenPos = manager.GetMousePosition();
-			FRay ray = camera->ScreenToRay(ScreenPos, (float)GWindowWidth, (float)GWindowHeight);
-			UPrimitiveComponent* closestPrimitive = nullptr;
-			float hitDistance = 0.0f;
-			float closestDistance = FLT_MAX;
-
-			for (UObject* object : GUObjectArray)
-			{
-				UPrimitiveComponent* primitive = object->Cast<UPrimitiveComponent>(object);
-				if (primitive)
-				{
-					if (primitive->IsHit(ray, hitDistance))
-					{
-						if (hitDistance < closestDistance)
-						{
-							closestDistance = hitDistance;
-							closestPrimitive = primitive;
-						}
-					}
-				}
-			}
-
-			if (closestPrimitive)
-			{
-				// TODO: select logic
-				std::cout << closestPrimitive->UUID << " " << std::endl;
-			}
-		}
+		MousePicker.HandleMousePosition(InputManager::GetInstance().GetMousePosition(), *camera, GWindowWidth, GWindowHeight);
 
 		// M * V * P 행렬 입력
 		for (UObject* object : GUObjectArray)
