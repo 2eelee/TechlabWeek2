@@ -44,7 +44,6 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstanc ,LPSTR lpCmdLine,i
 
 	FEditor EditorUI;
 	FMousePicker MousePicker;
-	GMousePicker = &MousePicker;
 
 	FConsoleWindow console;
 	extern FConsoleWindow* GConsoleWindow;
@@ -141,7 +140,7 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstanc ,LPSTR lpCmdLine,i
 		renderer.Prepare();
 		renderer.PrepareShader();
 
-		GMousePicker->HandleMousePosition(InputManager::GetInstance().GetMousePosition(), *camera, GWindowWidth, GWindowHeight);
+		MousePicker.HandleMousePosition(InputManager::GetInstance().GetMousePosition(), *camera, GWindowWidth, GWindowHeight);
 
 		// M * V * P 행렬 입력
 		for (UObject* object : GUObjectArray)
@@ -177,7 +176,7 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstanc ,LPSTR lpCmdLine,i
 		// 이후 ImGui UI 컨트롤 추가는 ImGui::NewFrame()과 ImGui::Render() 사이인 여기에 위치합니다. 
 		EditorUI.UpdateWindowSize();
 		EditorUI.DrawConsoleUI();
-		EditorUI.DrawPropertyUI();
+		EditorUI.DrawPropertyUI(MousePicker);
 		EditorUI.DrawControlUI();
 		EditorUI.DrawStatUI();
 
