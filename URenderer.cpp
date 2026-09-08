@@ -2,6 +2,7 @@
 #include "USceneComponent.h"
 #include "UCamera.h"
 #include "URenderer.h"
+#include <iostream>
 
 void URenderer::Create(HWND hWindow)
 {
@@ -284,6 +285,7 @@ void URenderer::PrepareShader()
 	if (ConstantBuffer)
 	{
 		DeviceContext->VSSetConstantBuffers(0, 1, &ConstantBuffer);
+		DeviceContext->PSSetConstantBuffers(0, 1, &ConstantBuffer);
 	}
 }
 
@@ -487,7 +489,7 @@ void URenderer::ReleaseConstantBuffer()
 	}
 }
 
-void URenderer::UpdateConstant(const FMatrix& MVP)
+void URenderer::UpdateConstant(const FMatrix& MVP, const bool IsHovered)
 {
 	if (ConstantBuffer)
 	{
@@ -497,6 +499,7 @@ void URenderer::UpdateConstant(const FMatrix& MVP)
 		FConstants* constants = (FConstants*)constantbufferMSR.pData;
 		{
 			constants->MVP = MVP;
+			constants->IsHovered = IsHovered ? 1 : 0;
 		}
 		DeviceContext->Unmap(ConstantBuffer, 0);
 	}

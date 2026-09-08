@@ -43,6 +43,7 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstanc ,LPSTR lpCmdLine,i
 	camera->AddPitch(20.0f);
 
 	FEditor EditorUI;
+	FMousePicker MousePicker;
 
 	FConsoleWindow console;
 	extern FConsoleWindow* GConsoleWindow;
@@ -147,10 +148,12 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstanc ,LPSTR lpCmdLine,i
 		for (UObject* object : GUObjectArray)
 		{
 			UPrimitiveComponent* primitive = object->Cast<UPrimitiveComponent>(object);
+			const UPrimitiveComponent* closest = MousePicker.GetClosestPrimitive();
 			if (primitive)
 			{
 				FMatrix MVP = renderer.CreateMVP(*primitive, camera);
-				renderer.UpdateConstant(MVP);
+				bool IsHovered = (closest && (closest->UUID == object->UUID));
+				renderer.UpdateConstant(MVP, IsHovered);
 				primitive->Render(renderer);
 			}
 		}

@@ -106,8 +106,7 @@ public:
 	void ReleaseDepthStencilState();
 	void SetDepthWrite(bool bEnable);
 
-
 	void CreateConstantBuffer();
 	void ReleaseConstantBuffer();
-	void UpdateConstant(const FMatrix& MVP);
+	void UpdateConstant(const FMatrix& MVP, const bool IsHovered = false);
 };
