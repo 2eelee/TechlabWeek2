@@ -26,10 +26,7 @@ void FGizmoManipulator::UpdateGizmoDrag(UCamera& Camera, const FGizmo& Gizmo, UP
 	switch (Gizmo.GetGizmoMode())
 	{
 	case GizmoMode::Translate: 
-		if (isLocalAxisMode)
-			UpdateLocalTranslateDrag(Camera, SelectedPrimitive);
-		else
-			UpdateWorldTranslateDrag(Camera, SelectedPrimitive); 
+		UpdateTranslateDrag(Camera, SelectedPrimitive, isLocalAxisMode);
 		break;
 	case GizmoMode::Rotate:    
 		UpdateRotateDrag(Camera, SelectedPrimitive, ScreenWidth, ScreenHeight); 
@@ -70,17 +67,21 @@ float FGizmoManipulator::CalculateDragAmount(UCamera& Camera, const FVector3& Wo
 	return amount;
 }
 
-void FGizmoManipulator::UpdateLocalTranslateDrag(UCamera& Camera, UPrimitiveComponent* SelectedPrimitive)
+void FGizmoManipulator::UpdateTranslateDrag(UCamera& Camera, UPrimitiveComponent* SelectedPrimitive, bool isLocalAxisMode)
 {
 	FVector3 axisDir = GetAxisDirection(ActiveAxis);
+	FVector3 worldAxis = axisDir;
 
-	FMatrix RotationM = FMatrix::CreateRotationX(DegreesToRadians(SelectedPrimitive->GetRelativeRotation().x))
-		* FMatrix::CreateRotationY(DegreesToRadians(SelectedPrimitive->GetRelativeRotation().y))
-		* FMatrix::CreateRotationZ(DegreesToRadians(SelectedPrimitive->GetRelativeRotation().z));
+	if (isLocalAxisMode)
+	{
+		FMatrix RotationM = FMatrix::CreateRotationX(DegreesToRadians(SelectedPrimitive->GetRelativeRotation().x))
+			* FMatrix::CreateRotationY(DegreesToRadians(SelectedPrimitive->GetRelativeRotation().y))
+			* FMatrix::CreateRotationZ(DegreesToRadians(SelectedPrimitive->GetRelativeRotation().z));
 
-	FVector4 rotated = FVector4{ axisDir.x, axisDir.y, axisDir.z, 0.0f } * RotationM;
+		FVector4 rotated = FVector4{ axisDir.x, axisDir.y, axisDir.z, 0.0f } * RotationM;
+		worldAxis = FVector3{ rotated.X, rotated.Y, rotated.Z };
+	}
 
-	FVector3 worldAxis{ rotated.X, rotated.Y, rotated.Z };
 	float amount = CalculateDragAmount(Camera, worldAxis);
 
 	FVector3 Loc = SelectedPrimitive->GetRelativeLocation();
@@ -88,15 +89,6 @@ void FGizmoManipulator::UpdateLocalTranslateDrag(UCamera& Camera, UPrimitiveComp
 	SelectedPrimitive->SetRelativeLocation(Loc);
 }
 
-void FGizmoManipulator::UpdateWorldTranslateDrag(UCamera& Camera, UPrimitiveComponent* SelectedPrimitive)
-{
-	FVector3 axisDir = GetAxisDirection(ActiveAxis);
-	float amount = CalculateDragAmount(Camera, axisDir);
-
-	FVector3 Loc = SelectedPrimitive->GetRelativeLocation();
-	Loc += axisDir * amount;
-	SelectedPrimitive->SetRelativeLocation(Loc);
-}
 
 void FGizmoManipulator::UpdateRotateDrag(UCamera& Camera, UPrimitiveComponent* SelectedPrimitive, float ScreenWidth, float ScreenHeight)
 {
