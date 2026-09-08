@@ -60,8 +60,25 @@ float FGizmoManipulator::CalculateDragAmount(UCamera& Camera, const FVector3& Wo
 
 	return amount;
 }
-
 void FGizmoManipulator::UpdateTranslateDrag(UCamera& Camera, UPrimitiveComponent* SelectedPrimitive)
+{
+	FVector3 axisDir = GetAxisDirection(ActiveAxis);
+
+	FMatrix RotationM = FMatrix::CreateRotationX(DegreesToRadians(SelectedPrimitive->GetRelativeRotation().x))
+	* FMatrix::CreateRotationY(DegreesToRadians(SelectedPrimitive->GetRelativeRotation().y))
+	* FMatrix::CreateRotationZ(DegreesToRadians(SelectedPrimitive->GetRelativeRotation().z));
+
+	FVector4 rotated = FVector4{ axisDir.x, axisDir.y, axisDir.z, 0.0f } * RotationM;
+
+	FVector3 worldAxis{ rotated.X, rotated.Y, rotated.Z };
+	float amount = CalculateDragAmount(Camera, worldAxis);
+
+	FVector3 Loc = SelectedPrimitive->GetRelativeLocation();
+	Loc += worldAxis * amount;
+	SelectedPrimitive->SetRelativeLocation(Loc);
+}
+
+void FGizmoManipulator::UpdateTranslateDragWorld(UCamera& Camera, UPrimitiveComponent* SelectedPrimitive)
 {
 	FVector3 axisDir = GetAxisDirection(ActiveAxis);
 	float amount = CalculateDragAmount(Camera, axisDir);

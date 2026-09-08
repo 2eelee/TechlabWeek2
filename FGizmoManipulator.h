@@ -15,6 +15,7 @@ public:
 
 private:
     void UpdateTranslateDrag(UCamera& Camera, UPrimitiveComponent* SelectedPrimitive);
+    void UpdateTranslateDragWorld(UCamera& Camera, UPrimitiveComponent* SelectedPrimitive);
     void UpdateRotateDrag(UCamera& Camera, UPrimitiveComponent* SelectedPrimitive, float ScreenWidth, float ScreenHeight);
     void UpdateScaleDrag(UCamera& Camera, UPrimitiveComponent* SelectedPrimitive);
     void UpdateRotateDragWorld(UCamera& Camera, UPrimitiveComponent* SelectedPrimitive, float ScreenWidth, float ScreenHeight);
