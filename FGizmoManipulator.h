@@ -9,12 +9,13 @@ class FGizmoManipulator
 {
 public:
     void HandleMouseInput(bool allowWorldInput, EGizmoAxis hoveredAxis);
-    void UpdateGizmoDrag(UCamera& Camera, const FGizmo& Gizmo, UPrimitiveComponent* SelectedPrimitive, float ScreenWidth, float ScreenHeight);
+    void UpdateGizmoDrag(UCamera& Camera, const FGizmo& Gizmo, UPrimitiveComponent* SelectedPrimitive, float ScreenWidth, float ScreenHeight, bool isLocalAxisMode);
 
     EGizmoAxis GetActiveAxis() const { return ActiveAxis; }
 
 private:
-    void UpdateTranslateDrag(UCamera& Camera, UPrimitiveComponent* SelectedPrimitive);
+    void UpdateLocalTranslateDrag(UCamera& Camera, UPrimitiveComponent* SelectedPrimitive);
+    void UpdateWorldTranslateDrag(UCamera& Camera, UPrimitiveComponent* SelectedPrimitive);
     void UpdateRotateDrag(UCamera& Camera, UPrimitiveComponent* SelectedPrimitive, float ScreenWidth, float ScreenHeight);
     void UpdateScaleDrag(UCamera& Camera, UPrimitiveComponent* SelectedPrimitive);
 
