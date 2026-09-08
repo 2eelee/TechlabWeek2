@@ -198,11 +198,6 @@ void URenderer::ReleaseRasterizerState()
 		RasterizerStateForFrame = nullptr;
 	}
 
-	if (NoCullRasterizerStateForFrame)
-	{
-		NoCullRasterizerStateForFrame->Release();
-		NoCullRasterizerStateForFrame = nullptr;
-	}
 	if (RasterizerStateForWire)
 	{
 		RasterizerStateForWire->Release();

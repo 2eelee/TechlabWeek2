@@ -35,7 +35,6 @@ public:
 	ID3D11RasterizerState* NoCullRasterizerState = nullptr;
 	ID3D11RasterizerState* RasterizerStateForFrame = nullptr; 
 	ID3D11RasterizerState* RasterizerStateForWire = nullptr; 
-	ID3D11RasterizerState* NoCullRasterizerStateForFrame = nullptr;
 
 	ID3D11BlendState* AlphaBlendState = nullptr;
 

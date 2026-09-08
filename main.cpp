@@ -166,21 +166,18 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstanc ,LPSTR lpCmdLine,i
 			if (primitive)
 			{
 				FMatrix MVP = renderer.CreateMVP(*primitive, camera);
-				bool IsHighlighted = closest && closest->UUID == object->UUID;
 				FMatrix OutlineMVP = FMatrix::CreateScale(1.05f, 1.05f, 1.05f) * MVP;
+				FMatrix OutlineMVPforPlane = FMatrix::CreateScale(1.03f, 1.03f, 1.03f) * MVP;
+				bool IsHighlighted = closest && closest->UUID == object->UUID;
 				if (selected == primitive)
 				{
 					bool IsSelected = true;
-					if (primitive->GetClass() == UPlaneComp::StaticClass())
-					{
-						renderer.SetRSStateForWireFrame();
-						renderer.UpdateConstant(MVP, IsHighlighted, IsSelected);
-					}
-					else
-					{
-						renderer.SetRSStateForFrame();
-						renderer.UpdateConstant(OutlineMVP, IsHighlighted, IsSelected);
-					}	
+					bool IsPlane = (primitive->GetClass() == UPlaneComp::StaticClass());
+					float outlineScale = IsPlane ? 1.03f : 1.05f;
+					if (IsPlane) renderer.SetRSStateForWireFrame();
+					else renderer.SetRSStateForFrame();
+					FMatrix OutlineMVP = FMatrix::CreateScale(outlineScale, outlineScale, outlineScale) * MVP;
+					renderer.UpdateConstant(OutlineMVP, IsHighlighted, IsSelected);
 					primitive->Render(renderer);
 					renderer.SetCullMode(D3D11_CULL_BACK);
 				}
