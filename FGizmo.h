@@ -40,9 +40,12 @@ public:
 
 	GizmoMode GetGizmoMode() const { return CurrentMode; }
 	void SetGizmoMode(GizmoMode NewMode) { CurrentMode = NewMode; }
+	void ToggleLocalAxis() { isLocalAxisMode = !isLocalAxisMode;  }
+	const bool GetLocalAxisMode() { return isLocalAxisMode; }
 
 private:
 	GizmoMode CurrentMode = GizmoMode::Translate;
+	bool isLocalAxisMode = true;
 
 	std::vector<FVertexSimple> TranslateVertices;
 	std::vector<FVertexSimple> RotateVertices;

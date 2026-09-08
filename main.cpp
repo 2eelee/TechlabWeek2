@@ -130,6 +130,11 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstanc ,LPSTR lpCmdLine,i
 			Gizmo.CycleMode();
 		}
 
+		if (InputManager::GetInstance().GetKeyDown('C'))
+		{
+			Gizmo.ToggleLocalAxis();
+		}
+
 		if (bIsExit)
 		{
 			break;
