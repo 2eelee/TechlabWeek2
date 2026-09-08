@@ -122,7 +122,7 @@ FRay UCamera::ScreenToRay(FIntPoint ScreenPosition, float ScreenWidth, float Scr
 
 	FMatrix InverseProj;
 	if (othogonalEnable)
-		InverseProj = FMatrix::CreateOrthogonalProjectionInverse(FarZ, NearZ, 20.0f, 20.0f);
+		InverseProj = FMatrix::CreateOrthogonalProjectionInverse(FarZ, NearZ, orthowidth, orthowidth/(ScreenWidth / ScreenHeight));
 	else InverseProj = FMatrix::CreateProjectionInverse(ScreenWidth / ScreenHeight, DegreesToRadians(FovAngle), FarZ, NearZ);
 
 	FMatrix InverseView = FMatrix::CreateView(GetRelativeLocation(), GetRightVector(), GetUPVector(), GetForwardVector()).Inverse();
