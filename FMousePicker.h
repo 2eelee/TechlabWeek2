@@ -38,5 +38,3 @@ private:
 	EGizmoAxis HoveredAxis = EGizmoAxis::None;
 	EGizmoAxis ActiveAxis = EGizmoAxis::None;
 };
-
-extern FMousePicker* GMousePicker;

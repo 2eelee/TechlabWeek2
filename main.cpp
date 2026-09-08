@@ -44,7 +44,6 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstanc ,LPSTR lpCmdLine,i
 
 	FEditor EditorUI;
 	FMousePicker MousePicker;
-	GMousePicker = &MousePicker;
 
 	FConsoleWindow console;
 	extern FConsoleWindow* GConsoleWindow;
@@ -144,14 +143,14 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstanc ,LPSTR lpCmdLine,i
 		bool allowWorldInput = !ImGui::GetIO().WantCaptureMouse;
 
 		if (allowWorldInput) {
-			GMousePicker->HitTestPrimitive(InputManager::GetInstance().GetMousePosition(), *camera, GWindowWidth, GWindowHeight);
-			GMousePicker->HitTestGizmoAxis(InputManager::GetInstance().GetMousePosition(), *camera, GWindowWidth, GWindowHeight, Gizmo);
+			MousePicker.HitTestPrimitive(InputManager::GetInstance().GetMousePosition(), *camera, GWindowWidth, GWindowHeight);
+			MousePicker.HitTestGizmoAxis(InputManager::GetInstance().GetMousePosition(), *camera, GWindowWidth, GWindowHeight, Gizmo);
 		}
 		else {
-			GMousePicker->ClearHover();
+			MousePicker.ClearHover();
 		}
 
-		GMousePicker->HandleMouseInput(allowWorldInput);
+		MousePicker.HandleMouseInput(allowWorldInput);
 		
 		UPrimitiveComponent* closest = MousePicker.GetClosestPrimitive();
 		UPrimitiveComponent* selected = MousePicker.GetSelectedPrimitive();
@@ -167,7 +166,24 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstanc ,LPSTR lpCmdLine,i
 			if (primitive)
 			{
 				FMatrix MVP = renderer.CreateMVP(*primitive, camera);
-				bool IsHighlighted = (closest && (closest->UUID == object->UUID)) || (selected && (selected->UUID == object ->UUID));
+				bool IsHighlighted = closest && closest->UUID == object->UUID;
+				FMatrix OutlineMVP = FMatrix::CreateScale(1.05f, 1.05f, 1.05f) * MVP;
+				if (selected == primitive)
+				{
+					bool IsSelected = true;
+					if (primitive->GetClass() == UPlaneComp::StaticClass())
+					{
+						renderer.SetRSStateForWireFrame();
+						renderer.UpdateConstant(MVP, IsHighlighted, IsSelected);
+					}
+					else
+					{
+						renderer.SetRSStateForFrame();
+						renderer.UpdateConstant(OutlineMVP, IsHighlighted, IsSelected);
+					}	
+					primitive->Render(renderer);
+					renderer.SetCullMode(D3D11_CULL_BACK);
+				}
 				renderer.UpdateConstant(MVP, IsHighlighted);
 				primitive->Render(renderer);
 			}
@@ -190,7 +206,7 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstanc ,LPSTR lpCmdLine,i
 		// 이후 ImGui UI 컨트롤 추가는 ImGui::NewFrame()과 ImGui::Render() 사이인 여기에 위치합니다. 
 		EditorUI.UpdateWindowSize();
 		EditorUI.DrawConsoleUI();
-		EditorUI.DrawPropertyUI();
+		EditorUI.DrawPropertyUI(MousePicker);
 		EditorUI.DrawControlUI();
 		EditorUI.DrawStatUI();
 

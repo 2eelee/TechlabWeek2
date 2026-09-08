@@ -2,7 +2,7 @@
 
 #include "FEditor.h"
 #include "FObjectFactory.h"
-#include "FMousePicker.h"
+
 
 UCamera* Cam;
 
@@ -27,11 +27,11 @@ void FEditor::DrawStatUI()
 	ImGui::End();
 }
 
-void FEditor::DrawPropertyUI()
+void FEditor::DrawPropertyUI(const FMousePicker& mousepicker)
 {
-	ImGui::SetNextWindowPos(ImVec2(display.x - 20, 20), cond, ImVec2(1.0f, 0.0f));
-	UPrimitiveComponent* primitive = GMousePicker->GetSelectedPrimitive();
+	UPrimitiveComponent* primitive = mousepicker.GetSelectedPrimitive();
 	if (primitive) {
+		ImGui::SetNextWindowPos(ImVec2(display.x - 20, 20), cond, ImVec2(1.0f, 0.0f));
 		FVector3 Loc = primitive->GetRelativeLocation();
 		FVector3 Rot = primitive->GetRelativeRotation();
 		FVector3 Scale = primitive->GetRelativeScale3D();

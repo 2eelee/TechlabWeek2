@@ -46,6 +46,15 @@ void UCamera::AddYaw(float deltaAngle)
 {
 	FVector3 rot = GetRelativeRotation();
 	rot.y += deltaAngle;
+	rot.y = std::fmod(rot.y, 360.0f);
+	if (rot.y > 180.0f)
+	{
+		rot.y -= 360.0f;
+	}
+	else if (rot.y < -180.0f)
+	{
+		rot.y += 360.0f;
+	}
 	SetRelativeRotation(rot);
 }
 
