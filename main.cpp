@@ -12,6 +12,7 @@
 #include "URenderer.h"
 #include "UCamera.h"
 #include "FGizmo.h"
+#include "FGizmoManipulator.h"
 
 #include "Window.h"
 #include "ImGuiManager.h"
@@ -44,6 +45,7 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstanc ,LPSTR lpCmdLine,i
 
 	FEditor EditorUI;
 	FMousePicker MousePicker;
+	FGizmoManipulator GizmoManipulator;
 
 	FConsoleWindow console;
 	extern FConsoleWindow* GConsoleWindow;
@@ -142,23 +144,29 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstanc ,LPSTR lpCmdLine,i
 
 		bool allowWorldInput = !ImGui::GetIO().WantCaptureMouse;
 
-		if (allowWorldInput) {
+		if (allowWorldInput)
+		{
 			MousePicker.HitTestPrimitive(InputManager::GetInstance().GetMousePosition(), *camera, GWindowWidth, GWindowHeight);
 			MousePicker.HitTestGizmoAxis(InputManager::GetInstance().GetMousePosition(), *camera, GWindowWidth, GWindowHeight, Gizmo);
 		}
-		else {
+		else
+		{
 			MousePicker.ClearHover();
 		}
 
-		MousePicker.HandleMouseInput(allowWorldInput);
-		
+		EGizmoAxis hoveredAxis = MousePicker.GetHoveredAxis();
+
+		MousePicker.HandleSelectionInput(allowWorldInput, hoveredAxis);
+		GizmoManipulator.HandleMouseInput(allowWorldInput, hoveredAxis);
+
 		UPrimitiveComponent* closest = MousePicker.GetClosestPrimitive();
 		UPrimitiveComponent* selected = MousePicker.GetSelectedPrimitive();
 
-		EGizmoAxis hoveredAxis = MousePicker.GetHoveredAxis();
-		EGizmoAxis activeAxis = MousePicker.GetActiveAxis();
+		GizmoManipulator.UpdateGizmoDrag(*camera, Gizmo, selected, GWindowWidth, GWindowHeight);
 
-		EGizmoAxis displayAxis = (activeAxis != EGizmoAxis::None) ? activeAxis : hoveredAxis;
+		EGizmoAxis activeAxis = GizmoManipulator.GetActiveAxis();
+		EGizmoAxis displayAxis = activeAxis != EGizmoAxis::None ? activeAxis : hoveredAxis;
+		
 
 		// M * V * P 행렬 입력
 		for (UObject* object : GUObjectArray)

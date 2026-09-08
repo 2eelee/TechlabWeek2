@@ -18,7 +18,7 @@ class FMousePicker
 public:
 	void HitTestPrimitive(FIntPoint ScreenPos, UCamera& Camera, float ScreenWidth, float ScreenHeight);
 	void HitTestGizmoAxis(FIntPoint ScreenPos, UCamera& Camera, float ScreenWidth, float ScreenHeight, const FGizmo& Gizmo);
-	void HandleMouseInput(bool allowWorldInput);
+	void HandleSelectionInput(bool allowWorldInput, EGizmoAxis hoveredAxis);
 	void ClearHover();
 	void ClearSelected();
 
@@ -26,7 +26,6 @@ public:
 	UPrimitiveComponent* GetSelectedPrimitive() const { return SelectedPrimitive; }
 
 	EGizmoAxis GetHoveredAxis() const { return HoveredAxis; }
-	EGizmoAxis GetActiveAxis() const { return ActiveAxis; }
 
 private:
 	UPrimitiveComponent* ClosestPrimitive = nullptr;
@@ -37,5 +36,4 @@ private:
     bool IntersectTriangle(const FRay& ray, const FVector3& v0, const FVector3& v1, const FVector3& v2, float& distance);
 
 	EGizmoAxis HoveredAxis = EGizmoAxis::None;
-	EGizmoAxis ActiveAxis = EGizmoAxis::None;
 };

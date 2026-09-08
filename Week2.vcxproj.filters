@@ -116,6 +116,9 @@
     <ClCompile Include="FGizmo.cpp">
       <Filter>Editor\Gizmo</Filter>
     </ClCompile>
+    <ClCompile Include="FGizmoManipulator.cpp">
+      <Filter>Editor\Gizmo</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="DefaultShader.hlsl">
@@ -238,6 +241,9 @@
       <Filter>Editor\Gizmo</Filter>
     </ClInclude>
     <ClInclude Include="GizmoVertices.h">
+      <Filter>Editor\Gizmo</Filter>
+    </ClInclude>
+    <ClInclude Include="FGizmoManipulator.h">
       <Filter>Editor\Gizmo</Filter>
     </ClInclude>
   </ItemGroup>

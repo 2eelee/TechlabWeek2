@@ -7,23 +7,13 @@
 #include "FMatrix.h"
 #include "FGizmo.h"
 
-
-void FMousePicker::HandleMouseInput(bool allowWorldInput)
+void FMousePicker::HandleSelectionInput(bool allowWorldInput, EGizmoAxis hoveredAxis)
 {
-	if (InputManager::GetInstance().GetMouseButtonUp(MouseButton::LEFT))
-	{
-		ActiveAxis = EGizmoAxis::None;
-	}
+	if (!allowWorldInput) return;
 
-	if (!allowWorldInput)
-		return;
-
-	if (InputManager::GetInstance().GetMouseButtonDown(MouseButton::LEFT))
+	if (InputManager::GetInstance().GetMouseButtonDown(MouseButton::LEFT) && hoveredAxis == EGizmoAxis::None)
 	{
-		if (HoveredAxis != EGizmoAxis::None)
-			ActiveAxis = HoveredAxis;
-		else
-			SelectedPrimitive = ClosestPrimitive;
+		SelectedPrimitive = ClosestPrimitive;
 	}
 }
 
