@@ -54,7 +54,7 @@ bool USceneManager::LoadScene(const FString& Scenename)
 		UObject* PrimObject = FObjectFactory::ConstructObject(ClassType);
 		UPrimitiveComponent* Primitive = PrimObject->Cast<UPrimitiveComponent>(PrimObject);
 		Primitive->SetRelativeLocation(FVector3(items["Location"][0], items["Location"][1], items["Location"][2]));
-		Primitive->SetRelativeRotation(FVector3(items["Rotation"][0], items["Location"][1], items["Location"][2]));
+		Primitive->SetRelativeRotation(FVector3(items["Rotation"][0], items["Rotation"][1], items["Rotation"][2]));
 		Primitive->SetRelativeScale3D(FVector3(items["Scale"][0], items["Scale"][1], items["Scale"][2]));
 	}
 	saveFile.close();
