@@ -22,7 +22,7 @@ public:
 
 	void UpdateWindowSize();
 	void DrawStatUI();
-	void DrawPropertyUI(FMousePicker mousepicker);
+	void DrawPropertyUI(const FMousePicker& mousepicker);
 	void DrawConsoleUI();
 	void DrawControlUI();
 };

@@ -27,7 +27,7 @@ void FEditor::DrawStatUI()
 	ImGui::End();
 }
 
-void FEditor::DrawPropertyUI(FMousePicker mousepicker)
+void FEditor::DrawPropertyUI(const FMousePicker& mousepicker)
 {
 	UPrimitiveComponent* primitive = mousepicker.GetSelectedPrimitive();
 	if (primitive) {
