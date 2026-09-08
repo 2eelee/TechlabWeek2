@@ -93,11 +93,17 @@
       <Filter>Editor</Filter>
     </ClCompile>
     <ClCompile Include="Core\UObject.cpp" />
-    <ClCompile Include="FEditor.cpp" />
     <ClCompile Include="FMatrix.cpp" />
-    <ClCompile Include="USceneComponent.cpp" />
-    <ClCompile Include="USceneManager.cpp" />
     <ClCompile Include="FMousePicker.cpp">
+      <Filter>Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="USceneManager.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="USceneComponent.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="FEditor.cpp">
       <Filter>Editor</Filter>
     </ClCompile>
   </ItemGroup>
