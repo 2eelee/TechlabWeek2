@@ -4,6 +4,7 @@
 #include "FRay.h"
 #include "UCamera.h"
 #include "InputManager.h"
+#include "FMatrix.h"
 
 void FMousePicker::HandleMousePosition(FIntPoint ScreenPos, UCamera& Camera, float ScreenWidth, float ScreenHeight)
 {
@@ -19,15 +20,8 @@ void FMousePicker::HandleMousePosition(FIntPoint ScreenPos, UCamera& Camera, flo
 
 		const FVertexSimple* vertices = primitive->GetVertices();
 		UINT vertexCount = primitive->GetVertexCount();
-
-		FMatrix modelInverse = primitive->GetModelMatrix().Inverse();
-		
-		FVector4 localOrigin = FVector4{ ray.Origin.x, ray.Origin.y, ray.Origin.z, 1.0f } * modelInverse;
-		FVector4 localDirection = FVector4{ ray.Direction.x, ray.Direction.y, ray.Direction.z, 0.0f } * modelInverse;
-
-		FRay localRay;
-		localRay.Origin = FVector3{localOrigin.X, localOrigin.Y, localOrigin.Z};
-		localRay.Direction = FVector3{localDirection.X, localDirection.Y, localDirection.Z};
+	
+		FRay localRay =	TransformRayToLocal(ray, primitive->GetModelMatrix());
 
 		float primitiveDistance;
 
@@ -45,6 +39,19 @@ void FMousePicker::HandleMousePosition(FIntPoint ScreenPos, UCamera& Camera, flo
 	{
 		SelectedPrimitive = ClosestPrimitive;
 	}
+}
+
+FRay FMousePicker::TransformRayToLocal(const FRay& worldRay, const FMatrix& modelMatrix)
+{
+	FMatrix modelInverse = modelMatrix.Inverse();
+	FVector4 localOrigin = FVector4{ worldRay.Origin.x, worldRay.Origin.y, worldRay.Origin.z, 1.0f } * modelInverse;
+	FVector4 localDirection = FVector4{ worldRay.Direction.x, worldRay.Direction.y, worldRay.Direction.z, 0.0f } * modelInverse;
+
+	FRay localRay;
+	localRay.Origin = FVector3{localOrigin.X, localOrigin.Y, localOrigin.Z};
+	localRay.Direction = FVector3{localDirection.X, localDirection.Y, localDirection.Z};
+
+	return localRay;
 }
 
 bool FMousePicker::IntersectTriangleList(const FRay& ray, const FVertexSimple* vertices, UINT vertexCount, float& closestDistance)
