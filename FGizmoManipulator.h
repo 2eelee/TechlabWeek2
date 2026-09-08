@@ -17,6 +17,7 @@ private:
     void UpdateTranslateDrag(UCamera& Camera, UPrimitiveComponent* SelectedPrimitive);
     void UpdateRotateDrag(UCamera& Camera, UPrimitiveComponent* SelectedPrimitive, float ScreenWidth, float ScreenHeight);
     void UpdateScaleDrag(UCamera& Camera, UPrimitiveComponent* SelectedPrimitive);
+    void UpdateRotateDragWorld(UCamera& Camera, UPrimitiveComponent* SelectedPrimitive, float ScreenWidth, float ScreenHeight);
 
     FVector3 GetAxisDirection(EGizmoAxis Axis);
     float CalculateDragAmount(UCamera& Camera, const FVector3& WorldAxis);
