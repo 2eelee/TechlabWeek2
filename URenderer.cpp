@@ -16,6 +16,8 @@ void URenderer::Create(HWND hWindow)
 
 	// 래스터라이저 상태 생성
 	CreateRasterizerState();
+	CreateRasterizerStateForFrame();
+	CreateRasterizerStateForWireFrame();
 
 	CreateAlphaBlendState();
 
@@ -119,6 +121,22 @@ void URenderer::CreateRasterizerState()
 	Device->CreateRasterizerState(&rasterizerDesc, &NoCullRasterizerState);
 }
 
+void URenderer::CreateRasterizerStateForFrame()
+{
+	D3D11_RASTERIZER_DESC rasterizerDescforFrame = {};
+	rasterizerDescforFrame.FillMode = D3D11_FILL_SOLID; // 채우기 모드
+	rasterizerDescforFrame.CullMode = D3D11_CULL_FRONT; // 백 페이스 컬링
+	Device->CreateRasterizerState(&rasterizerDescforFrame, &RasterizerStateForFrame);
+}
+
+void URenderer::CreateRasterizerStateForWireFrame()
+{
+	D3D11_RASTERIZER_DESC rasterizerDescforWire = {};
+	rasterizerDescforWire.FillMode = D3D11_FILL_WIREFRAME; // 채우기 모드
+	rasterizerDescforWire.CullMode = D3D11_CULL_BACK; // 백 페이스 컬링
+	Device->CreateRasterizerState(&rasterizerDescforWire, &RasterizerStateForWire);
+}
+
 void URenderer::SetCullMode(D3D11_CULL_MODE Mode)
 {
 	if (Mode == D3D11_CULL_NONE)
@@ -173,6 +191,22 @@ void URenderer::ReleaseRasterizerState()
 	{
 		NoCullRasterizerState->Release();
 		NoCullRasterizerState = nullptr;
+	}
+	if (RasterizerStateForFrame)
+	{
+		RasterizerStateForFrame->Release();
+		RasterizerStateForFrame = nullptr;
+	}
+
+	if (NoCullRasterizerStateForFrame)
+	{
+		NoCullRasterizerStateForFrame->Release();
+		NoCullRasterizerStateForFrame = nullptr;
+	}
+	if (RasterizerStateForWire)
+	{
+		RasterizerStateForWire->Release();
+		RasterizerStateForWire = nullptr;
 	}
 }
 
@@ -488,7 +522,7 @@ void URenderer::ReleaseConstantBuffer()
 	}
 }
 
-void URenderer::UpdateConstant(const FMatrix& MVP, const bool IsHovered)
+void URenderer::UpdateConstant(const FMatrix& MVP, const bool IsHovered, const bool IsSelected)
 {
 	if (ConstantBuffer)
 	{
@@ -499,6 +533,7 @@ void URenderer::UpdateConstant(const FMatrix& MVP, const bool IsHovered)
 		{
 			constants->MVP = MVP;
 			constants->IsHovered = IsHovered ? 1 : 0;
+			constants->IsSelected = IsSelected ? 1 : 0;
 		}
 		DeviceContext->Unmap(ConstantBuffer, 0);
 	}
@@ -528,4 +563,14 @@ FMatrix URenderer::CreateMVPFromModel(const FMatrix& Model, UCamera* Camera)
 	else Proj = FMatrix::CreateProjection(Camera->FarZ, Camera->NearZ, DegreesToRadians(Camera->FovAngle), AspectRatio);
 
 	return Model * View * Proj;
+}
+
+void URenderer::SetRSStateForFrame()
+{
+	DeviceContext->RSSetState(RasterizerStateForFrame);
+}
+
+void URenderer::SetRSStateForWireFrame()
+{
+	DeviceContext->RSSetState(RasterizerStateForWire);
 }

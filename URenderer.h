@@ -33,6 +33,9 @@ public:
 	ID3D11RenderTargetView* FrameBufferRTV = nullptr; // 텍스처를 렌더 타겟으로 사용하는 뷰
 	ID3D11RasterizerState* RasterizerState = nullptr; // 래스터라이저 상태(컬링, 채우기 모드 등 정의)
 	ID3D11RasterizerState* NoCullRasterizerState = nullptr;
+	ID3D11RasterizerState* RasterizerStateForFrame = nullptr; 
+	ID3D11RasterizerState* RasterizerStateForWire = nullptr; 
+	ID3D11RasterizerState* NoCullRasterizerStateForFrame = nullptr;
 
 	ID3D11BlendState* AlphaBlendState = nullptr;
 
@@ -69,6 +72,8 @@ public:
 
 	// 래스터라이저 상태를 생성하는 함수
 	void CreateRasterizerState();
+	void CreateRasterizerStateForFrame();
+	void CreateRasterizerStateForWireFrame();
 
 	void SetCullMode(D3D11_CULL_MODE Mode);
 
@@ -108,5 +113,8 @@ public:
 
 	void CreateConstantBuffer();
 	void ReleaseConstantBuffer();
-	void UpdateConstant(const FMatrix& MVP, const bool IsHovered = false);
+	void UpdateConstant(const FMatrix& MVP, const bool IsHovered = false, const bool IsSelected = false);
+
+	void SetRSStateForFrame();
+	void SetRSStateForWireFrame();
 };

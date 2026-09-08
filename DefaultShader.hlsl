@@ -4,6 +4,7 @@ cbuffer constants : register(b0)
 {
     row_major float4x4 MVP;
     int IsHovered;
+    int IsSelected;
 }
 
 struct VS_INPUT
@@ -25,7 +26,11 @@ PS_INPUT mainVS(VS_INPUT input)
     output.position = mul(input.position, MVP);
     
     // Pass the color to the pixel shader
-    if (IsHovered)
+    if (IsSelected)
+    {
+        output.color = float4(1.0, 1.0, 1.0, 1.0);
+    }
+    else if (IsHovered)
     {
         output.color = saturate(input.color * float4(1.8, 1.8, 1.2, 1.0));
     }
