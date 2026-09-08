@@ -158,6 +158,8 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstanc ,LPSTR lpCmdLine,i
 		EGizmoAxis hoveredAxis = MousePicker.GetHoveredAxis();
 		EGizmoAxis activeAxis = MousePicker.GetActiveAxis();
 
+		EGizmoAxis displayAxis = (activeAxis != EGizmoAxis::None) ? activeAxis : hoveredAxis;
+
 		// M * V * P 행렬 입력
 		for (UObject* object : GUObjectArray)
 		{
@@ -190,7 +192,7 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstanc ,LPSTR lpCmdLine,i
 		if (selected)
 		{
 			Gizmo.DrawLocalAxis(renderer, camera, selected);
-			Gizmo.DrawTransformGizmo(renderer, camera, selected, hoveredAxis);
+			Gizmo.DrawTransformGizmo(renderer, camera, selected, displayAxis);
 		}
 
 		Gizmo.DrawWorldAxis(renderer, camera);
