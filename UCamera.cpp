@@ -32,14 +32,16 @@ void UCamera::SetOrthoWidth(float width)
 
 void UCamera::AddPitch(float deltaAngle)
 {
-	CurrentPitch = std::clamp(CurrentPitch + deltaAngle, -89.9f, 89.9f);
-	SetRelativeRotation({ CurrentPitch, CurrentYaw, 0.0f });
+	FVector3 rotation = GetRelativeRotationEuler();
+	rotation.x += deltaAngle;
+	SetRelativeRotation(rotation);
 }
 
 void UCamera::AddYaw(float deltaAngle)
 {
-	CurrentYaw += deltaAngle;
-	SetRelativeRotation({ CurrentPitch, CurrentYaw, 0.0f });
+	FVector3 rotation = GetRelativeRotationEuler();
+	rotation.y += deltaAngle;
+	SetRelativeRotation(rotation);
 }
 
 void UCamera::CamMove(float deltaTime)

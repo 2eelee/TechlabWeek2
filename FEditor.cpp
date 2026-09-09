@@ -27,8 +27,8 @@ void FEditor::DrawStatUI()
 void FEditor::DrawPropertyUI(const FMousePicker& mousepicker)
 {
 	UPrimitiveComponent* primitive = mousepicker.GetSelectedPrimitive();
-	if (primitive) {
-		ImGui::SetNextWindowPos(ImVec2(display.x - 20, 20), cond, ImVec2(1.0f, 0.0f));
+	if (primitive!=nullptr) {
+		ImGui::SetNextWindowPos(ImVec2(display.x - 20, 20), GWindowSizeChanged ? ImGuiCond_Always : ImGuiCond_Appearing,ImVec2(1.0f, 0.0f));
 		FVector3 RotRad = primitive->GetRelativeRotationEuler();
 		FVector3 Loc = primitive->GetRelativeLocation();
 		FVector3 Rot = { RadiansToDegrees(RotRad.x), RadiansToDegrees(RotRad.y) , RadiansToDegrees(RotRad.z) };
@@ -160,7 +160,7 @@ void FEditor::DrawControlUI(FMousePicker& mousePicker)
 	}
 	if (ImGui::InputFloat3("Camera Rotation", &CamRotDegree.x))
 	{
-		FVector3 NewRotRad = { DegreesToRadians(CamRotRad.x), DegreesToRadians(CamRotRad.y), DegreesToRadians(CamRotRad.z) };
+		FVector3 NewRotRad = { DegreesToRadians(CamRotDegree.x), DegreesToRadians(CamRotDegree.y), DegreesToRadians(CamRotDegree.z) };
 		Cam->SetRelativeRotation(NewRotRad);
 	}
 	bottomX = ImGui::GetWindowPos().x;
