@@ -193,7 +193,6 @@
     <ClInclude Include="FMatrix.h" />
     <ClInclude Include="FMemory.h" />
     <ClInclude Include="Core\FObjectFactory.h" />
-    <ClInclude Include="Core\TSubclassOf.h" />
     <ClInclude Include="Core\UClass.h" />
     <ClInclude Include="Core\UEngineStatics.h" />
     <ClInclude Include="Core\UObject.h" />

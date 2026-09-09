@@ -1,18 +1,19 @@
 #pragma once
 
-#include "TSubclassOf.h"
 #include "UObject.h"
 
 class FObjectFactory 
 {
 public:
-	static UObject* ConstructObject(TSubclassOf<UObject> ClassType)
+	static UObject* ConstructObject(const UClass* ClassType)
 	{
-		if (!ClassType.IsValid()) { return nullptr;  }
+		if (!ClassType)
+			return nullptr;
 
-		UObject* object = ClassType.Get()->CreateInstance();
+		UObject* object = ClassType->CreateInstance();
 
-		if (!object) { return nullptr;  }
+		if (!object)
+			return nullptr;
 
 		return object;
 	}
