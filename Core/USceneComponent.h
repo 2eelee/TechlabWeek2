@@ -13,19 +13,28 @@ class USceneComponent : public UObject
 
 public:
 	const FVector3 GetRelativeLocation() const { return RelativeLocation; }
-	const FVector3 GetRelativeRotationEuler() const { return RelativeRotation.ToEuler(); }
+	const FVector3 GetRelativeRotationEuler() const { return EulerAngles; }
 	const Quaternion GetRelativeRotationQuaternion() const { return RelativeRotation; }
 	const FVector3 GetRelativeScale3D() const { return RelativeScale3D; }
 
 	void SetRelativeLocation(const FVector3& New) { RelativeLocation = New; }
-	void SetRelativeRotation(const FVector3& New) { RelativeRotation = Quaternion(New); }
-	void SetRelativeRotation(const Quaternion& New) { RelativeRotation = New; }
+	void SetRelativeRotation(const FVector3& New) 
+	{
+		EulerAngles = New;
+		RelativeRotation = Quaternion(New); 
+	}
+	void SetRelativeRotation(const Quaternion& New) 
+	{ 
+		RelativeRotation = New;
+		EulerAngles = RelativeRotation.ToEuler();
+	}
 	void SetRelativeScale3D(const FVector3& New) { RelativeScale3D = New; }
 
 private:
 	FVector3 RelativeLocation = FVector3(0.0f, 0.0f, 0.0f);
 	Quaternion RelativeRotation;
 	FVector3 RelativeScale3D = FVector3(1.0f, 1.0f, 1.0f);
+	FVector3 EulerAngles = FVector3{};
 };
 
 class UPrimitiveComponent : public USceneComponent

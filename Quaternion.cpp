@@ -63,25 +63,25 @@ Quaternion Quaternion::Conjugate() const
 FVector3 Quaternion::ToEuler() const
 {
 	FVector3 euler;
-	const float sinPitch = 2.0f * (w * x + y * z);
+	const float sinPitch = 2.0f * (w * x - y * z);
 	constexpr float GIMBAL_THRESHOLD = 0.99999f;
 	if (sinPitch >= GIMBAL_THRESHOLD)
 	{
 		euler.x = 1.57079632679f;
-		euler.y = std::atan2(2.0f * (w * y - x * z), 1.0f - 2.0f * (y * y + z * z));
+		euler.y = std::atan2(2.0f * (w * y + x * z), 1.0f - 2.0f * (y * y + z * z));
 		euler.z = 0.0f;
 	}
 	else if (sinPitch <= -GIMBAL_THRESHOLD)
 	{
 		euler.x = -1.57079632679f;
-		euler.y = std::atan2(2.0f * (w * y - x * z), 1.0f - 2.0f * (y * y + z * z));
+		euler.y = std::atan2(2.0f * (w * y + x * z), 1.0f - 2.0f * (y * y + z * z));
 		euler.z = 0.0f;
 	}
 	else
 	{
 		euler.x = std::asin(std::clamp(sinPitch, -1.0f, 1.0f));
-		euler.y = std::atan2(2.0f * (w * y - x * z), 1.0f - 2.0f * (x * x + y * y));
-		euler.z = std::atan2(2.0f * (w * z - x * y), 1.0f - 2.0f * (x * x + z * z));
+		euler.y = std::atan2(2.0f * (w * y + x * z), 1.0f - 2.0f * (x * x + y * y));
+		euler.z = std::atan2(2.0f * (w * z + x * y), 1.0f - 2.0f * (x * x + z * z));
 	}
 	return euler;
 }
