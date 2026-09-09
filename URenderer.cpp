@@ -51,7 +51,7 @@ void URenderer::CreateDeviceAndSwapChain(HWND hWindow)
 
 	// Direct3D 장치와 스왑 체인을 생성
 	D3D11CreateDeviceAndSwapChain(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr,
-		D3D11_CREATE_DEVICE_BGRA_SUPPORT | D3D11_CREATE_DEVICE_DEBUG,
+		D3D11_CREATE_DEVICE_BGRA_SUPPORT | createDeviceFlags,
 		featurelevels, ARRAYSIZE(featurelevels), D3D11_SDK_VERSION,
 		&swapchaindesc, &SwapChain, &Device, nullptr, &DeviceContext);
 
