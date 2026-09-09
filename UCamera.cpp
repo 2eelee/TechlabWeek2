@@ -85,7 +85,7 @@ void UCamera::CamMove(float deltaTime)
 		{
 			FIntPoint delta = InputManager::GetInstance().GetMouseDelta();
 
-			const float sensitivity = 0.1f;
+			const float sensitivity = 0.003f;
 
 			AddYaw(delta.X * sensitivity);
 			AddPitch(delta.Y * sensitivity);
