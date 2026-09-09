@@ -119,6 +119,9 @@
     <ClCompile Include="FGizmoManipulator.cpp">
       <Filter>Editor\Gizmo</Filter>
     </ClCompile>
+    <ClCompile Include="Quaternion.cpp">
+      <Filter>Math</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="DefaultShader.hlsl">
@@ -245,6 +248,9 @@
     </ClInclude>
     <ClInclude Include="FGizmoManipulator.h">
       <Filter>Editor\Gizmo</Filter>
+    </ClInclude>
+    <ClInclude Include="Quaternion.h">
+      <Filter>Math</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -4,6 +4,7 @@
 #include "MeshManager.h"
 #include "FRay.h"
 #include "FVector4.h"
+#include "Quaternion.h"
 
 class URenderer;
 class USceneComponent : public UObject
@@ -12,16 +13,18 @@ class USceneComponent : public UObject
 
 public:
 	const FVector3 GetRelativeLocation() const { return RelativeLocation; }
-	const FVector3 GetRelativeRotation() const { return RelativeRotation; }
+	const FVector3 GetRelativeRotationEuler() const { return RelativeRotation.ToEuler(); }
+	const Quaternion GetRelativeRotationQuaternion() const { return RelativeRotation; }
 	const FVector3 GetRelativeScale3D() const { return RelativeScale3D; }
 
 	void SetRelativeLocation(const FVector3& New) { RelativeLocation = New; }
-	void SetRelativeRotation(const FVector3& New) { RelativeRotation = New; }
+	void SetRelativeRotation(const FVector3& New) { RelativeRotation = Quaternion(New); }
+	void SetRelativeRotation(const Quaternion& New) { RelativeRotation = New; }
 	void SetRelativeScale3D(const FVector3& New) { RelativeScale3D = New; }
 
 private:
 	FVector3 RelativeLocation = FVector3(0.0f, 0.0f, 0.0f);
-	FVector3 RelativeRotation = FVector3(0.0f, 0.0f, 0.0f);
+	Quaternion RelativeRotation;
 	FVector3 RelativeScale3D = FVector3(1.0f, 1.0f, 1.0f);
 };
 

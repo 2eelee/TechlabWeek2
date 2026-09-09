@@ -5,28 +5,23 @@
 #include "FMatrix.h"
 #include "InputManager.h"
 #include "ImGui/imgui.h"
+#include "Quaternion.h"
 
 FVector3 UCamera::GetForwardVector()
 {
-	float pitchrad = DegreesToRadians(this->GetRelativeRotation().x);
-	float yawrad = DegreesToRadians(this->GetRelativeRotation().y);
-	FMatrix R = FMatrix::CreateRotationX(pitchrad) * FMatrix::CreateRotationY(yawrad);
+	FMatrix R = GetRelativeRotationQuaternion().ToMatrix();
 	return FVector3(R.m[2][0], R.m[2][1], R.m[2][2]);
 }
 
 FVector3 UCamera::GetRightVector()
 {
-	float pitchrad = DegreesToRadians(this->GetRelativeRotation().x);
-	float yawrad = DegreesToRadians(this->GetRelativeRotation().y);
-	FMatrix R = FMatrix::CreateRotationX(pitchrad) * FMatrix::CreateRotationY(yawrad);
+	FMatrix R = GetRelativeRotationQuaternion().ToMatrix();
 	return FVector3(R.m[0][0], R.m[0][1], R.m[0][2]);
 }
 
 FVector3 UCamera::GetUPVector()
 {
-	float pitchrad = DegreesToRadians(this->GetRelativeRotation().x);
-	float yawrad = DegreesToRadians(this->GetRelativeRotation().y);
-	FMatrix R = FMatrix::CreateRotationX(pitchrad) * FMatrix::CreateRotationY(yawrad);
+	FMatrix R = GetRelativeRotationQuaternion().ToMatrix();
 	return FVector3(R.m[1][0], R.m[1][1], R.m[1][2]);
 }
 
@@ -37,25 +32,14 @@ void UCamera::SetOrthoWidth(float width)
 
 void UCamera::AddPitch(float deltaAngle)
 {
-	FVector3 rot = GetRelativeRotation();
-	rot.x = std::clamp(rot.x + deltaAngle, -89.9f, 89.9f);
-	SetRelativeRotation(rot);
+	CurrentPitch = std::clamp(CurrentPitch + deltaAngle, -89.9f, 89.9f);
+	SetRelativeRotation({ CurrentPitch, CurrentYaw, 0.0f });
 }
 
 void UCamera::AddYaw(float deltaAngle)
 {
-	FVector3 rot = GetRelativeRotation();
-	rot.y += deltaAngle;
-	rot.y = std::fmod(rot.y, 360.0f);
-	if (rot.y > 180.0f)
-	{
-		rot.y -= 360.0f;
-	}
-	else if (rot.y < -180.0f)
-	{
-		rot.y += 360.0f;
-	}
-	SetRelativeRotation(rot);
+	CurrentYaw += deltaAngle;
+	SetRelativeRotation({ CurrentPitch, CurrentYaw, 0.0f });
 }
 
 void UCamera::CamMove(float deltaTime)
@@ -101,7 +85,7 @@ void UCamera::CamMove(float deltaTime)
 		{
 			FIntPoint delta = InputManager::GetInstance().GetMouseDelta();
 
-			const float sensitivity = 0.1f;
+			const float sensitivity = 0.003f;
 
 			AddYaw(delta.X * sensitivity);
 			AddPitch(delta.Y * sensitivity);

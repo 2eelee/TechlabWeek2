@@ -1,6 +1,7 @@
 #include "USceneManager.h"
 #include "FObjectFactory.h"
 #include "FEditor.h"
+#include "USceneComponent.h"
 
 bool USceneManager::SaveScene(const FString& Scenename)
 {
@@ -16,7 +17,7 @@ bool USceneManager::SaveScene(const FString& Scenename)
 		{
 			FString ObjNum = std::to_string(ObjectNum);
 			SavedScene["Primitives"][ObjNum]["Location"] = { primitive->GetRelativeLocation().x,primitive->GetRelativeLocation().y,primitive->GetRelativeLocation().z };
-			SavedScene["Primitives"][ObjNum]["Rotation"] = { primitive->GetRelativeRotation().x,primitive->GetRelativeRotation().y,primitive->GetRelativeRotation().z };
+			SavedScene["Primitives"][ObjNum]["Rotation"] = { primitive->GetRelativeRotationEuler().x,primitive->GetRelativeRotationEuler().y,primitive->GetRelativeRotationEuler().z };
 			SavedScene["Primitives"][ObjNum]["Scale"] = { primitive->GetRelativeScale3D().x,primitive->GetRelativeScale3D().y,primitive->GetRelativeScale3D().z };
 			if (primitive->GetClass() == UCubeComp::StaticClass()) { SavedScene["Primitives"][ObjNum]["Type"] = "Cube"; }
 			else if (primitive->GetClass() == USphereComp::StaticClass()) { SavedScene["Primitives"][ObjNum]["Type"] = "Sphere"; }

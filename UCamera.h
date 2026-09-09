@@ -12,6 +12,8 @@ struct UCamera: public USceneComponent
 	float NearZ;
 	float FovAngle;
 	float orthowidth;
+	float CurrentPitch = 0.0f;
+	float CurrentYaw = 0.0f;
 
 	bool othogonalEnable = false;
 
