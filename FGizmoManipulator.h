@@ -9,16 +9,15 @@ class FGizmoManipulator
 {
 public:
     void HandleMouseInput(bool allowWorldInput, EGizmoAxis hoveredAxis);
-    void UpdateGizmoDrag(UCamera& Camera, const FGizmo& Gizmo, UPrimitiveComponent* SelectedPrimitive, float ScreenWidth, float ScreenHeight);
+    void UpdateGizmoDrag(UCamera& Camera, const FGizmo& Gizmo, UPrimitiveComponent* SelectedPrimitive, float ScreenWidth, float ScreenHeight, bool isLocalAxisMode);
 
     EGizmoAxis GetActiveAxis() const { return ActiveAxis; }
 
 private:
-    void UpdateTranslateDrag(UCamera& Camera, UPrimitiveComponent* SelectedPrimitive);
-    void UpdateTranslateDragWorld(UCamera& Camera, UPrimitiveComponent* SelectedPrimitive);
-    void UpdateRotateDrag(UCamera& Camera, UPrimitiveComponent* SelectedPrimitive, float ScreenWidth, float ScreenHeight);
+    void UpdateTranslateDrag(UCamera& Camera, UPrimitiveComponent* SelectedPrimitive, bool isLocalAxisMode);
+    void UpdateRotateDrag(UCamera& Camera, UPrimitiveComponent* SelectedPrimitive, float ScreenWidth, float ScreenHeight, bool isLocalAxisMode);
     void UpdateScaleDrag(UCamera& Camera, UPrimitiveComponent* SelectedPrimitive);
-    void UpdateRotateDragWorld(UCamera& Camera, UPrimitiveComponent* SelectedPrimitive, float ScreenWidth, float ScreenHeight);
+    bool IntersectPlane(const FRay& ray, const FVector3& planePoint, const FVector3& planeNormal, FVector3& hitPoint);
 
     FVector3 GetAxisDirection(EGizmoAxis Axis);
     float CalculateDragAmount(UCamera& Camera, const FVector3& WorldAxis);

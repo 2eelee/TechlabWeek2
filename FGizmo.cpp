@@ -49,11 +49,15 @@ FMatrix FGizmo::GetTransformGizmoModel(const UPrimitiveComponent* Primitive) con
 	FMatrix TranslationM = FMatrix::CreateTranslation(Primitive->GetRelativeLocation().x, Primitive->GetRelativeLocation().y, Primitive->GetRelativeLocation().z);
 	if (CurrentMode == GizmoMode::Translate)
 	{
+		if (isLocalAxisMode)
+			return RotationM * TranslationM;
 		return TranslationM;
 	}
 	else if (CurrentMode == GizmoMode::Rotate)
 	{
-		return RotationM * TranslationM;
+		if (isLocalAxisMode)
+			return RotationM * TranslationM;
+		return TranslationM;
 	}
 	else if (CurrentMode == GizmoMode::Scale)
 	{

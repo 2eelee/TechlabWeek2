@@ -130,6 +130,11 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstanc ,LPSTR lpCmdLine,i
 			Gizmo.CycleMode();
 		}
 
+		if (InputManager::GetInstance().GetKeyDown('C'))
+		{
+			Gizmo.ToggleLocalAxis();
+		}
+
 		if (bIsExit)
 		{
 			break;
@@ -162,7 +167,7 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstanc ,LPSTR lpCmdLine,i
 		UPrimitiveComponent* closest = MousePicker.GetClosestPrimitive();
 		UPrimitiveComponent* selected = MousePicker.GetSelectedPrimitive();
 
-		GizmoManipulator.UpdateGizmoDrag(*camera, Gizmo, selected, GWindowWidth, GWindowHeight);
+		GizmoManipulator.UpdateGizmoDrag(*camera, Gizmo, selected, GWindowWidth, GWindowHeight, Gizmo.GetLocalAxisMode());
 
 		EGizmoAxis activeAxis = GizmoManipulator.GetActiveAxis();
 		EGizmoAxis displayAxis = activeAxis != EGizmoAxis::None ? activeAxis : hoveredAxis;
