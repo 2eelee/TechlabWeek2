@@ -74,37 +74,19 @@ void FGizmo::Initialize(URenderer& Renderer)
 
 	GridVertexCount = static_cast<UINT>(GridVertices.size());
 
-	GridVertexBuffer = Renderer.CreateVertexBuffer(
-		GridVertices.data(),
-		static_cast<UINT>(GridVertices.size() * sizeof(FVertexSimple))
-	);
+	GridVertexBuffer = Renderer.CreateVertexBuffer(GridVertices.data(),static_cast<UINT>(GridVertices.size() * sizeof(FVertexSimple)));
 
 	TranslateVertices = CreateTranslateGizmoVertices();
 	TranslateGizmoVertexCount = static_cast<UINT>(TranslateVertices.size());
-	TranslateGizmoVertexBuffer = Renderer.CreateVertexBuffer(
-		TranslateVertices.data(),
-		static_cast<UINT>(
-			TranslateVertices.size() * sizeof(FVertexSimple)
-			)
-	);
+	TranslateGizmoVertexBuffer = Renderer.CreateVertexBuffer(TranslateVertices.data(),static_cast<UINT>(TranslateVertices.size() * sizeof(FVertexSimple)));
 
 	RotateVertices = CreateRotateGizmoVertices();
 	RotateGizmoVertexCount = static_cast<UINT>(RotateVertices.size());
-	RotateGizmoVertexBuffer = Renderer.CreateVertexBuffer(
-		RotateVertices.data(),
-		static_cast<UINT>(
-			RotateVertices.size() * sizeof(FVertexSimple)
-			)
-	);
+	RotateGizmoVertexBuffer = Renderer.CreateVertexBuffer(RotateVertices.data(),static_cast<UINT>(RotateVertices.size() * sizeof(FVertexSimple)));
 
 	ScaleVertices = CreateScaleGizmoVertices();
 	ScaleGizmoVertexCount =	static_cast<UINT>(ScaleVertices.size());
-	ScaleGizmoVertexBuffer = Renderer.CreateVertexBuffer(
-		ScaleVertices.data(),
-		static_cast<UINT>(
-			ScaleVertices.size() * sizeof(FVertexSimple)
-			)
-	);
+	ScaleGizmoVertexBuffer = Renderer.CreateVertexBuffer(ScaleVertices.data(), static_cast<UINT>(ScaleVertices.size() * sizeof(FVertexSimple)));
 }
 
 void FGizmo::DrawGrid(URenderer& Renderer, UCamera* Camera)
