@@ -83,6 +83,7 @@ void FGizmoManipulator::UpdateTranslateDrag(UCamera& Camera, UPrimitiveComponent
 	}
 
 	float amount = CalculateDragAmount(Camera, worldAxis);
+
 	FVector3 Loc = SelectedPrimitive->GetRelativeLocation();
 	Loc += worldAxis * amount;
 	SelectedPrimitive->SetRelativeLocation(Loc);
