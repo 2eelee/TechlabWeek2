@@ -17,6 +17,7 @@ private:
     void UpdateTranslateDrag(UCamera& Camera, UPrimitiveComponent* SelectedPrimitive, bool isLocalAxisMode);
     void UpdateRotateDrag(UCamera& Camera, UPrimitiveComponent* SelectedPrimitive, float ScreenWidth, float ScreenHeight, bool isLocalAxisMode);
     void UpdateScaleDrag(UCamera& Camera, UPrimitiveComponent* SelectedPrimitive);
+    bool IntersectPlane(const FRay& ray, const FVector3& planePoint, const FVector3& planeNormal, FVector3& hitPoint);
 
     FVector3 GetAxisDirection(EGizmoAxis Axis);
     float CalculateDragAmount(UCamera& Camera, const FVector3& WorldAxis);

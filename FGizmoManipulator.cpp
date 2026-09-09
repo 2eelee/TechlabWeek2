@@ -101,8 +101,6 @@ void FGizmoManipulator::UpdateRotateDrag(UCamera& Camera, UPrimitiveComponent* S
 
 	FVector3 objectToCamera = cameraPos - objectPos;
 
-	float side = axisDir.Dot(objectToCamera);
-
 	FIntPoint currentMouseInt = InputManager::GetInstance().GetMousePosition();
 	FVector2 currentMouse{ static_cast<float>(currentMouseInt.X), static_cast<float>(currentMouseInt.Y) };
 
@@ -110,18 +108,31 @@ void FGizmoManipulator::UpdateRotateDrag(UCamera& Camera, UPrimitiveComponent* S
 	FVector2 mouseDelta{ static_cast<float>(mouseDeltaInt.X), static_cast<float>(mouseDeltaInt.Y) };
 
 	FVector2 previousMouse = currentMouse - mouseDelta;
+	FIntPoint previousMouseInt{ static_cast<int>(previousMouse.X), static_cast<int>(previousMouse.Y) };
 
-	FVector3 Loc = SelectedPrimitive->GetRelativeLocation();
-	FVector2 screenCenter = Camera.WorldToScreen(Loc, ScreenWidth, ScreenHeight);
+	FVector3 center = SelectedPrimitive->GetRelativeLocation();
 
-	FVector2 previousDir = previousMouse - screenCenter;
-	FVector2 currentDir = currentMouse - screenCenter;
+	FRay previousRay = Camera.ScreenToRay(previousMouseInt, ScreenWidth, ScreenHeight);
+	FRay currentRay = Camera.ScreenToRay(currentMouseInt, ScreenWidth, ScreenHeight);
+
+	FVector3 previousHit, currentHit;
+
+	if (!IntersectPlane(previousRay, center, axisDir, previousHit))
+		return;
+	if (!IntersectPlane(currentRay, center, axisDir, currentHit))
+		return;
+
+	FVector3 previousDir = previousHit - center;
+	FVector3 currentDir = currentHit - center;
+
+	if (previousDir.Length() < 0.000001f || currentDir.Length() < 0.000001f) 
+		return;
 
 	previousDir = previousDir.Normalize();
 	currentDir = currentDir.Normalize();
 
 	float dot = previousDir.Dot(currentDir);
-	float cross = previousDir.X * currentDir.Y - previousDir.Y * currentDir.X;
+	float cross = axisDir.Dot(previousDir.Cross(currentDir));
 
 	float deltaRad = atan2f(cross, dot);
 
@@ -130,7 +141,7 @@ void FGizmoManipulator::UpdateRotateDrag(UCamera& Camera, UPrimitiveComponent* S
 	{
 	case EGizmoAxis::X: DeltaR = FMatrix::CreateRotationX(deltaRad); break;
 	case EGizmoAxis::Y: DeltaR = FMatrix::CreateRotationY(deltaRad); break;
-	case EGizmoAxis::Z: DeltaR = FMatrix::CreateRotationZ(deltaRad); break;
+	case EGizmoAxis::Z: DeltaR = FMatrix::CreateRotationZ(-deltaRad); break;
 	case EGizmoAxis::None: return;
 	}
 
@@ -183,4 +194,19 @@ void FGizmoManipulator::UpdateScaleDrag(UCamera& Camera, UPrimitiveComponent* Se
 		case EGizmoAxis::None: return;
 	}
 	SelectedPrimitive->SetRelativeScale3D(Scale);
+}
+
+bool FGizmoManipulator::IntersectPlane(const FRay& ray, const FVector3& planePoint, const FVector3& planeNormal, FVector3& hitPoint)
+{
+	float D = ray.Direction.Dot(planeNormal);
+
+	const float EPSILON = 1.0e-6f;
+	if (std::abs(D) < EPSILON) return false;
+
+	float t = (planePoint - ray.Origin).Dot(planeNormal) / D;
+
+	if (t < 0.0f) return false;
+
+	hitPoint = ray.Origin + ray.Direction * t;
+	return true;
 }

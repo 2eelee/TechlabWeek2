@@ -20,4 +20,5 @@ struct FVector3
 	FVector3& operator-=(const FVector3& other);
 	FVector3& operator*=(float scale);
 	static FVector3 Normalize(const FVector3& FVector);
+	inline float Length() const { return sqrtf(x * x + y * y + z * z); }
 };
