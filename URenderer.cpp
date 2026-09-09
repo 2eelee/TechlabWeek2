@@ -4,6 +4,7 @@
 #include "URenderer.h"
 #include <iostream>
 
+
 void URenderer::Create(HWND hWindow)
 {
 	// Direct3D 장치 및 스왑 체인 생성
@@ -43,9 +44,14 @@ void URenderer::CreateDeviceAndSwapChain(HWND hWindow)
 	swapchaindesc.Windowed = TRUE; // 창 모드
 	swapchaindesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD; // 스왑 효과 설정
 
+	UINT createDeviceFlags = 0;
+	#if defined(_DEBUG)
+	createDeviceFlags |= D3D11_CREATE_DEVICE_DEBUG;
+	#endif
+
 	// Direct3D 장치와 스왑 체인을 생성
 	D3D11CreateDeviceAndSwapChain(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr,
-		D3D11_CREATE_DEVICE_BGRA_SUPPORT | D3D11_CREATE_DEVICE_DEBUG,
+		D3D11_CREATE_DEVICE_BGRA_SUPPORT | createDeviceFlags,
 		featurelevels, ARRAYSIZE(featurelevels), D3D11_SDK_VERSION,
 		&swapchaindesc, &SwapChain, &Device, nullptr, &DeviceContext);
 
