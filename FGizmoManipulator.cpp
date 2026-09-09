@@ -136,15 +136,15 @@ void FGizmoManipulator::UpdateRotateDrag(UCamera& Camera, UPrimitiveComponent* S
 
 	FMatrix NewR;
 	if (isLocalAxisMode)
-		NewR = CurrentR * DeltaR;
-	else 
 		NewR = DeltaR * CurrentR;
+	else
+		NewR = CurrentR * DeltaR;
 
 	float radX, radY, radZ;
 	if (fabsf(NewR.m[0][2]) < 0.9999f)
 	{
 		radY = asinf(std::clamp(-NewR.m[0][2], -1.0f, 1.0f));
-		radZ = atan2f(NewR.m[0][1], NewR.m[0][0]);
+		radZ = atan2f(-NewR.m[0][1], NewR.m[0][0]);
 		radX = atan2f(NewR.m[1][2], NewR.m[2][2]);
 	}
 	else

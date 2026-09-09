@@ -73,8 +73,8 @@ FMatrix FMatrix::CreateRotationZ(float angleRad)
 {
 	FMatrix output;
 	output.m[0][0] = cosf(angleRad);
-	output.m[0][1] = sinf(angleRad);
-	output.m[1][0] = -sinf(angleRad);
+	output.m[0][1] = -sinf(angleRad);
+	output.m[1][0] = sinf(angleRad);
 	output.m[1][1] = cosf(angleRad);
 	return output;
 }
