@@ -125,16 +125,6 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstanc ,LPSTR lpCmdLine,i
 			}
 		}
 
-		if (InputManager::GetInstance().GetKeyDown(VK_SPACE))
-		{
-			Gizmo.CycleMode();
-		}
-
-		if (InputManager::GetInstance().GetKeyDown('C'))
-		{
-			Gizmo.ToggleLocalAxis();
-		}
-
 		if (bIsExit)
 		{
 			break;
@@ -147,9 +137,25 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstanc ,LPSTR lpCmdLine,i
 		renderer.Prepare();
 		renderer.PrepareShader();
 
-		bool allowWorldInput = !ImGui::GetIO().WantCaptureMouse;
+		// ImGui Frame 시작
+		imguiManager.BeginFrame();
 
-		if (allowWorldInput)
+		bool allowKeyboardInput = !ImGui::GetIO().WantCaptureKeyboard;
+
+		if (allowKeyboardInput)
+		{
+			if (InputManager::GetInstance().GetKeyDown(VK_SPACE))
+				Gizmo.CycleMode();
+
+			if (InputManager::GetInstance().GetKeyDown('C'))
+				Gizmo.ToggleLocalAxis();
+
+			camera->CamMove(deltaTime);
+		}
+
+		bool allowMouseInput = !ImGui::GetIO().WantCaptureMouse;
+
+		if (allowMouseInput)
 		{
 			MousePicker.HitTestPrimitive(InputManager::GetInstance().GetMousePosition(), *camera, GWindowWidth, GWindowHeight);
 			MousePicker.HitTestGizmoAxis(InputManager::GetInstance().GetMousePosition(), *camera, GWindowWidth, GWindowHeight, Gizmo);
@@ -161,8 +167,8 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstanc ,LPSTR lpCmdLine,i
 
 		EGizmoAxis hoveredAxis = MousePicker.GetHoveredAxis();
 
-		MousePicker.HandleSelectionInput(allowWorldInput, hoveredAxis);
-		GizmoManipulator.HandleMouseInput(allowWorldInput, hoveredAxis);
+		MousePicker.HandleSelectionInput(allowMouseInput, hoveredAxis);
+		GizmoManipulator.HandleMouseInput(allowMouseInput, hoveredAxis);
 
 		UPrimitiveComponent* closest = MousePicker.GetClosestPrimitive();
 		UPrimitiveComponent* selected = MousePicker.GetSelectedPrimitive();
@@ -209,10 +215,6 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstanc ,LPSTR lpCmdLine,i
 		}
 
 		Gizmo.DrawWorldAxis(renderer, camera);
-		camera->CamMove(deltaTime);
-
-		// ImGui Frame 시작
-		imguiManager.BeginFrame();
 		
 		// 이후 ImGui UI 컨트롤 추가는 ImGui::NewFrame()과 ImGui::Render() 사이인 여기에 위치합니다. 
 		EditorUI.UpdateWindowSize();
