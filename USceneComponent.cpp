@@ -13,9 +13,7 @@ void UPrimitiveComponent::Render(URenderer& renderer)
 FMatrix UPrimitiveComponent::GetModelMatrix() const
 {
 	FMatrix ScaleM = FMatrix::CreateScale(GetRelativeScale3D().x, GetRelativeScale3D().y, GetRelativeScale3D().z);
-	FMatrix RotationM = FMatrix::CreateRotationX(DegreesToRadians(GetRelativeRotation().x))
-		* FMatrix::CreateRotationY(DegreesToRadians(GetRelativeRotation().y))
-		* FMatrix::CreateRotationZ(DegreesToRadians(GetRelativeRotation().z));
+	FMatrix RotationM = GetRelativeRotationQuaternion().ToMatrix();
 	FMatrix TranslationM = FMatrix::CreateTranslation(GetRelativeLocation().x, GetRelativeLocation().y, GetRelativeLocation().z);
 	return ScaleM * RotationM * TranslationM;
 }

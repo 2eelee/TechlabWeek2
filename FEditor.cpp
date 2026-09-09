@@ -3,7 +3,6 @@
 #include "FEditor.h"
 #include "FObjectFactory.h"
 
-
 UCamera* Cam;
 
 const char* items[] = { "Sphere", "Cube", "Plane" };
@@ -30,8 +29,9 @@ void FEditor::DrawPropertyUI(const FMousePicker& mousepicker)
 	UPrimitiveComponent* primitive = mousepicker.GetSelectedPrimitive();
 	if (primitive) {
 		ImGui::SetNextWindowPos(ImVec2(display.x - 20, 20), cond, ImVec2(1.0f, 0.0f));
+		FVector3 RotRad = primitive->GetRelativeRotationEuler();
 		FVector3 Loc = primitive->GetRelativeLocation();
-		FVector3 Rot = primitive->GetRelativeRotation();
+		FVector3 Rot = { RadiansToDegrees(RotRad.x), RadiansToDegrees(RotRad.y) , RadiansToDegrees(RotRad.z) };
 		FVector3 Scale = primitive->GetRelativeScale3D();
 		ImGui::Begin("Jungle Property Window");
 		if (ImGui::InputFloat3("Translation", &Loc.x))
@@ -40,7 +40,8 @@ void FEditor::DrawPropertyUI(const FMousePicker& mousepicker)
 		}
 		if (ImGui::InputFloat3("Rotation", &Rot.x))
 		{
-			primitive->SetRelativeRotation(Rot);
+			FVector3 newRot = { DegreesToRadians(Rot.x), DegreesToRadians(Rot.y), DegreesToRadians(Rot.z) };
+			primitive->SetRelativeRotation(newRot);
 		}
 		if (ImGui::InputFloat3("Scale", &Scale.x))
 		{
@@ -150,15 +151,17 @@ void FEditor::DrawControlUI(FMousePicker& mousePicker)
 		ImGui::SliderFloat("Othogonal Width", &Cam->orthowidth, 1.0f, 50.0f);
 	}
 	ImGui::DragFloat("FOV", &Cam->FovAngle, 1.0f, 5.0f, 170.0f);
+	FVector3 CamRotRad = Cam->GetRelativeRotationEuler();
 	FVector3 CamLoc = Cam->GetRelativeLocation();
-	FVector3 CamRot = Cam->GetRelativeRotation();
+	FVector3 CamRotDegree = { RadiansToDegrees(CamRotRad.x), RadiansToDegrees(CamRotRad.y), RadiansToDegrees(CamRotRad.z) };
 	if (ImGui::InputFloat3("Camera Location", &CamLoc.x))
 	{
 		Cam->SetRelativeLocation(CamLoc);
 	}
-	if (ImGui::InputFloat3("Camera Rotation", &CamRot.x))
+	if (ImGui::InputFloat3("Camera Rotation", &CamRotDegree.x))
 	{
-		Cam->SetRelativeRotation(CamRot);
+		FVector3 NewRotRad = { DegreesToRadians(CamRotRad.x), DegreesToRadians(CamRotRad.y), DegreesToRadians(CamRotRad.z) };
+		Cam->SetRelativeRotation(NewRotRad);
 	}
 	bottomX = ImGui::GetWindowPos().x;
 	bottomY = ImGui::GetWindowPos().y + ImGui::GetWindowHeight();

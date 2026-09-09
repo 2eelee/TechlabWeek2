@@ -539,9 +539,7 @@ FMatrix URenderer::CreateMVP(UPrimitiveComponent& Primitive, UCamera* Camera)
 	
 	FMatrix Model = Primitive.GetModelMatrix();
 	FMatrix scaleM = FMatrix::CreateScale(Primitive.GetRelativeScale3D().x, Primitive.GetRelativeScale3D().y, Primitive.GetRelativeScale3D().z);
-	FMatrix RotationM = FMatrix::CreateRotationX(DegreesToRadians(Primitive.GetRelativeRotation().x))
-		* FMatrix::CreateRotationY(DegreesToRadians(Primitive.GetRelativeRotation().y)) 
-		* FMatrix::CreateRotationZ(DegreesToRadians(Primitive.GetRelativeRotation().z));
+	FMatrix RotationM = Primitive.GetRelativeRotationQuaternion().ToMatrix();
 	FMatrix TranslationM = FMatrix::CreateTranslation(Primitive.GetRelativeLocation().x, Primitive.GetRelativeLocation().y, Primitive.GetRelativeLocation().z);
 
 	return CreateMVPFromModel(Model, Camera);
