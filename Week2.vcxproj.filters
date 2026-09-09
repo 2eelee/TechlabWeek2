@@ -91,7 +91,6 @@
     <ClCompile Include="URenderer.cpp">
       <Filter>Rendering</Filter>
     </ClCompile>
-    <ClCompile Include="FMatrix.cpp" />
     <ClCompile Include="FMousePicker.cpp">
       <Filter>Editor</Filter>
     </ClCompile>
@@ -118,6 +117,9 @@
     </ClCompile>
     <ClCompile Include="FGizmoManipulator.cpp">
       <Filter>Editor\Gizmo</Filter>
+    </ClCompile>
+    <ClCompile Include="FMatrix.cpp">
+      <Filter>Math</Filter>
     </ClCompile>
     <ClCompile Include="Quaternion.cpp">
       <Filter>Math</Filter>
